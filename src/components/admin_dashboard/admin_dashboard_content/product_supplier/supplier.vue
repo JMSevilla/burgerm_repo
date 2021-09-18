@@ -185,9 +185,9 @@
                                             <span>Created : {{item.createdAt | moment("calendar")}}</span>
                                         </div>
                                     </div>
-                                    <el-button @click="oncall(item.suppliernumber)" type="info" style="float: right; margin-bottom: 10px; margin-top: 20px;"><i class="el-icon-phone"></i> Call</el-button>
+                                    <!-- <el-button @click="oncall(item.suppliernumber)" type="info" style="float: right; margin-bottom: 10px; margin-top: 20px;"><i class="el-icon-phone"></i> Call</el-button> -->
                                     <el-button @click="onsendemailoutlook(item.supplieremail)" type="warning" style="float: right; margin-bottom: 10px; margin-top: 20px; margin-right: 10px;"><i class="el-icon-message"></i> Send an email</el-button>
-                                    <el-button @click="onremovesupplier(item.id)" type="danger" style="float: right; margin-bottom: 10px; margin-top: 20px; "><i class="el-icon-delete-solid"></i> Remove</el-button>
+                                    <el-button @click="onremovesupplier(item.id)" type="danger" style="float: right; margin-bottom: 10px; margin-top: 20px; margin-right: 10px;  "><i class="el-icon-delete-solid"></i> Remove</el-button>
                                     <el-button @click="onmodifysupplier(
                                         item.id, item.supplierfirstname, item.supplierlastname, item.supplieremail, item.suppliernumber, item.supplierimgurl
                                     )" type="primary" style="float: right; margin-bottom: 10px; margin-top: 20px; "><i class="el-icon-edit"></i> Modify</el-button>

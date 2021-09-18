@@ -19,6 +19,9 @@ export default {
           // this.historyloginmanagement()
           this.$router.push({name: 'admindashboard'}).catch(() => {})
         }
+        else if(response.data === "scan customer"){
+          this.$router.push({name: 'cashierdashboard'}).catch(() => {})
+        }
         else if(response.data === "homepage"){
             // this.$router.push({name: 'Index'}).catch(() => {})
         }

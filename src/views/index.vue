@@ -1,6 +1,6 @@
 <template>
     <div>
-       <navigation />
+       <!-- <navigation /> -->
        <div class="wrapper">
            <slider style="margin-bottom: 20px;"/>
        </div>
@@ -11,7 +11,7 @@
            </center>
            <uicontent style="margin-bottom: 20px;"/>
        </div>
-       <sysfooter />
+       <!-- <sysfooter /> -->
     </div>
 </template>
 

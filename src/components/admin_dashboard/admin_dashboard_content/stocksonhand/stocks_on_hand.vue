@@ -16,17 +16,7 @@
                                         </el-alert>   
                                                    
             </div>
-                                    <el-card shadow="always">
-                                        <div class="row">
-                                            <div class="col-md-5">
-                                                <h3>Stocks</h3>
-                                            </div>
-                                            <div class="col-md-7">
-                                                
-                                            </div>
-                                        </div>
-                                         <high :options="chartOptions" :redraw="true" ref="changerdata" style="margin-top: 30px;"></high>   
-                                    </el-card>
+                                    
             <el-card style="margin-top: 30px; margin-bottom: 30px;" shadow="always"> 
                  <el-alert
                     style="margin-top: 20px; margin-bottom: 30px;"
@@ -192,13 +182,17 @@
                                                     </div>
                                                     </div>
                                                 </el-card>
-                                                <el-button slot="reference" type="warning" size="medium" plain>Refill</el-button>
+                                                <el-button slot="reference" type="warning" size="small" style="margin-left: 60%; width: 100%;" plain>Refill  </el-button>
                                                 
                                                 </el-popover>
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <el-button @click="onremovestock(row.stockID)" type="danger" size="medium" plain>Remove</el-button>
+                                                     <div class="col-md-6" style="width: 100%; margin-right: 80px;">
+                                                       <br> <el-button @click="onmodifystock(row.stockID)" type="info" size="small" plain>Modify</el-button>
                                                     </div>
+                                                    <div class="col-md-6" style="width: 100%; margin-right: 80px;">
+                                                       <br> <el-button @click="onremovestock(row.stockID)" type="danger" size="small" plain>Remove</el-button>
+                                                    </div>
+                                                   
                                                 </div>
                                           </div>
                                           <div v-else-if="row.productquantity >= 50">
@@ -239,17 +233,21 @@
                                                     </div>
                                                     </div>
                                                 </el-card>
-                                                 <el-button slot="reference" type="success" size="small" plain>Add more</el-button>
+                                             
+                                                 <el-button slot="reference" type="success" size="small" style="margin-left: 50%;" plain>Add more</el-button>
                                                 </el-popover>
                                                   </div>
-                                                  <div class="col-md-6">
-                                                       <el-button @click="onremovestock(row.stockID)" type="danger" size="small" plain>Remove</el-button>
+                                                   <div class="col-md-6" style="width: 100%; margin-right: 80px;">
+                                                       <br> <el-button @click="onmodifystock(row.stockID)" type="info" size="small" plain>Modify</el-button>
+                                                    </div>
+                                                  <div class="col-md-6" style="width: 100%; margin-right: 80px;" >
+                                                      <br><el-button @click="onremovestock(row.stockID)" type="danger" size="small" plain>Remove</el-button>
                                                   </div>
                                               </div>
                                               
                                              
                                           </div>
-                                        </template>
+                                        </template>     
                                     </el-table-column>
 
                                     </el-table>

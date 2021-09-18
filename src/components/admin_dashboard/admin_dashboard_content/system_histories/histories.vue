@@ -13,32 +13,32 @@
                     <el-tab-pane label="Activity Log">
                         <div style="margin-top: 20px;" class="container">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <el-card shadow="always">
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-8">
                                                 <h4 style="margin-bottom: 20px;">User Management Activity Logs</h4>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <!-- <el-button style="margin-bottom: 20px; float: right;" type="success" size="small">Export Excel</el-button> -->
                                             </div>
                                         </div>
                                         <tableusermanage :onremovelogs="onremovelogs" :listoflogs="listoflogsusermanagement" />
                                     </el-card>
                                 </div>
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
                                     <el-card shadow="always">
                                         <h4>Product Inventory Activation Activity Logs</h4>
                                         <tableproductactivationlogs :removelogs="onremove_prod_activation_logs" :dataforprods="listofprodActivationArray" />
                                     </el-card>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="Archives">
                     <div class="container" style="margin-top: 20px;">
                       <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                           <el-card shadow="always">
                             <h4>User Management Archives</h4>
                             <tableuserarchives :recovery="onrecoveruser" :datalist="listofusersArray" />
@@ -50,7 +50,7 @@
                       </div>
                     </div>
                     </el-tab-pane>
-                    <el-tab-pane label="Users Reports">Task</el-tab-pane>
+                    <!-- <el-tab-pane label="Users Reports">Task</el-tab-pane> -->
                 </el-tabs>
             </el-card>
         </div>

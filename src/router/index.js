@@ -42,6 +42,18 @@ const routes = [
     component: () => import("@/views/login")
   },
   {
+    path: '/cashierdashboard' + makeid(200),
+    name: 'cashierdashboard',
+    component: () => import('@/views/cashier/cashier'),
+    children: [
+      {
+        path: '/cashierdashboard' + makeid(200),
+        name: 'cashierdashboard',
+        component: () => import('@/views/cashier/cashier_dashboard_content/cashierIndex')
+      }
+    ]
+  },
+  {
     path: '/admindashboard' + makeid(200),
     name: 'admindashboard',
     component: () => import('@/views/admin/admin'),

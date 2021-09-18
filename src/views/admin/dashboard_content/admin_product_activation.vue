@@ -4,7 +4,7 @@
       <h1>Product Finalized</h1>
       <p style="font-size: 15px">Here you can view all products activated that will showed up on the POS.</p>
       <el-alert
-          title="Product Activation"
+          title="Final Product"
           type="success" :closable="false">
       </el-alert>
     </div>

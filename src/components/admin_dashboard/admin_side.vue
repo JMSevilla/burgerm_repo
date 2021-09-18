@@ -37,7 +37,7 @@
                                     <el-menu-item index="3-1" @click="addproductinventory()">
                                         <img src="../../assets/inventory.png"
                                      alt="no image" style="width: 15%; height:auto;">&nbsp;
-                                        Inventory / Stocks
+                                        Inventory Stocks
                                     </el-menu-item>
 
                                     <el-menu-item index="3-2" @click="onstockonhand()">
@@ -48,7 +48,7 @@
                                     <!-- <el-menu-item index="3-3" @click="productinventory()">
                                         <img src="https://cdn1.iconfinder.com/data/icons/e-commerce-retro-pack-vol-1/115/inventory_management-256.png"
                                      alt="no image" style="width: 15%; height:auto;">&nbsp;
-                                        Inventory Activation
+                                        Product Inventory
                                         </el-menu-item> -->
                                     
                                     <el-menu-item index="3-3" @click="onproductcategory()">
@@ -66,12 +66,12 @@
                                      alt="no image" style="width: 15%; height:auto;">&nbsp;
                                     <span>Completions</span>
                                     </template>
-                                    <el-menu-item index="5-1" @click="onproductfinal()">
+                                    <el-menu-item index="4-1" @click="onproductfinal()">
                                         <img src="https://cdn2.iconfinder.com/data/icons/scenarium-vol-3-1/128/020_crate_delivery_parachute_present_product_air_cloud-256.png"
                                      alt="no image" style="width: 15%; height:auto;">&nbsp;
                                         Product Finalization 
                                         </el-menu-item>
-                                  <el-menu-item index="5-2" @click="onproductactivator()">
+                                  <el-menu-item index="4-2" @click="onproductactivator()">
                                     <img src="https://cdn3.iconfinder.com/data/icons/marketing-management-7/64/activation-marketing-process-business-256.png"
                                          alt="no image" style="width: 15%; height:auto;">&nbsp;
                                     Product Finalized
@@ -145,11 +145,11 @@
                                      alt="no image" style="width: 15%; height:auto;">&nbsp;
                                     <span>Settings</span>
                                     </template>
-                                    <el-menu-item index="7-1" @click="onexceltemplate()">
+                                    <!-- <el-menu-item index="7-1" @click="onexceltemplate()">
                                         <img src="https://cdn3.iconfinder.com/data/icons/logos-brands-3/24/logo_brand_brands_logos_excel-256.png"
                                      alt="no image" style="width: 15%; height:auto;">&nbsp;
                                         Excel Templates
-                                        </el-menu-item>
+                                        </el-menu-item> -->
 
                                         <el-menu-item index="7-2" @click="onmoresettings()">
                                         <img src="https://cdn2.iconfinder.com/data/icons/business-filled-outline-style-1-set-1/256/21-256.png"

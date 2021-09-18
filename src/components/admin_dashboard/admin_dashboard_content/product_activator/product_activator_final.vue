@@ -1,7 +1,7 @@
 <template>
 <div>
   <div style="margin-top: 30px; margin-bottom: 30px;" class="container">
-    <el-card shadow="always" style="margin-bottom: 20px;">
+    <!-- <el-card shadow="always" style="margin-bottom: 20px;">
       <div class="row">
         <div class="col-md-5">
           <h3>Product Activation Graph</h3>
@@ -19,9 +19,9 @@
         </div>
       </div>
       <high :options="chartOptions" :redraw="true" style="margin-top: 30px;"></high>
-    </el-card>
+    </el-card> -->
     <el-card shadow="always">
-      <h3>Product Activation</h3>
+      <h3>List of Final Product</h3>
       <el-input
           style="margin-bottom: 5px; width: 30%; margin-right: 10px;"
           placeholder="Search"
@@ -113,9 +113,12 @@
                           </table>
                     </el-card>
                   </div>
-                  <el-button @click="ongetrawmats(row.productCode)" slot="reference" size="small" type="info">View ingredients</el-button>
+                
+                  <el-button @click="ongetrawmats(row.productCode)" slot="reference" size="small" type="info" >View ingredients</el-button>
+                  
                 </el-popover>
             </div>
+           
             <div v-else>
               <!-- <el-button size="small" @click="onactivate(row.id)" type="success">Activate</el-button>&nbsp; -->
               <!-- <el-button size="small" @click="onremove(row.id, row.productCode, row.prodquantity)" type="danger">Remove</el-button>&nbsp; -->
@@ -145,12 +148,19 @@
                                     </el-pagination> -->
                     </el-card>
                   </div>
-                  <el-button @click="ongetrawmats(row.productCode)" slot="reference" size="small" type="info">View ingredients</el-button>
+                  
+                  <el-button @click="ongetrawmats(row.productCode)" slot="reference" size="small" type="info" style="margin-bottom: -10%;">View ingredients</el-button>
+                 
                 </el-popover>
+                 
             </div>
+            <div class="col-md-6" style="width: 100%; margin-right: 80px;" >
+                       <br><el-button @click="onremovefinal(row.stockID)" type="danger" size="small" style="width: 35%; margin-top: -5%;"
+                       plain>Remove</el-button>
+                    </div>
           </template>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
 prop="prodstatus"
             label="Status"
             width="100"
@@ -169,7 +179,7 @@ prop="prodstatus"
               </div>
             </el-tag>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
      
       <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.tableData.length" @current-change="setPage">

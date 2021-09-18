@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="mt-3">
-            <h1>Product Inventory | Add Inventory / Stocks</h1>
+            <h1>Add Product / Inventory Stocks</h1>
         <p style="font-size: 15px">Here you can add products for your inventory.</p>
         <el-alert
             title="Product management / Adding inventory / stocks."
@@ -10,14 +10,14 @@
         <div class="container-fluid">
             <div style="margin-top: 20px;">
                 
-            <el-button  type="primary" plain @click="onimportexcel()">Import Excel</el-button>
+            <!-- <el-button  type="primary" plain @click="onimportexcel()">Import Excel</el-button> -->
             <el-button  type="warning" plain @click="pullproductsdialogVisible = true">Pull Products from Stocks</el-button>
             <el-button  type="success" plain @click="onnavigatefinal()">Navigate to product finalization</el-button>
             <!-- Dialog for pull product from stocks -->
                 <el-dialog
                     title="Pull products from stocks"
                     :visible.sync="pullproductsdialogVisible"
-                    width="70%"
+                    width="50%"
                     :before-close="pullhandleClose">
                     <el-alert
                                         style="margin-top: 20px; margin-bottom: 30px;"
@@ -51,28 +51,28 @@
                                         </template>
                                     </el-table-column>
                                     
-                                    <el-table-column label="Product Image" >
+                                    <el-table-column label="Product Image" align="center" >
                                         <template slot-scope="{row}">
                                         <img :src="row.productimgurl" style="width: 100%; height: auto;" class="img-fluid" alt="No image">
                                         <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
                                         </template>
                                     </el-table-column>
 
-                                    <el-table-column label="Product Name" >
+                                    <el-table-column label="Product Name" align="center" >
                                         <template slot-scope="{row}">
                                         <span class="link-type" >{{ row.productname }}</span>
                                         <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
                                         </template>
                                     </el-table-column>
 
-                                     <el-table-column label="Product Quantity" >
+                                     <el-table-column label="Product Quantity" align="center">
                                         <template slot-scope="{row}">
                                         <span class="link-type" >{{ row.productquantity }}</span>
                                         <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
                                         </template>
                                     </el-table-column>
                                     
-                                    <el-table-column label="Status" class-name="status-col" >
+                                    <!-- <el-table-column label="Status" class-name="status-col" >
                                         <template slot-scope="{row}">
                                         <div v-if="row.product_status == 1">
                                             <el-tag type="success">
@@ -85,7 +85,7 @@
                                         </el-tag>
                                         </div>
                                         </template>
-                                    </el-table-column>
+                                    </el-table-column> -->
 
                                     
                                     <el-table-column label="Created"  align="center">

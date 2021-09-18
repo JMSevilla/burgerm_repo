@@ -143,7 +143,7 @@
                                                         <p>Product supplier : {{productTask.productSupplier}}</p>
                                                     </div>
                                                     <p>Administrator added : {{preview.previewData | moment('dddd, MMMM Do YYYY')}}</p>
-                                                    <p>Status : <el-tag effect="dark" type="success">Active</el-tag></p>
+                                                    <!-- <p>Status : <el-tag effect="dark" type="success">Active</el-tag></p> -->
                                                     <div style="margin-top: 20px;">
                                                         <!-- <h4>Total Price : {{productTask.productPrice * productTask.productQuantity}}</h4> -->
                                                     </div>
@@ -152,9 +152,11 @@
                                         </el-card>
                                         </el-timeline-item>
                                     </el-timeline>
+                                    <el-button type="primary" plain style="float: right; margin-bottom: 20px; margin-top: 20px;"
+                            @click="onsaveproduct()">Save</el-button>
                             </el-card>
-                            <el-card style="margin-top: 30px;" shadow="always">
-                                <h5>Default settings</h5>
+                            <!-- <el-card style="margin-top: 30px;" shadow="always"> -->
+                                <!-- <h5>Default settings</h5>
                                 <el-switch
                                 style="display: block; margin-bottom: 30px;"
                                 v-model="productTask.isadmin"
@@ -163,8 +165,8 @@
                                 inactive-color="#ff4949"
                                 active-text="Administrator"
                                 inactive-text="Not admin">
-                                </el-switch>
-                                <el-switch
+                                </el-switch> -->
+                                <!-- <el-switch
                                 style="display: block; margin-bottom: 30px;"
                                 v-model="productTask.isstatus"
                                 disabled
@@ -172,10 +174,7 @@
                                 inactive-color="#ff4949"
                                 active-text="Active"
                                 inactive-text="Inactive">
-                                </el-switch>
-                            </el-card>
-                            <el-button type="primary" plain style="float: right; margin-bottom: 20px; margin-top: 20px;"
-                            @click="onsaveproduct()">Save</el-button>
+                                </el-switch> -->
                     </el-card>
                 </div>
                 <div class="col-sm">
@@ -221,7 +220,7 @@
                         </div>
                         
                         <!-- Element Dialog for More Filters -->
-                            <el-dialog
+                            <!-- <el-dialog
                             
                                 title="Edit more search filters"
                                 :visible.sync="dialogVisible"
@@ -306,7 +305,7 @@
                                     <el-button @click="dialogVisible = false">Cancel</el-button>
                                     <el-button type="primary" @click="onsearchnow()">Search now</el-button>
                                 </span>
-                                </el-dialog>
+                                </el-dialog> -->
                         <!-- Element Dialog for more filters end -->
                         <hr>
                           <div v-if="dataview == true">
@@ -343,15 +342,15 @@
                                                         <p>Product supplier : {{item.product_supplier}}</p>
                                                     </div>
                                                     <p>Administrator added : {{item.createdAt | moment('dddd, MMMM Do YYYY')}}</p>
-                                                    <p>Status : <el-tag effect="dark" type="success">Activated</el-tag></p>
+                                                    <!-- <p>Status : <el-tag effect="dark" type="success">Activated</el-tag></p> -->
                                                     <div style="margin-top: 20px;">
                                                         <!-- <h4>Total Price : &#8369; {{item.product_price * item.product_quantity}}</h4> -->
                                                     </div>
-                                                    <el-card shadow="always" style="background-color: #2D2D30; color: white; border-radius: 20px;">
-                                                        <h5>More Actions</h5>
+                                                    <el-card shadow="always" style="background-color: #2D2D30; width:40%; color: white; border-radius: 10px;">
+                                                        <h5><center>More Actions</center></h5>
                                                         <div class="row">
-                                                            <div class="col-sm">
-                                                                <el-button type="primary" style="width: 100%;"
+                                                            <div class="col-md">
+                                                                <el-button type="primary" style="width:50%; margin-left:50%"
                                                                 @click="onmodifyproduct(
                                                                     item.productCode,
                                                                     item.productID,
@@ -366,8 +365,8 @@
                                                                 >Modify</el-button>
                                                             
                                                             </div>
-                                                            <div class="col-sm">
-                                                                <el-button type="danger" style="width: 100%;" @click="onremoveproduct(item.productID, item.product_quantity, item.productCode)">Remove</el-button>
+                                                            <div class="col-md">
+                                                                <el-button type="danger" style="width: 50%;" @click="onremoveproduct(item.productID, item.product_quantity, item.productCode)">Remove</el-button>
                                                             </div>
                                                         </div>
                                                         <!-- Modify dialog -->
@@ -548,7 +547,7 @@
 
                                    
                                     
-                                    <el-table-column label="Status" class-name="status-col" >
+                                    <!-- <el-table-column label="Status" class-name="status-col" >
                                         <template slot-scope="{row}">
                                         <div v-if="row.product_status == 1">
                                             <el-tag type="success">
@@ -561,7 +560,7 @@
                                         </el-tag>
                                         </div>
                                         </template>
-                                    </el-table-column>
+                                    </el-table-column> -->
 
                                     
                                     <el-table-column label="Created"  align="center">

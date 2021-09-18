@@ -71,75 +71,41 @@
                         </el-card>
                     </div>
                 </div>
-                <el-card shadow="always" style="width: 100%; margin-bottom: 30px;">
-                     <div id="chart-container"></div>
-                </el-card>
+                <!-- <el-card shadow="always" style="width: 100%; margin-bottom: 30px;">
+                     <div id="chart-container"></div> -->
+                <!-- </el-card> -->
                 </div>
                 </el-tab-pane>
               </el-tabs>
+      </div>
+      <div class="container">
+         <el-card shadow="always">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <h3>Stocks</h3>
+                                            </div>
+                                            <div class="col-md-7">
+                                                
+                                            </div>
+                                        </div>
+                                         <high :options="chartOptions" :redraw="true" ref="changerdata" style="margin-top: 30px;"></high>   
+                                    </el-card>
       </div>
   </div>
 </template>
 
 <script>
-const dataSource = {
-  chart: {
-    caption: "Burger Mania - Calamba Branch",
-    subcaption: "Graph Report",
-    xaxisname: "Product",
-    yaxisname: "Number of Sales",
-    numbersuffix: "",
-    theme: "fusion"
-  },
-  data: [
-    {
-      label: "Pretty Patty",
-      value: "213"
-    },
-    {
-      label: "The Cheesy Bae",
-      value: "183"
-    },
-    {
-      label: "That's My Bae",
-      value: "180"
-    },
-    {
-      label: "Hotdog Classic",
-      value: "228"
-    },
-     {
-      label: "The Bully Hotdog",
-      value: "210"
-    },
-    {
-      label: "Cheesy Bae Hotdog",
-      value: "260"
-    },
-    {
-      label: "Big Bad Bully",
-      value: "173"
-    },
-    {
-      label: "Mental Black",
-      value: "249"
-    }
-  ]
-};
-
-FusionCharts.ready(function() {
-  var myChart = new FusionCharts({
-    type: "column2d",
-    renderAt: "chart-container",
-    width:"100%", height:"200%",
-    dataFormat: "json",
-    dataSource
-  }).render();
-});
+import { getallstocks} from "@/store/request-common"
+import {Chart} from 'highcharts-vue'
+import Highcharts from "highcharts";
+import exportingInit from "highcharts/modules/exporting";
+import offlineExporting from "highcharts/modules/offline-exporting";
+exportingInit(Highcharts)
+offlineExporting(Highcharts)
 export default {
-   components:{
-       
-   },
+   components: {
+    high: Chart ,
+  },
     data: () => ({
          editableTabsValue: '1',
         editableTabs: [{
@@ -148,9 +114,86 @@ export default {
           content: ''
         }],
         tabIndex: 1,
-        
+        chartOptions: {
+             chart: {
+                    type: 'spline'
+                },
+                tooltip: {
+                    valueSuffix: ' quantities',
+                    crosshairs: true,
+          shared: true
+                },
+                credits: {
+          enabled: false
+        },
+                plotOptions: {
+                series: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+                series: [],
+                    subtitle: {
+                    text: 'Line Graph'
+                },
+                title: {
+                    text: 'Stocks Overall Quantities'
+                }
+            },
+            productArray: [],
+            listLoading: false
     }),
-    
+    created(){
+        this.allstocks()
+    },
+    methods: {
+        allstocks(){
+            getallstocks().then(res => {
+                
+                var vm = this;
+                
+                for(var x = 0; x < res.data.length; x++){
+                    var ifExist = 0;
+                    if(vm.chartOptions.series.length > 0)
+                    {
+                        for(var check = 0;check < vm.chartOptions.series.length; check++) {
+                            if(res.data[x].productname == vm.chartOptions.series[check].name){
+                                ifExist = 1;
+                                check = vm.chartOptions.series.length;
+                                vm.chartOptions.series = []
+                                 var data1 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                                    for(var dataCount1 = 0; dataCount1 < res.data.length; dataCount1++){
+                                        if(res.data[dataCount1].productname == res.data[x].productname){
+                                            data1[res.data[dataCount1].stockID] = res.data[dataCount1].productquantity
+                                        }
+                                    }
+                                vm.chartOptions.series.push({
+                                    name: res.data[x].productname,
+                                    data: data1
+                                })
+                            }
+                        }
+                    }
+                    if(ifExist == 0){
+                        var data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                        for(var dataCount = 0; dataCount < res.data.length; dataCount++){
+                            if(res.data[dataCount].productname == res.data[x].productname){
+                                data[dataCount] = res.data[dataCount].productquantity
+                            }
+                        }
+                        console.log(data)
+                        vm.chartOptions.series.push({
+                            name: res.data[x].productname,
+                            data: data
+                        })
+                    }
+                }
+                this.productArray = res.data
+                this.listLoading = false;
+            })
+        },
+    }
     
 }
 </script>

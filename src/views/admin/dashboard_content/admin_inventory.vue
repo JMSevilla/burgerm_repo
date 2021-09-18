@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import inventory from "@/components/admin_dashboard/admin_dashboard_content/product_inventory/inventoryui"
+import inventory from "@/components/admin_dashboard/admin_dashboard_content/product_inventory/add_inventory"
 // import {fetchAllProductInventory} from "@/store/request-common"
 export default {
     components: {
