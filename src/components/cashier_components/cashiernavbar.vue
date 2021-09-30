@@ -1,16 +1,12 @@
 <template>
   <div>
-    <b-navbar toggleable="lg" type="dark" variant="dark">
-      <b-navbar-brand href="#">NavBar</b-navbar-brand>
+    <b-navbar style="padding: 20px" toggleable="lg" type="dark" variant="dark">
+      <b-navbar-brand href="#">BURGER MANIA &nbsp; <el-tag type="warning" effect="dark" size="small">Cashier Area</el-tag></b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav>
-          <b-nav-item href="#">Link</b-nav-item>
-          <b-nav-item href="#" disabled>Disabled</b-nav-item>
-        </b-navbar-nav>
-
+       
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
 

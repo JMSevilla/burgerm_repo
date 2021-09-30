@@ -6,11 +6,14 @@
 </template>
 
 <script>
-import {scanSession,loginhistory} from "@/store/request-common";
+import {scanSession,loginhistory, getrequestListOfData} from "@/store/request-common";
 export default {
   created()
   {
     this.checker();
+    getrequestListOfData().then((response) => {
+      console.log("for initial testing" , response.data)
+    })
   },
   methods: {
     checker(){

@@ -1,15 +1,16 @@
 <template>
   <div>
     <cashier_nav :fullname="fullname" />
-    <router-view></router-view>
+    <sidenav />
   </div>
 </template>
 
 <script>
 import cashier_nav from "@/components/cashier_components/cashiernavbar"
+import sidenav from "@/components/cashier_components/cashiersidebar"
 export default {
   components : {
-    cashier_nav
+    cashier_nav, sidenav
   },
   data(){
     return{

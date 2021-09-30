@@ -185,8 +185,8 @@ import routers from "@/router/index";
                           sessionStorage.setItem("oauth2_ss::_ss_", this.task.email)
                           
                           this.sessionTask.sessionEmail = this.task.email;
-                          this.session_update_or_add();
                           this.$router.push({name: 'admindashboard'}).catch(() =>{})
+                          
                         } else if(rs.data.message === "SUCCESS CASHIER") {
                           localStorage.setItem("oauth2_ss::_ss_", this.task.email)
                           sessionStorage.setItem("oauth2_ss::_ss_", this.task.email)
@@ -203,7 +203,7 @@ import routers from "@/router/index";
                           sessionStorage.setItem("oauth2_ss::_ss_", this.task.email)
 
                           this.sessionTask.sessionEmail = this.task.email;
-                          this.session_update_or_add();
+
                           this.$router.push({name: 'cashierdashboard'}).catch(() =>{})
                         }
                       })

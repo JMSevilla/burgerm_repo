@@ -141,7 +141,7 @@ export function add_cashier(obj){
         data.append("is_google_verified", 0);
     }
     if(obj.isactivate == true){
-        data.append("isstatus", 0);
+        data.append("isstatus", 1);
     }
     if(obj.imgurl != null || obj.imgurl != ""){
         data.append("imageurl", obj.imgurl);
@@ -1205,3 +1205,10 @@ export function getalllistfinalcateg(){
     }
 }
 
+export function getrequestListOfData(){
+    try{
+        return httpauth.get(`/api/testing-adding/test-add`)
+    } catch(error){
+
+    }
+}

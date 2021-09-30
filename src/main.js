@@ -7,7 +7,9 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import locale from 'element-ui/lib/locale/lang/en'
 import Invoice from "vue-invoice";
-
+//material icon
+import 'material-icons/iconfont/material-icons.css';
+//material end icon
 Vue.use(Invoice, {store})
 import VueHtmlToPaper from 'vue-html-to-paper';
 Vue.use(VueHtmlToPaper);
@@ -16,7 +18,12 @@ Vue.use(VueHtmlToPaper);
 import VueClipboard from 'vue-clipboard2'
  
 Vue.use(VueClipboard)
-
+//vuesax
+import Vuesax from 'vuesax'
+ 
+import 'vuesax/dist/vuesax.css'
+Vue.use(Vuesax)
+//end vuesax
 import FusionCharts from 'fusioncharts';
 import VueFusionCharts from 'vue-fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts'
