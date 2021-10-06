@@ -346,7 +346,7 @@
                                                     <div style="margin-top: 20px;">
                                                         <!-- <h4>Total Price : &#8369; {{item.product_price * item.product_quantity}}</h4> -->
                                                     </div>
-                                                    <el-card shadow="always" style="background-color: #2D2D30; width:40%; color: white; border-radius: 10px;">
+                                                    <el-card shadow="always" style="background-color: #2D2D30; width:100%; color: white; border-radius: 10px;">
                                                         <h5><center>More Actions</center></h5>
                                                         <div class="row">
                                                             <div class="col-md">
@@ -592,6 +592,7 @@ removeproduct,
 filter_by_date,
 more_filter_search,
 product_modify, listcategory, getsystemsettingsforinventory, fetchaddedsuppliers, viewingexpirationdate, productexpired, CHECK_STOCK_BEFORE_MODIFY} from "@/store/request-common"
+import client from "@/store/0AuthRequest"
 import firebase from 'firebase';
 export default {
     props: {
@@ -616,6 +617,7 @@ export default {
             dialogVisible: false,
             modifyDialog: false,
             categoryoptions: [],
+            productSizesOptions: [],
              options: [{
           value: 'Option1',
           label: 'Option1'
@@ -708,6 +710,7 @@ export default {
      }
     },
     created(){
+        this.fetchAllSizes()
         this.getListProductInventory()
         this.makeproductCode(5)
         this.getallcategories()
@@ -720,6 +723,11 @@ export default {
         this.listLoading = false;
     },
     methods:{
+        fetchAllSizes: function(){
+            client.get(`/api/size/fetchAll-size`).then(({ data }) => {
+                this.productSizesOptions = data
+            })
+        },
         oncancel(){
             this.editableexpiry = false
         },

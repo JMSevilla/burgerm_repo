@@ -119,6 +119,33 @@
                         </div>
                         <el-button type="primary" plain style="float: right; margin-bottom: 10px; margin-top: 10px;" @click="onsavesettings1()">Save</el-button>
                     </el-card>
+                     <el-card shadow="always" style="margin-top: 20px;">
+                          <h4>Product Sizes</h4>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm">
+                                <el-card shadow="always">
+                                    <span>Size</span>
+                                <el-input
+                                placeholder="Enter size"
+                                clearable
+                                type="text"
+                                style="margin-bottom: 10px;"
+                                v-model="settings3.sizeInput"
+                                ></el-input>
+                                <el-button
+                                @click="onaddsize"
+                                type="primary"
+                                plain
+                                style="float: right; margin-top: 10px; margin-bottom: 10px"
+                                >Save</el-button>
+                                </el-card>
+                            </div>
+                            <div class="col-sm">
+                                
+                            </div>
+                        </div>
+                     </el-card>
                     <!-- End Inventory Settings -->
                 </el-tab-pane>
                 <!-- <el-tab-pane label="Config">Config</el-tab-pane>
@@ -131,10 +158,14 @@
 
 <script>
 import {systemsettings, savedsettings, systemsettingsforinventory, getsystemsettingsforinventory} from "@/store/request-common"
+import client from "@/store/0AuthRequest"
 export default {
     data(){
         return{
             tabPosition: 'left',
+            settings3:{
+                sizeInput: ''
+            },
             settings: {
                 purchasesettings: false,
                 purchasesettings2: false,
@@ -158,6 +189,39 @@ export default {
         this.getsavedsettingsforinventory()
     },  
     methods: {
+        async onaddsize(){
+            if(!this.settings3.sizeInput){
+                this.$notify.error({
+                                title: 'Oops',
+                                message: 'Please input size',
+                                offset: 100
+                                });
+                                return false
+            }else{
+               await this.$confirm('This will add sizes. Continue?', 'Warning', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+                }).then(() => {
+                    const loading = this.$loading({
+                    lock: true,
+                    text: 'Saving, please wait...',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                    setTimeout(() => {
+                         client
+                        .post(`/api/size/add/${this.settings3.sizeInput}`)
+                        .then(({ data }) => {
+                            if(data === "success") {
+                                loading.close()
+                                this.$vs.notify({title:'Yey',text:'Successfully Added',color:'success',position:'top-right', icon:'highlight_off'})
+                            }
+                        })
+                    }, 3000)
+                })
+            }
+        },
         getsavedsettingsforinventory(){
             getsystemsettingsforinventory()
             .then((resolve) => {

@@ -76,7 +76,11 @@
                                          alt="no image" style="width: 15%; height:auto;">&nbsp;
                                     Product Finalized
                                   </el-menu-item>
-                                   
+                                   <el-menu-item index="4-3" @click="onproductbundle()">
+                                    <img src="https://cdn3.iconfinder.com/data/icons/marketing-management-7/64/activation-marketing-process-business-256.png"
+                                         alt="no image" style="width: 15%; height:auto;">&nbsp;
+                                    Product Bundle
+                                  </el-menu-item>
                                 </el-submenu>
 
                                 
@@ -215,7 +219,19 @@ export default {
         
     },
     methods: {
-        
+        onproductbundle: function(){
+            const loading = this.$loading({
+          lock: true,
+          text: 'please wait..',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        setTimeout(() => {
+          loading.close()
+          this.$router.push({name: 'bundle'}).catch(() => {})
+
+        }, 2000)
+        },
         settingsidentifier(){
             savedsettings().then(response => {
                 if(response.data[0] === undefined || response.data[0] === ''){

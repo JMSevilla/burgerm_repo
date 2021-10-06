@@ -24,6 +24,7 @@
                                 v-model="select1"
                                 label="Product Categories"
                                 placeholder="Choose Categories"
+                                @change="onselectcateg"
                                 >
                                 <vs-select-item :key="index" :value="item.value" :text="item.text" v-for="item,index in options1" />
                                 </vs-select>
@@ -35,8 +36,8 @@
                         </div>
                         <hr>
                         <div style="margin-top: 30px;">
-                           
-                                <div v-if="AllProduct == null || AllProduct == [] || AllProduct == '' ">
+                           <div v-if="select1 == 0">
+                              <div v-if="posprodBundle == null || posprodBundle == [] || posprodBundle == '' ">
                                       <img 
                                        src="https://cdn.dribbble.com/users/1753953/screenshots/3818675/media/f59ed80d5c527e2461d8ba49adc36160.gif"
                                        style="width: 100%; height: auto;"
@@ -44,6 +45,53 @@
                                        alt="no image">
                                
                                 </div>
+                                <div v-else>
+                                     <div class="wrapper">
+                                        <vs-card v-for="item in bundlePagedTableData" :key="item.bundleID" style="justify-content: center" class="card" >
+                                    <div slot="header">
+                                        <h3>
+                                        {{item.bundleTitle}}
+                                        </h3>
+                                    </div>
+                                    <div>
+                                        <center>
+                                             <el-image
+                                                style="width: 100px; height: 100px"
+                                                :src="item.prodImg"
+                                                :fit="fit"></el-image>
+                                            
+                                        </center>
+                                    </div>
+                                    <div>
+                                        
+                                        <!-- <span style="font-size: 12px;">Bundle Code : {{item.bundleCode}}.</span> -->
+                                    </div>
+                                     <div slot="footer">
+                                            <vs-row vs-justify="flex-end">
+                                            <vs-button type="gradient" color="danger" @click="onaddcartbundle(
+                                              item.bundleTitle, item.prodPrice, item.prodImg
+                                            )" icon="favorite"></vs-button>
+                                            <vs-button color="primary" icon="turned_in_not"></vs-button>
+                                            </vs-row>
+                                        </div>
+                                    </vs-card>
+                                  </div>
+                                  <!-- end product bundle -->
+                               
+                                 <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.posprodBundle.length" @current-change="setPage">
+                                    </el-pagination>
+                                </div>
+                           </div>
+                           <div v-else>
+                             <div v-if="AllProduct == null || AllProduct == [] || AllProduct == '' ">
+                                      <img 
+                                       src="https://cdn.dribbble.com/users/1753953/screenshots/3818675/media/f59ed80d5c527e2461d8ba49adc36160.gif"
+                                       style="width: 100%; height: auto;"
+                                       class="img-fluid"
+                                       alt="no image">
+                               
+                                </div>
+                                
                                 <div v-else>
                                      <div class="wrapper">
                                         <vs-card v-for="item in pagedTableData" :key="item.id" style="justify-content: center" class="card" >
@@ -73,13 +121,10 @@
                                         </div>
                                     </vs-card>
                                   </div>
-                                  
-                               
-                               <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.AllProduct.length" @current-change="setPage">
+                                   <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.AllProduct.length" @current-change="setPage">
                                     </el-pagination>
                                 </div>
-                            
-                            
+                           </div>
                         </div>
                     </el-card>
                 </div>
@@ -132,14 +177,15 @@ export default {
               searchable:'',
             select1:null,
               options1:[
-                {text:'IT',value:0},
+                {text:'Product Bundle',value:0},
                 {text:'Blade Runner',value:2},
                 {text:'Thor Ragnarok',value:3},
             ],
             AllProduct:[],
             fit: ['fill'],
             customerOrderArray: [],
-            listLoading: true
+            listLoading: true,
+            posprodBundle: []
         }
     },
      computed:{
@@ -152,6 +198,15 @@ export default {
         return this.AllProduct.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
       }
 
+     },
+     bundlePagedTableData(){
+       if(this.searchable){
+      return this.posprodBundle.filter((item)=>{
+        return this.searchable.toLowerCase().split(' ').every(v => item.bundleTitle.toString().toLowerCase().includes(v))
+      })
+      }else{
+        return this.posprodBundle.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
+      }
      }
     },
     created(){
@@ -159,6 +214,41 @@ export default {
         this.fetchAllCustomerOrders()
     },
     methods: {
+      onaddcartbundle: function(title, price, image){
+        const data = new FormData()
+        data.append("ordername", title)
+        data.append("orderprice", price)
+        data.append("orderimage", image)
+        const req = client.post(`/api/bundle-order/add-to-cart`, data)
+        return req.then(({ data }) => {
+          if(data == "success cart"){
+            this.$vs.notify({title:'Success',text:'Added to cart',color:'success',position:'top-right', icon:'highlight_off'})
+            this.fetchAllCustomerOrders()
+          }
+        })
+      },
+      onselectcateg: function(){
+        if(this.select1 == 0){
+          this.prodBundlePOS()
+        }
+      },
+      prodBundlePOS: function(){
+         this.$vs.loading({
+                  type: 'sound'
+              })
+         setTimeout(() => {
+           const req = client.get(`/api/bundle/fetchAll-bundle`)
+            return req.then(({ data }) => {
+                this.posprodBundle = data
+                this.AllProduct = []
+                this.$vs.loading.close()
+                // const check = JSON.parse(data[1].bundleIntegratedProdInvID)
+                // for(var x = 0; x < check.length; x++){
+                //     console.log(JSON.parse(check[x].integratedRaws))
+                // }
+            })
+         }, 3000)
+      },
         setPage(val){
         this.page = val
       },
@@ -199,6 +289,8 @@ export default {
           .get(`/api/pos/products/get-all`)
           .then(({ data }) => {
                this.AllProduct = data
+               this.posprodBundle = []
+               this.select1 = null
           })
       },
       fetchAllCustomerOrders: async function(){

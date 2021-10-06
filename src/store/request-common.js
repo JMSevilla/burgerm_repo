@@ -165,6 +165,7 @@ Created date : 15/06/2021
 */
 
 export function adding_product_inventory(obj){
+    // console.log(JSON.parse(obj.productsizes))
     var productdata = new FormData();
     // if(obj.decisionval === true){
     //     productdata.append("productsync", 1)
@@ -709,10 +710,11 @@ product finalization - adding
 created at : 07/12/2021
 */
 
-export function addproductfinal(obj){
+export function addproductfinal(obj, obj2){
     try {
         var data = new FormData();
         data.append("prodimg", obj.productImageUrl)
+        data.append("ingredientsID", JSON.stringify(obj2))
         
         return httpauth.post(`/api/product-finalization/product-add?prodname=${obj.prodname}&prodquantity=${obj.prodquantity}&prodcategory=${obj.prodcategory}&prodprice=${obj.prodprice}&prodcode=${obj.prodcode}`, data)
     } catch (error) {

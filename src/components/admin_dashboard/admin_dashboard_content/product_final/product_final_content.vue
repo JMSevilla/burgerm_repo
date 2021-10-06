@@ -43,7 +43,7 @@
                                                 </el-input>
 
                                     <label>select product category</label>
-                                    <el-select style="width: 100%;" v-model="taskfinalization.prodcategory" filterable placeholder="Select">
+                                    <el-select style="width: 100%;margin-bottom: 20px;" v-model="taskfinalization.prodcategory" filterable placeholder="Select">
                                         <el-option
                                         
                                         v-for="item in options"
@@ -53,7 +53,13 @@
                                         </el-option>
                                     </el-select>
 
-                                    
+                                      <label>Enter product final price</label>
+                                     <el-input
+                                    placeholder="Please input quantity"
+                                    v-model="taskfinalization.prodquantity"
+                                    clearable>
+                                    </el-input>
+
                                     <el-button @click="onnextfinalization()" type="primary" plain style="float: right; margin-bottom: 20px; margin-top: 20px;">Next</el-button>
 
                     </el-card>
@@ -85,8 +91,10 @@
                     style="width: 100%"
                     :cell-style="tableRowClassName"
                     @selection-change="handleSelectionChange"
+                    
                     >
                   <el-table-column
+                  :selectable="selectable"
                       type="selection"
                       width="55">
                   </el-table-column>
@@ -318,7 +326,7 @@ export default {
         onnextfinalization(){
             if(!this.taskfinalization.prodname 
             || !this.taskfinalization.prodprice || !this.taskfinalization.prodcategory
-            || !this.taskfinalization.productImageUrl){
+            || !this.taskfinalization.productImageUrl || !this.taskfinalization.prodquantity){
                this.$notify.warning({
                                 title: 'Oops',
                                 message: 'Something is empty please try again',
@@ -482,7 +490,7 @@ this.page = val
                 background: 'rgba(0, 0, 0, 0.7)'
               });
               setTimeout(() => {
-                addproductfinal(this.taskfinalization).then((resolve) => {
+                addproductfinal(this.taskfinalization, this.multipleSelection).then((resolve) => {
                   console.log(resolve.data)
                   if(resolve.data === "success"){
                     loading.close()
