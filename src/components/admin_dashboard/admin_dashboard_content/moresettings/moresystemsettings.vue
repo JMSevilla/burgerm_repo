@@ -3,7 +3,7 @@
         <div class="container">
             <el-tabs :tab-position="tabPosition" style="height: 100%;">
                 <el-tab-pane label="Default Settings">
-                    <el-card shadow="always">
+                    <!-- <el-card shadow="always">
                         <h4>Purchase Order</h4>
                         <hr>
                         <div style="margin-top: 20px;">
@@ -41,7 +41,7 @@
                                    
                                         <div class="row">
                                             <div class="col-md-6">
-                                                  <!-- <el-switch
+                                                   <el-switch
                                         style="display: block; margin-bottom: 10px;"
                                         v-model="settings.purchasesettings3"
                                         active-color="#13ce66"
@@ -50,7 +50,7 @@
                                         active-text="Enable PO listview"
                                         inactive-text="Disable PO listview">
                                         </el-switch> -->
-                                            </div>
+                                            <!-- </div>
                                             <div class="col-md-6">
                                                 
                                             </div>
@@ -60,7 +60,7 @@
                                 </el-card>
                         </div>
                         <el-button type="primary" plain style="float: right; margin-bottom: 10px; margin-top: 10px;" @click="onsavesettings()">Save</el-button>
-                    </el-card>
+                    </el-card> --> 
                     <!-- Inventory Settings -->
                          <el-card shadow="always" style="margin-top: 20px;">
                         <h4>Product Inventory</h4>
@@ -119,7 +119,7 @@
                         </div>
                         <el-button type="primary" plain style="float: right; margin-bottom: 10px; margin-top: 10px;" @click="onsavesettings1()">Save</el-button>
                     </el-card>
-                     <el-card shadow="always" style="margin-top: 20px;">
+                     <!-- <el-card shadow="always" style="margin-top: 20px;">
                           <h4>Product Sizes</h4>
                         <hr>
                         <div class="row">
@@ -145,7 +145,7 @@
                                 
                             </div>
                         </div>
-                     </el-card>
+                     </el-card> -->
                     <!-- End Inventory Settings -->
                 </el-tab-pane>
                 <!-- <el-tab-pane label="Config">Config</el-tab-pane>

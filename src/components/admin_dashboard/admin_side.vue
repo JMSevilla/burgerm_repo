@@ -76,11 +76,11 @@
                                          alt="no image" style="width: 15%; height:auto;">&nbsp;
                                     Product Finalized
                                   </el-menu-item>
-                                   <el-menu-item index="4-3" @click="onproductbundle()">
+                                   <!-- <el-menu-item index="4-3" @click="onproductbundle()">
                                     <img src="https://cdn3.iconfinder.com/data/icons/marketing-management-7/64/activation-marketing-process-business-256.png"
                                          alt="no image" style="width: 15%; height:auto;">&nbsp;
                                     Product Bundle
-                                  </el-menu-item>
+                                  </el-menu-item> -->
                                 </el-submenu>
 
                                 
@@ -100,8 +100,8 @@
                                         <img src="https://cdn4.iconfinder.com/data/icons/job-recruitment-5/64/Supplier-products-cargo-distributor-retail-256.png"
                                      alt="no image" style="width: 15%; height:auto;">&nbsp;
                                         Suppliers
-                                        </el-menu-item>
-                                    <el-menu-item index="5-2" @click="onpurchaseorder()">
+                                        <!-- </el-menu-item> -->
+                                    <!-- <el-menu-item index="5-2" @click="onpurchaseorder()">
                                         <img src="https://cdn2.iconfinder.com/data/icons/flat-seo-web-ikooni/128/flat_seo3-25-256.png"
                                      alt="no image" style="width: 15%; height:auto;">&nbsp;
                                         Purchase Order
@@ -114,7 +114,7 @@
                                         <el-menu-item index="5-4" @click="onreturnorders()">
                                         <img src="https://cdn2.iconfinder.com/data/icons/miscellaneous-7-color-shadow/128/return_order_product-256.png"
                                      alt="no image" style="width: 15%; height:auto;">&nbsp;
-                                        Return Orders
+                                        Return Orders -->
                                         </el-menu-item>
                                     
                                 </el-submenu><hr>

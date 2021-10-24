@@ -12,7 +12,20 @@ import 'material-icons/iconfont/material-icons.css';
 //material end icon
 Vue.use(Invoice, {store})
 import VueHtmlToPaper from 'vue-html-to-paper';
-Vue.use(VueHtmlToPaper);
+const options = {
+  name: '_blank',
+  specs: [
+    'fullscreen=yes',
+    'titlebar=yes',
+    'scrollbars=yes'
+  ],
+  styles: [
+    'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
+    '../pos.css'
+  ],  // if false, the window will not close after printing
+  windowTitle: window.document.title, // override the window title
+}
+Vue.use(VueHtmlToPaper, options);
 // Vue.use(AdyenCheckout)
 //clip
 import VueClipboard from 'vue-clipboard2'
@@ -38,6 +51,9 @@ import Element from 'element-ui';
 Vue.use(Element, { locale });
 Vue.config.productionTip = false
 Vue.use(require('vue-moment'));
+import SequentialEntrance from 'vue-sequential-entrance'
+import 'vue-sequential-entrance/vue-sequential-entrance.css'
+Vue.use(SequentialEntrance);
 var firebaseConfig = {
   apiKey: "AIzaSyDl1odIRtpB-HVG9n1ylwHvw5O1P7RBB2w",
   authDomain: "burgermania.com",

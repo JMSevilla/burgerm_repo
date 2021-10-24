@@ -1,7 +1,8 @@
 <template>
   <div>
     <cashier_nav :fullname="fullname" />
-    <sidenav />
+    <!-- <sidenav /> -->
+    <router-view></router-view>
   </div>
 </template>
 

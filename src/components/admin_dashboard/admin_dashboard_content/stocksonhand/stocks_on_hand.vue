@@ -182,14 +182,14 @@
                                                     </div>
                                                     </div>
                                                 </el-card>
-                                                <el-button slot="reference" type="warning" size="small" style="margin-left: 60%; width: 100%;" plain>Refill  </el-button>
+                                                <el-button slot="reference" type="warning" size="small" style="margin-left: 75%;" plain>Refill  </el-button>
                                                 
                                                 </el-popover>
                                                     </div>
-                                                     <div class="col-md-6" style="width: 100%; margin-right: 80px;">
+                                                     <div class="col-md-6" style="width: 100%; margin-left: 20%;">
                                                        <br> <el-button @click="onmodifystock(row.stockID)" type="info" size="small" plain>Modify</el-button>
                                                     </div>
-                                                    <div class="col-md-6" style="width: 100%; margin-right: 80px;">
+                                                    <div class="col-md-6" style="width: 100%; margin-left: 20%;">
                                                        <br> <el-button @click="onremovestock(row.stockID)" type="danger" size="small" plain>Remove</el-button>
                                                     </div>
                                                    
@@ -237,10 +237,10 @@
                                                  <el-button slot="reference" type="success" size="small" style="margin-left: 50%;" plain>Add more</el-button>
                                                 </el-popover>
                                                   </div>
-                                                   <div class="col-md-6" style="width: 100%; margin-right: 80px;">
+                                                   <div class="col-md-6" style="width: 100%; margin-left: 20%;">
                                                        <br> <el-button @click="onmodifystock(row.stockID)" type="info" size="small" plain>Modify</el-button>
                                                     </div>
-                                                  <div class="col-md-6" style="width: 100%; margin-right: 80px;" >
+                                                  <div class="col-md-6" style="width: 100%; margin-left: 18%;" >
                                                       <br><el-button @click="onremovestock(row.stockID)" type="danger" size="small" plain>Remove</el-button>
                                                   </div>
                                               </div>

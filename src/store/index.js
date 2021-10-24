@@ -46,9 +46,21 @@ export default new Vuex.Store({
       client_email: localStorage.getItem("oauth2_ss::_ss_"),
       passParams: '',
       get_full_client_details: []
-    }
+    },
+    customerTotalPrice: '',
+    stateDrawer: false,
+    readyDialogVisible: false
   },
   getters: {
+    getState_Drawer: (state) => {
+      return state.stateDrawer
+    },
+    getState_readyPaymentDrawer: (state) => {
+      return state.readyDialogVisible
+    },
+    getTotalPrice: (state) => {
+      return state.customerTotalPrice
+    },
     getFullname: (state) => {
       return state.Userinfo;
     },

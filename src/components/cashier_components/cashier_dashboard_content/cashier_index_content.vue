@@ -1,36 +1,23 @@
 <template>
     <div id="app">
-        <div class="container-fluid" style="margin-top: 50px">
+        <div class="container-fluid" style="margin-top: 50px; margin-bottom : 20px;">
             <div class="row">
-                <div class="col-md-4">
+              <div class="col-md-2">
+                <el-card shadow="always">
+                  <h4>Categories</h4>
+                  <b-button variant="primary" size="lg" style="margin-top: 20px; padding: 15px; width: 100%;" >Bundle</b-button>
+                  <b-button variant="primary" size="lg" style="margin-top: 20px; padding: 15px; width: 100%;" >Bundle</b-button>
+  <b-button variant="primary" size="lg" style="margin-top: 20px; padding: 15px; width: 100%;" >Bundle</b-button>
+  <b-button variant="primary" size="lg" style="margin-top: 20px; padding: 15px; width: 100%;" >Bundle</b-button>
+                </el-card>
+              </div>
+                <div class="col-md-6">
                     <el-card shadow="always">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <h3>Products</h3>
-                            </div>
-                            <div class="col-md-4">
-                                 
-                               <vs-button style="float: right;" @click="onsearchbarcode" type="relief">Search barcode</vs-button>
-                            </div>
-                        </div>
+                        
                         <div class="row">
                             <div class="col-sm">
                                  <vs-input label="Product Search" class="inputx" placeholder="Search" v-model="searchable"/>
                                  
-                            </div>
-                            <div class="col-sm">
-                                <vs-select
-                                class="selectExample"
-                                v-model="select1"
-                                label="Product Categories"
-                                placeholder="Choose Categories"
-                                @change="onselectcateg"
-                                >
-                                <vs-select-item :key="index" :value="item.value" :text="item.text" v-for="item,index in options1" />
-                                </vs-select>
-                            </div>
-                            <div class="col-sm">
-                                 <vs-button @click="ongetall" type="relief">Get All</vs-button>
                             </div>
                             <div class="col-sm"></div>
                         </div>
@@ -46,7 +33,8 @@
                                
                                 </div>
                                 <div v-else>
-                                     <div class="wrapper">
+                                  
+                                     <!-- <div class="wrapper">
                                         <vs-card v-for="item in bundlePagedTableData" :key="item.bundleID" style="justify-content: center" class="card" >
                                     <div slot="header">
                                         <h3>
@@ -64,7 +52,7 @@
                                     </div>
                                     <div>
                                         
-                                        <!-- <span style="font-size: 12px;">Bundle Code : {{item.bundleCode}}.</span> -->
+                                       
                                     </div>
                                      <div slot="footer">
                                             <vs-row vs-justify="flex-end">
@@ -75,7 +63,7 @@
                                             </vs-row>
                                         </div>
                                     </vs-card>
-                                  </div>
+                                  </div> -->
                                   <!-- end product bundle -->
                                
                                  <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.posprodBundle.length" @current-change="setPage">
@@ -93,8 +81,53 @@
                                 </div>
                                 
                                 <div v-else>
-                                     <div class="wrapper">
-                                        <vs-card v-for="item in pagedTableData" :key="item.id" style="justify-content: center" class="card" >
+                                   <div class="row">
+                                     <div v-for="item in pagedTableData" :key="item.id" class="col-md-3 col-6 my-1">
+                                         <sequential-entrance delay="1000">
+                                            <vs-card style="justify-content: center;" class="card" >
+                                    <div slot="header">
+                                        <h3>
+                                        {{item.prodname}}
+                                        </h3>
+                                    </div>
+                                    <div>
+                                        <center>
+                                             <el-image
+                                                style="width: 100px; height: 100px"
+                                                :src="item.prodimg"
+                                                :fit="fit"></el-image>
+                                            
+                                        </center>
+                                    </div>
+                                    <div style="margin-top: 20px;">
+                                        
+                                        <div v-if="item.prodquantity == 0">
+                                            <el-tag  type="danger" size="small">Unavailable</el-tag>
+                                          </div>
+                                          <div v-else>
+                                             <el-tag  type="success" size="small">Available</el-tag>
+                                          </div>
+                                          <span style="font-size: 13px;">Remaining Quantity : {{item.prodquantity}}</span>
+                                    </div>
+                                     <div slot="footer">
+                                            <vs-row vs-justify="flex-end">
+                                              <div v-if="item.prodquantity == 0">
+                                                <vs-button color="primary" icon="turned_in_not"></vs-button>
+                                              </div>
+                                            <div v-else>
+                                               <vs-button type="gradient" color="danger" @click="onaddsolocard(
+                                              item.prodquantity, item.id, item.prodname, item.prodimg, item.integratedRaws, item.prodprice, item.productCode, item.prodcategory
+                                              )" icon="favorite"></vs-button>
+                                             <vs-button color="primary" icon="turned_in_not"></vs-button>
+                                            </div>
+                                            </vs-row>
+                                        </div>
+                                    </vs-card>
+                                         </sequential-entrance>
+                                      </div>
+                                   </div>
+                                     <!-- <div class="wrapper">
+                                            <vs-card v-for="item in pagedTableData" :key="item.id" style="justify-content: center;" class="card" >
                                     <div slot="header">
                                         <h3>
                                         {{item.prodname}}
@@ -111,16 +144,28 @@
                                     </div>
                                     <div>
                                         
-                                        <span style="font-size: 12px;">Product Code : {{item.productCode}}.</span>
+                                        <div v-if="item.prodquantity == 0">
+                                            <el-tag  type="danger" size="small">Unavailable</el-tag>
+                                          </div>
+                                          <div v-else>
+                                             <el-tag  type="success" size="small">Available</el-tag>
+                                          </div>
                                     </div>
                                      <div slot="footer">
                                             <vs-row vs-justify="flex-end">
-                                            <vs-button type="gradient" color="danger" icon="favorite"></vs-button>
-                                            <vs-button color="primary" icon="turned_in_not"></vs-button>
+                                              <div v-if="item.prodquantity == 0">
+                                                <vs-button color="primary" icon="turned_in_not"></vs-button>
+                                              </div>
+                                            <div v-else>
+                                               <vs-button type="gradient" color="danger" @click="onaddsolocard(
+                                              item.prodquantity, item.id, item.prodname, item.prodimg, item.integratedRaws, item.prodprice, item.productCode, item.prodcategory
+                                              )" icon="favorite"></vs-button>
+                                             <vs-button color="primary" icon="turned_in_not"></vs-button>
+                                            </div>
                                             </vs-row>
                                         </div>
                                     </vs-card>
-                                  </div>
+                                         </div> -->
                                    <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.AllProduct.length" @current-change="setPage">
                                     </el-pagination>
                                 </div>
@@ -128,10 +173,27 @@
                         </div>
                     </el-card>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-4">
                     <el-card shadow="always">
                         <h4>Customer Cart</h4>
-                        <CustomerOrders :passCustomerArray="customerOrderArray" :lazyload="listLoading" />
+                        <CustomerOrders
+                        :paymentapprvl="paymentapprvl" 
+                        :paymentinf="paymentinf" 
+                        :onready="onready" 
+                        :countready="countready" 
+                        :onpay="onpay" 
+                        :paymentObj="paymentObject" 
+                        :voidItem="voidItem" 
+                        :discount="discountOption" 
+                        :pay="onpayment" 
+                        :passCustomerArray="customerOrderArray" 
+                        :lazyload="listLoading"
+                        :onconfirmpayment="onconfirmpayment"
+                        :receiptDrawer="receiptDrawer"
+                        :handleClose="handleClose"
+                        :onpayerror="onpayerror"
+                        :savedSubPayment="savedSubPayment"
+                        :OrderInformation="OrderInformation" />
                     </el-card>
                 </div>
             </div>
@@ -151,6 +213,25 @@
                                     </el-input>
                                    <vs-button @click="onbarcodesearch" style="float: right;margin-top: 10px; margin-bottom: 10px;  " type="relief">Search</vs-button>
                                     </vs-popup>
+
+                                    <!-- solo add cart modal -->
+   <vs-popup class="holamundo"  :title="popupSettings.soloaddcartTitle" :active.sync="popupActivoSolo">
+                 <el-alert
+                        title="Input Quantity"
+                        type="info"
+                        description="Make sure you will enter a quantity"
+                        show-icon
+                        :closable="false">
+                    </el-alert>
+                                   <el-input
+                                    placeholder="Please input barcode"
+                                    v-model="soloOrderTask.soloQuantity"
+                                    clearable
+                                    style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                                    </el-input>
+                                   <vs-button style="float: right;margin-top: 10px; margin-bottom: 10px;" @click="onqtyOk()" type="relief">OK</vs-button>
+                                    </vs-popup>
+                                    <!-- end solo add card modal -->
         </div>
                                 
     </div>
@@ -159,6 +240,7 @@
 <script>
 import client from "@/store/0AuthRequest"
 import CustomerOrders from "./customer_order_list/customerTB.vue"
+import {mapGetters} from "vuex"
 export default {
     components: {
         CustomerOrders
@@ -166,13 +248,24 @@ export default {
     data(){
         return{
             popupSettings: {
-                title: 'Search via barcode'
+                title: 'Search via barcode',
+                soloaddcartTitle: 'Quantities'
             },
             searchSettings: {
                 barcodeInput: ''
             },
-            pageSize: 6,
+            soloOrderTask: {
+              soloQuantity : '',
+              externalIDQTY : '',
+              soloProdname : '',
+              soloProdimage : '',
+              soloProdIntegrated: '',
+              soloProdprice: '',
+              soloProdCode: '', soloProdCategory: ''
+            },
+            pageSize: 8,
             popupActivo: false,
+            popupActivoSolo: false,
               page: 1,
               searchable:'',
             select1:null,
@@ -185,7 +278,44 @@ export default {
             fit: ['fill'],
             customerOrderArray: [],
             listLoading: true,
-            posprodBundle: []
+            posprodBundle: [],
+            discountOption: [{
+                value: 'Option1',
+                label: 'Option1'
+              }, {
+                value: 'Option2',
+                label: 'Option2'
+              }, {
+                value: 'Option3',
+                label: 'Option3'
+              }, {
+                value: 'Option4',
+                label: 'Option4'
+              }, {
+                value: 'Option5',
+                label: 'Option5'
+              }],
+              value: '',
+              paymentObject: {
+                customerName: null,
+                customerNumber: null,
+                amount: null,
+                discount: null,
+                totalPrice: null
+              },
+              countready: null,
+              onreadypay: true,
+              paymentinf: [],
+              paymentapprvl: [],
+              paymentDetailsQTY: [],
+              paymentProdCode: [],
+              onpayerror: false,
+              OB: [],
+              OrderInformation: [],
+              IngredientsArray: [],
+              helper: [],
+              savedIngredients: [],
+              savedSubPayment: []
         }
     },
      computed:{
@@ -207,13 +337,302 @@ export default {
       }else{
         return this.posprodBundle.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
       }
-     }
+     },
+     ...mapGetters({
+       getTotalPrice: 'getTotalPrice',
+     })
     },
     created(){
         this.fetchAllProduct()
         this.fetchAllCustomerOrders()
+        this.countAllReady()
+        this.listof_ready_payments()
     },
     methods: {
+      OnPrint: function(){
+        
+      },
+      handleClose: function(){
+        this.$confirm('Are you sure you want to close this?')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      },
+      
+      onconfirmpayment: function(paymentID){
+        this.$confirm('Are you sure you want to make this payment?', 'Warning', {
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Yes',
+                type: 'warning'
+                }).then(() => {
+                  const loading = this.$loading({
+                    lock: true,
+                    text: 'please wait...',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                  });
+                  setTimeout(() => {
+                      for(var d = 0; d < this.paymentDetailsQTY.length; d++){
+             for(var a = 0; a < this.savedIngredients.length; a++){
+               client.put(`/api/payment/decrease-solo/${this.savedIngredients[a].prodID}/${this.paymentDetailsQTY[d].QTY}`)
+               .then((res) => {
+                 if(res.data == "success reduce") {
+                   
+
+                 }
+               })
+             }
+             
+           }
+           client.put(`/api/payment/approve-payment-update-to-receipt/${paymentID}`)
+             .then((res) => {
+               if(res.data == "done payment") {
+                 this.$message({
+                    showClose: true,
+                    message: 'Successfully Transact!.',
+                    type: 'success'
+                    });
+                  loading.close()
+                   this.$htmlToPaper('printMe');
+                   this.fetchAllProduct()
+                  this.fetchAllCustomerOrders()
+                  this.countAllReady()
+                  this.listof_ready_payments()
+               }
+             })
+                  }, 2000)
+                })
+           
+      },
+      listof_ready_payments: function(){
+        
+         client.get(`/api/orders/break-ready-payments`)
+        .then(res => {
+          if(res.data == null || res.data == ""){
+            console.log("true ")
+            this.paymentapprvl = []
+            this.paymentinf = []
+            this.paymentDetailsQTY = []
+            this.paymentProdCode = []
+          }else{
+          for(var x = 0; x < res.data.length; x++){ //parent loop
+            
+            this.OrderInformation = JSON.parse(res.data[x].orderInfo)
+            for(var y = 0; y < this.OrderInformation.length; y++){
+              console.log("order info", this.OrderInformation[y])
+              this.OB.push({
+                bcode: this.OrderInformation[y].orderBarcode
+              })
+              this.paymentapprvl.push({
+                paymentID: res.data[x].paymentID,
+                paymentStatus: res.data[x].paymentStatus,
+
+              })
+              console.log("Order Array", this.OrderInformation)
+
+              console.log("payment approval",)
+              this.paymentinf.push({
+                      amount : JSON.parse(res.data[x].paymentInfo).amount,
+                      customerName : JSON.parse(res.data[x].paymentInfo).customerName,
+                      customerNumber: JSON.parse(res.data[x].paymentInfo).customerNumber,
+                      discount: JSON.parse(res.data[x].paymentInfo).discount,
+                      totalPrice: JSON.parse(res.data[x].paymentInfo).totalPrice,
+                      orderBarcode: this.OrderInformation[y].orderBarcode,
+                      orderCategory: this.OrderInformation[y].orderCategory,
+                      orderCode: this.OrderInformation[y].orderCode,
+                      orderID: this.OrderInformation[y].orderID,
+                      orderImage: this.OrderInformation[y].orderImage,
+                      orderName: this.OrderInformation[y].orderName,
+                      orderQuantity: this.OrderInformation[y].orderQuantity,
+                      orderPrice: this.OrderInformation[y].orderPrice
+                    })
+                  this.savedSubPayment.push({
+                    orderBarcode: this.OrderInformation[y].orderBarcode,
+                      orderCategory: this.OrderInformation[y].orderCategory,
+                      orderCode: this.OrderInformation[y].orderCode,
+                      orderID: this.OrderInformation[y].orderID,
+                      orderImage: this.OrderInformation[y].orderImage,
+                      orderName: this.OrderInformation[y].orderName,
+                      orderQuantity: this.OrderInformation[y].orderQuantity,
+                      orderPrice: this.OrderInformation[y].orderPrice
+                  })
+                    console.log("payment information", this.OrderInformation[y].orderBarcode)
+                    this.paymentDetailsQTY.push({
+                      QTY: this.OrderInformation[y].orderQuantity
+                    })
+                    this.paymentProdCode.push({
+                      code: this.OrderInformation[y].orderBarcode
+                    })
+                    console.log("payment prod code", this.paymentProdCode)
+              console.log("order inf", this.OrderInformation[y])
+              for(var b = 0; b < this.OB.length; b++){
+                const CL = client.get(`/api/payment/confirm-payment/${this.OB[b].bcode}`)
+                return CL.then((response) => {
+                  for(var v = 0; v < response.data.length; v++){
+                    this.IngredientsArray = JSON.parse(response.data[v].integratedRaws)
+                    for(var s = 0; s < this.IngredientsArray.length; s++){
+                      // console.log("ingredients breakthrough", this.IngredientsArray[s])
+                      this.savedIngredients.push({
+                        prodID : this.IngredientsArray[s].productID
+                      })
+                      console.log("check prod IDS", this.savedIngredients)
+                    }
+                  }
+                })
+              }
+            }
+          }
+          }
+        })
+      },
+      countAllReady: function(){
+        const req = client.get(`/api/orders/count-ready`)
+        return req.then((res) => {
+          if(res.data != null || res.data != "")
+          this.countready = res.data
+          else
+          this.countready = 0
+          this.onreadypay = false
+        })
+      },
+      onpay: function(){
+        if(!this.paymentObject.customerName || !this.paymentObject.customerNumber
+        || !this.paymentObject.amount){
+          this.$message({
+          showClose: true,
+          message: 'Please provide payment details.',
+          type: 'error'
+          });
+          return false;
+        } 
+         else {
+           if(this.countready > 0){
+            this.onpayerror = true 
+            return false;
+          }
+          this.$confirm('Are you sure you want to make this payment?', 'Warning', {
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Yes',
+                type: 'warning'
+                }).then(() => {
+                  const loading = this.$loading({
+                    lock: true,
+                    text: 'please wait...',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                  });
+                  setTimeout(() => {
+                    this.paymentObject.totalPrice = this.getTotalPrice
+                    localStorage.setItem("itemtotal", this.getTotalPrice)
+                    const data = new FormData()
+                    data.append("paymentinfo", JSON.stringify(this.paymentObject))
+                    data.append("orderinfo", JSON.stringify(this.customerOrderArray))
+                    const req = client.post(`/api/payment/make-payment`, data)
+                    return req.then((response) => {
+                      if(response.data.message == "success make payment"){
+                        this.$notify.success({
+                                title: 'Nice',
+                                message: 'Successfully make payment',
+                                offset: 100
+                                }); 
+                                loading.close()
+                                this.onpayerror = false
+                                this.$store.state.stateDrawer = false
+                                 this.fetchAllProduct()
+                                this.fetchAllCustomerOrders()
+                                this.countAllReady()
+                                this.listof_ready_payments()
+                      }
+                    })
+                  }, 2000)
+                })
+        }
+      },
+      voidItem: function(code, qty, id){
+        this.$vs.loading({
+                  type: 'sound'
+              })
+        setTimeout(() => {
+          const req = client.put(`/api/orders/void-item/${code}/${qty}/orderno/${id}`)
+        return req.then((response) => {
+          if(response.data == "success void"){
+            this.$vs.notify({title:'Success',text:'Item successfully voided',color:'success',position:'top-right', icon:'highlight_off'})
+                      this.fetchAllCustomerOrders()
+                      this.fetchAllProduct()
+                      this.$vs.loading.close()
+          }
+        })
+        }, 1000)
+      },
+      onpayment: function(){
+        console.log("customer array", this.customerOrderArray)
+        if(this.customerOrderArray == [] || this.customerOrderArray == null || this.customerOrderArray == ""){
+          this.$message({
+          showClose: true,
+          message: 'No transactions to be made.',
+          type: 'error'
+          });
+          this.$store.state.stateDrawer = false
+          return false;
+        }else{
+          this.$store.state.stateDrawer = true
+        }
+      },
+      onqtyOk: function(){
+        if(!this.soloOrderTask.soloQuantity){
+
+        }else{ 
+         this.$vs.loading({
+                  type: 'sound'
+              })
+        setTimeout(() => {
+          const req = client.get(`/api/orders/solo-validate-cart/${this.soloOrderTask.soloQuantity}/${this.soloOrderTask.externalIDQTY}`)
+          return req.then(({data}) => {
+            if(data === "invalid qty") { 
+              this.$vs.notify({title:'Nope',text:'Invalid Quantity',color:'danger',position:'top-right', icon:'highlight_off'})
+              this.$vs.loading.close()
+              return false
+            }else {   
+              const data = new FormData()
+              data.append("solo_order_name", this.soloOrderTask.soloProdname)
+              data.append("solo_order_code", this.soloOrderTask.soloProdCode)
+              data.append("solo_order_price", this.soloOrderTask.soloProdprice)
+              data.append("solo_order_qty", this.soloOrderTask.soloQuantity)
+              data.append("solo_order_category", this.soloOrderTask.soloProdCategory)
+              data.append("solo_order_image", this.soloOrderTask.soloProdimage)
+              const addreq = client.post(`/api/orders/order-solo`, data)
+              return addreq.then((response) => {
+                console.log("first request", response.data)
+                if(response.data === "success order") { 
+                  const reducer = client.put(`/api/orders/order-decrease-qty/${this.soloOrderTask.externalIDQTY}/${this.soloOrderTask.soloQuantity}`)
+                  reducer.then((resp) => {
+                    console.log("second request",resp.data)
+                    if(resp.data === "success decrease") { 
+                      this.$vs.notify({title:'Success',text:'Added to cart',color:'success',position:'top-right', icon:'highlight_off'})
+                      this.fetchAllCustomerOrders()
+                      this.fetchAllProduct()
+                      this.$vs.loading.close()
+                      this.popupActivoSolo = false
+                    }
+                  })
+                }
+              })
+            } 
+          })
+        }, 2000)
+        }
+      },
+      onaddsolocard: function(qty, id, name, image, integrated, price, prodcode, category){
+        this.popupActivoSolo = true
+        this.soloOrderTask.externalIDQTY = id;
+        this.soloOrderTask.soloProdname = name;
+        this.soloOrderTask.soloProdimage = image;
+        this.soloOrderTask.soloProdIntegrated = integrated;
+        this.soloOrderTask.soloProdprice = price
+        this.soloOrderTask.soloProdCode = prodcode
+        this.soloOrderTask.soloProdCategory = category
+      },  
       onaddcartbundle: function(title, price, image){
         const data = new FormData()
         data.append("ordername", title)
@@ -224,6 +643,7 @@ export default {
           if(data == "success cart"){
             this.$vs.notify({title:'Success',text:'Added to cart',color:'success',position:'top-right', icon:'highlight_off'})
             this.fetchAllCustomerOrders()
+            this.fetchAllProduct()
           }
         })
       },
@@ -239,9 +659,11 @@ export default {
          setTimeout(() => {
            const req = client.get(`/api/bundle/fetchAll-bundle`)
             return req.then(({ data }) => {
+              console.log("bundle", data)
                 this.posprodBundle = data
                 this.AllProduct = []
-                this.$vs.loading.close()
+                
+
                 // const check = JSON.parse(data[1].bundleIntegratedProdInvID)
                 // for(var x = 0; x < check.length; x++){
                 //     console.log(JSON.parse(check[x].integratedRaws))
@@ -288,6 +710,7 @@ export default {
           await client
           .get(`/api/pos/products/get-all`)
           .then(({ data }) => {
+            console.log("list of products" ,data)
                this.AllProduct = data
                this.posprodBundle = []
                this.select1 = null
@@ -298,101 +721,17 @@ export default {
           .get(`/api/orders/order-list`)
           .then(({ data }) => {
               this.customerOrderArray = data
+              this.totalPriceComputed()
               this.listLoading = false
+          })
+      },
+      totalPriceComputed: function(){
+         client
+          .get(`/api/orders/order-total-price`)
+          .then((response) => {
+            this.$store.state.customerTotalPrice = response.data
           })
       }
     }
 }
 </script>
-
-<style scoped>
-html, body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  margin-top: 16px;
-  margin-bottom: 16px;
-}
-
-div#app {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-div#app .search-wrapper {
-  position: relative;
-}
-div#app .search-wrapper label {
-  position: absolute;
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.5);
-  top: 8px;
-  left: 12px;
-  z-index: -1;
-  transition: 0.15s all ease-in-out;
-}
-div#app .search-wrapper input {
-  padding: 4px 12px;
-  color: rgba(0, 0, 0, 0.7);
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  transition: 0.15s all ease-in-out;
-  background: white;
-}
-div#app .search-wrapper input:focus {
-  outline: none;
-  transform: scale(1.05);
-}
-div#app .search-wrapper input:focus + label {
-  font-size: 10px;
-  transform: translateY(-24px) translateX(-12px);
-}
-div#app .search-wrapper input::-webkit-input-placeholder {
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.5);
-  font-weight: 100;
-}
-div#app .wrapper {
-  display: flex;
-  max-width: 444px;
-  flex-wrap: wrap;
-  padding-top: 12px;
-}
-div#app .card {
-  box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
-  max-width: 124px;
-  margin: 12px;
-  transition: 0.15s all ease-in-out;
-}
-div#app .card:hover {
-  transform: scale(1.1);
-}
-div#app .card a {
-  text-decoration: none;
-  padding: 12px;
-  color: #03A9F4;
-  font-size: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-div#app .card a img {
-  height: 100px;
-}
-div#app .card a small {
-  font-size: 10px;
-  padding: 4px;
-}
-div#app .hotpink {
-  background: hotpink;
-}
-div#app .green {
-  background: green;
-}
-div#app .box {
-  width: 100px;
-  height: 100px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-}
-</style>

@@ -53,7 +53,7 @@
                                         </el-option>
                                     </el-select>
 
-                                      <label>Enter product final price</label>
+                                      <label>Enter product quantity</label>
                                      <el-input
                                     placeholder="Please input quantity"
                                     v-model="taskfinalization.prodquantity"
@@ -82,25 +82,24 @@
                 </el-select>
                 <el-button @click="ongetall()" type="warning" plain>Get All</el-button>
                 <div class="row">
-                  <div class="col-md-6">
-                    <el-card shadow="always">
+                  <el-card shadow="always">
                       <el-table
                 
                     ref="multipleTable"
                     :data="pagedTableData"
                     style="width: 100%"
-                    :cell-style="tableRowClassName"
                     @selection-change="handleSelectionChange"
-                    
+                    :row-key="getRowKey"
                     >
                   <el-table-column
                   :selectable="selectable"
+                  :reserve-selection="true"
                       type="selection"
-                      width="55">
+                      >
                   </el-table-column>
                   <el-table-column
                       label="Product Image"
-                      width="200">
+                      >
                     <template slot-scope="scope">
                       <img :src="scope.row.productimgurl"
                       alt="No image" style="width: 50%; height: auto;"
@@ -109,7 +108,7 @@
                   </el-table-column>
                   <el-table-column
                       label="Product Name"
-                      width="150">
+                      >
                     <template slot-scope="scope">
                      {{scope.row.productName}}
                     </template>
@@ -121,21 +120,29 @@
                       {{scope.row.product_quantity}}
                     </template>
                   </el-table-column>
-
-                  <!-- <el-table-column
-                      label="Invalid Quantities"
+<!-- 
+                  <el-table-column
+                      label="More Actions"
                       style="width: 100%;">
                     <template slot-scope="scope">
-                      <div v-if="scope.row.product_quantity < taskfinalization.prodquantity">
-                        <el-tag
-                        type="danger"
-                        >Invalid Quantity</el-tag>
-                      </div>
-                      <div v-else>
-                        <el-tag
-                        type="success"
-                        >Quantity Good Condition</el-tag>
-                      </div>
+                      <el-popover
+                        placement="right"
+                        width="400"
+                        trigger="click">
+                            <div class="container">
+                              <h3>Custom Quantity</h3>
+                              <el-input type="text" clearable v-model="taskfinalization.prodcustomquantity" placeholder="Enter customer quantity"
+                              style="margin-top: 10px; margin-bottom : 10px;"></el-input>
+                              <div style="float: right; margin-top: 10px; margin-bottom: 10px; display: inline;">
+                                <el-button type="warning" plain round size="small">Cancel</el-button>
+                                <el-button type="primary" @click="onsavecustom(
+                                  scope.row.productID, scope.row.productName
+                                )" plain round size="small">Save</el-button>
+                              </div>
+                            </div>
+                        <el-button slot="reference" type="primary" size="small">Custom</el-button>
+                      </el-popover>
+                        
                     </template>
                   </el-table-column> -->
 
@@ -143,8 +150,7 @@
                 <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.allstockslist.length" @current-change="setPage">
                 </el-pagination>
                     </el-card>
-                  </div>
-                  <div class="col-md-6">
+                  <!-- <div class="col-md-6">
                     <el-card shadow="always">
                       <center>
                         <h2>Preview : from your product finalization form</h2>
@@ -167,7 +173,7 @@
                         </div>
                       </div>
                     </el-card>
-                  </div>
+                  </div> -->
                 </div>
               </div>
                 <div style="display: inline;">
@@ -212,6 +218,7 @@
 <script>
 import {prod_final_get_all_categories, getalllistfinalcateg, filterrawmats, addproductfinal, getallstocksfinalization, selectedrawmat, listofselectedrawmat, getridselection, getallpcodeforselectedraw, product_quantity_deduction, clearallraws, product_finalization_history_raw_mats} from "@/store/request-common"
 import firebase  from "firebase"
+import client from "@/store/0AuthRequest"
 export default {
     data(){
         return{
@@ -230,7 +237,8 @@ export default {
                     prodprice: 0,
                     prodcategory: '',
                     productImageUrl: '',
-                    prodcode: ''
+                    prodcode: '',
+                    prodcustomquantity: ''
                 },
                 allstockslist:[],
                  pageSize: 5,
@@ -238,30 +246,20 @@ export default {
               listLoading: true,
               searchable: '',
               listofrawmats: [],
-              selectionshit: 'selection'
+              selectionshit: 'selection',
+              customQuantityArray: []
         }
     },
     computed: {
           pagedTableData() {
-       if(this.searchable){
+      if(this.searchable){
       return this.allstockslist.filter((item)=>{
-        return this.searchable.toLowerCase().split(' ').every(v => item.productName.toLowerCase().includes(v) || item.productID.toString().toLowerCase().includes(v))
+        return this.searchable.toLowerCase().split(' ').every(v => item.productName.toLowerCase().includes(v))
       })
       }else{
         return this.allstockslist.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
       }
-       
      },
-    //  pagedTableDataselected() {
-    //    if(this.searchable){
-    //   return this.allstockslist.filter((item)=>{
-    //     return this.searchable.toLowerCase().split(' ').every(v => item.prodname.toLowerCase().includes(v) || item.id.toString().toLowerCase().includes(v))
-    //   })
-    //   }else{
-    //     return this.listofrawmats.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
-    //   }
-       
-    //  }
     },
     created(){
       this.getallprodcategfinal()
@@ -272,6 +270,68 @@ export default {
         
     },
     methods: {
+      onsavecustom: function(id, name){
+        const json = this.customQuantityArray
+        json.push({
+          quantity : this.taskfinalization.prodcustomquantity,
+          prodInvID : id,
+          prodIvnName: name,
+        })
+        this.$confirm('Are you sure you want to save this custom quantity?', 'Warning', {
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Yes',
+                type: 'warning'
+                }).then(() => {
+                  const loading = this.$loading({
+                    lock: true,
+                    text: 'please wait...',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                  });
+                  setTimeout(() => {
+                   
+                   const checkreq = client.get(`/api/product-finalization/check-custom-quantity/${id}/updating`)
+                   checkreq.then((response) => {
+                     if(response.data == "exist") { 
+                       const updata = new FormData()
+                       updata.append("datajson", JSON.stringify(json))
+                       const upreq = client.put(`/api/product-finalization/update-custom-quantity/${id}/updating`, updata)
+                       upreq.then((res) => {
+                         if(res.data == "success update custom") {
+                            this.$notify.success({
+                                      title: 'Yey',
+                                      message: 'Successfully Update Custom',
+                                      offset: 100
+                                      }); 
+                                      this.taskfinalization.prodcustomquantity = null
+                                      loading.close()
+                         }
+                       })
+                     } else { 
+                       const data = new FormData()
+                          data.append("customJSON", JSON.stringify(json))
+                          data.append("id", id)
+                          const req = client.post(`/api/product-finalization/update-custom-quantity`, data)
+                          req.then(({ data }) => {
+                            if(data === "success custom add") {
+                              loading.close()
+                              this.$notify.success({
+                                      title: 'Yey',
+                                      message: 'Successfully Added Custom',
+                                      offset: 100
+                                      }); 
+                                      this.taskfinalization.prodcustomquantity = null
+                                      this.customQuantityArray = []
+                            }
+                          })
+                     }
+                   })
+                  }, 2000)
+                })
+      },
+      getRowKey(row){
+        return row.productID
+      },
       ongetall: function(){
         const loading = this.$loading({
           lock: true,
@@ -321,7 +381,8 @@ export default {
       },
         handleSelectionChange(val) {
         this.multipleSelection = val;
-        console.log(this.multipleSelection)
+        console.log("test 2", val)
+        console.log("test",this.multipleSelection)
       },
         onnextfinalization(){
             if(!this.taskfinalization.prodname 
@@ -340,27 +401,7 @@ export default {
         },
         onnextfinalization1(){
           this.onsaveproductfinal()
-          //  product_quantity_deduction(this.taskfinalization.prodquantity, this.multipleSelection)
-          //     .then(resp => {
-          //       if(resp.data === "success"){
-          //         this.onsaveproductfinal()
-          //       } else if(resp.data === "invalid quantity"){
-          //         this.$notify.warning({
-          //                       title: 'Oops',
-          //                       message: 'Invalid Quantity',
-          //                       offset: 100
-          //                       }); 
-          //                       return false
-          //       }
-          //       else{
-          //         this.$notify.error({
-          //                       title: 'Oops',
-          //                       message: 'something went wrong please try again',
-          //                       offset: 100
-          //                       });
-          //                       return false
-          //       }
-          //     })
+         
           
         },
         history_product_finalization(){
@@ -444,12 +485,14 @@ export default {
                         })
                     }, 1000)
         },
-        setPage (val) {
+       setPage (val) {
         this.page = val
+        console.log("pagination value", val)
+        console.log("multiple value", this.multipleSelection)
       },  
-      setPage1(val){
-this.page = val
-      },
+//       setPage1(val){
+// this.page = val
+//       },
         takeallstocks(){
             getallstocksfinalization().then(resp => {
                 this.allstockslist = resp.data

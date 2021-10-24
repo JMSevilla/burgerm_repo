@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="container-fluid">
+        <div class="container">
             <div class="row">
                 <div class="col-sm" v-show="inventoryform">
                     <el-card shadow="always" style="margin-bottom: 20px;">
@@ -350,7 +350,7 @@
                                                         <h5><center>More Actions</center></h5>
                                                         <div class="row">
                                                             <div class="col-md">
-                                                                <el-button type="primary" style="width:50%; margin-left:50%"
+                                                                <el-button type="primary" style="width:100%; margin-right:90%"
                                                                 @click="onmodifyproduct(
                                                                     item.productCode,
                                                                     item.productID,
@@ -366,7 +366,7 @@
                                                             
                                                             </div>
                                                             <div class="col-md">
-                                                                <el-button type="danger" style="width: 50%;" @click="onremoveproduct(item.productID, item.product_quantity, item.productCode)">Remove</el-button>
+                                                                <el-button type="danger" style="width: 100%;" @click="onremoveproduct(item.productID, item.product_quantity, item.productCode)">Remove</el-button>
                                                             </div>
                                                         </div>
                                                         <!-- Modify dialog -->

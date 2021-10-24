@@ -154,8 +154,8 @@
                 </el-popover>
                  
             </div>
-            <div class="col-md-6" style="width: 100%; margin-right: 80px;" >
-                       <br><el-button @click="onremovefinal(row.stockID)" type="danger" size="small" style="width: 35%; margin-top: -5%;"
+            <div class="col-md-6" style="width: 100%; margin-left: 80px;" >
+                       <el-button @click="onremovefinal(row.stockID)" type="danger" size="small" style="width: 65%; margin-top: 10%;"
                        plain>Remove</el-button>
                     </div>
           </template>
