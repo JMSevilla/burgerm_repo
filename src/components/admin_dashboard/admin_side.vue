@@ -133,6 +133,12 @@
                                         <img src="https://cdn2.iconfinder.com/data/icons/time-and-date-1/48/Past-256.png"
                                      alt="no image" style="width: 15%; height:auto;">&nbsp;
                                         Histories
+                                        </el-menu-item>
+
+                                        <el-menu-item index="6-2" @click="onsales()">
+                                        <img src="https://cdn3.iconfinder.com/data/icons/leto-finance-money-1/64/financsial_audit_business_report_sales_money-256.png"
+                                     alt="no image" style="width: 15%; height:auto;">&nbsp;
+                                        Sales
                                         </el-menu-item><hr>
 
                                         <!-- <el-menu-item index="10-2" @click="onmoresettings()">
@@ -219,6 +225,19 @@ export default {
         
     },
     methods: {
+        onsales: function(){
+            const loading = this.$loading({
+          lock: true,
+          text: 'please wait..',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        setTimeout(() => {
+          loading.close()
+          this.$router.push({name: 'Sales'}).catch(() => {})
+
+        }, 2000)
+        },
         onproductbundle: function(){
             const loading = this.$loading({
           lock: true,

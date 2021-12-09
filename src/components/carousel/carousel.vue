@@ -22,7 +22,7 @@
    <div class="row">
    <div class="col-md-9"></div>
    <div class="col-md-3">
-      <el-card style="margin-right: -100px; padding: 25px" shadow="hover">
+      <el-card style="margin-right: -100px; padding: 25px" shadow="always">
           <h3>Welcome to login</h3>
           <el-input
           @keyup.enter.native="checkEnter"
@@ -41,7 +41,16 @@
           clearable
           style="margin-top: 10px; margin-bottom: 10px;"
           ></el-input>
-          <el-link type="primary" @click="onforgot()">Forgot password</el-link>
+        <div v-if="countDown == 10">
+
+        </div>
+        <div v-else-if="countDown < 10">
+          <span>Please wait for : {{countDown}}</span>
+        </div>
+        <div v-else>
+
+        </div>
+<!--          <el-link type="primary" @click="onforgot()">Forgot password</el-link>-->
           <el-button  v-on:keyup="validateconfirm" @click="onsignin()" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 10px;" type="primary" round>Login</el-button>
       </el-card>
    </div>
@@ -57,9 +66,10 @@
        
 </template>
 <script>
-import {csrf_google_login, csrf_session_indicator, standardLogin, loginhistory} from "@/store/request-common"
+import {csrf_google_login, csrf_session_indicator, standardLogin, loginhistory, attemptRequest, getAttempts, updateAttemptStatus, resetAttemptStatus} from "@/store/request-common"
 import testimage from "@/assets/loginbackground.png"
 import routers from "@/router/index";
+import client from "@/store/0AuthRequest"
   export default {
     data() {
       return {
@@ -72,7 +82,9 @@ import routers from "@/router/index";
                   sessionID: 0,
                   sessionEmail: ''
                 },
-                dataimage: testimage
+                dataimage: testimage,
+        jukeCount: 0,
+        countDown : 10
       }
     },
     methods: {
@@ -116,6 +128,32 @@ import routers from "@/router/index";
     checkEnter(){
       this.onsignin()
     },
+    localStrg_Attempts : function() {
+      const getAttempStorage = localStorage.getItem("attempts")
+      var a = 0;
+      if(parseInt(getAttempStorage) != null || getAttempStorage != null || getAttempStorage != undefined){
+        if(parseInt(getAttempStorage) !== 3){
+          localStorage.setItem("attempts", a += 1)
+          console.log("api request if")
+          //api request
+        } else{
+          //api request
+          console.log("api request else")
+        }
+      }
+    },
+      countDownTimer(){
+        if(this.countDown >0){
+          setTimeout(() =>{
+            this.countDown -= 1
+            this.countDownTimer()
+            if(this.countDown == 0){
+              this.countDown = 10;
+              resetAttemptStatus(this.task)
+            }
+          }, 1000)
+        }
+      },
     onsignin(){
       if(!this.task.email || !this.task.password){
         this.$notify.error({
@@ -150,14 +188,41 @@ import routers from "@/router/index";
                             offset: 100
                             });
                             return false;
+                        }else if(rs.data === "attempt failed"){
+                          loading.close()
+                          this.$notify.error({
+                            title: 'Uh oh!',
+                            message: 'Please wait for your attempt to expire',
+                            offset: 100
+                          });
+                          return false;
                         }
                         else if(rs.data === "invalid"){
+                          getAttempts(this.task).then((response) => {
+                            console.log("BE response attempts", response.data)
+                            this.jukeCount = response.data
+                            if(this.jukeCount != 3){
+                              this.jukeCount = this.jukeCount + 1
+                                attemptRequest(this.task, this.jukeCount).then((res) => {
+                                  console.log(res.data)
+                                })
+                            }else{
+                              updateAttemptStatus(this.task)
+                              .then((res) => {
+                                if(res.data === "attempt status update"){
+                                  this.countDownTimer()
+                                }
+                              })
+                            }
+                          })
+
                           loading.close()
                           this.$notify.error({
                             title: 'Uh oh!',
                             message: 'Invalid password.',
                             offset: 100
                             });
+
                             return false;
                         }
                         else if(rs.data === "not found"){

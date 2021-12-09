@@ -118,7 +118,9 @@
                                                <vs-button type="gradient" color="danger" @click="onaddsolocard(
                                               item.prodquantity, item.id, item.prodname, item.prodimg, item.integratedRaws, item.prodprice, item.productCode, item.prodcategory
                                               )" icon="favorite"></vs-button>
-                                             <vs-button color="primary" icon="turned_in_not"></vs-button>
+                                             <vs-button color="primary" @click="onbundleOrder(
+                                               item.prodquantity, item.id, item.prodname, item.prodimg, item.integratedRaws, item.prodprice, item.productCode, item.prodcategory
+                                             )" icon="turned_in_not"></vs-button>
                                             </div>
                                             </vs-row>
                                         </div>
@@ -232,6 +234,24 @@
                                    <vs-button style="float: right;margin-top: 10px; margin-bottom: 10px;" @click="onqtyOk()" type="relief">OK</vs-button>
                                     </vs-popup>
                                     <!-- end solo add card modal -->
+
+                                    <!-- bundle order modal -->
+                                    <vs-popup class="holamundo"  :title="popupSettingsBundle.title" :active.sync="popActiveBundle">
+                 <el-alert
+                        title="Choose Bundle Order"
+                        type="info"
+                        description="Make sure you will choose a bundle"
+                        show-icon
+                        :closable="false">
+                    </el-alert>
+
+                    <div style="display: inline;">
+                      <el-button type="primary" @click="onchoosebundleofsix(6)" plain style="margin-bottom: 10px; margin-top: 10px;">Bundle of 6</el-button>
+                       <el-button type="primary" plain style="margin-bottom: 10px; margin-top: 10px;">Bundle of 8</el-button>
+                    </div>
+                                   
+                                    </vs-popup>
+                                    <!-- end bundle order modal -->
         </div>
                                 
     </div>
@@ -251,6 +271,9 @@ export default {
                 title: 'Search via barcode',
                 soloaddcartTitle: 'Quantities'
             },
+            popupSettingsBundle: {
+              title: 'Bundle Order'
+            },
             searchSettings: {
                 barcodeInput: ''
             },
@@ -263,9 +286,19 @@ export default {
               soloProdprice: '',
               soloProdCode: '', soloProdCategory: ''
             },
+            bundleOrderTask: {
+              bundleQuantity: '',
+              externalIDQTY: '',
+              bundleProdname: '',
+              bundleProdimage: '',
+              bundleProdIntegrated: '',
+              bundleProdprice: '',
+              bundleProdCode: '', bundleProdCategory: ''
+            },
             pageSize: 8,
             popupActivo: false,
             popupActivoSolo: false,
+            popActiveBundle: false,
               page: 1,
               searchable:'',
             select1:null,
@@ -315,7 +348,8 @@ export default {
               IngredientsArray: [],
               helper: [],
               savedIngredients: [],
-              savedSubPayment: []
+              savedSubPayment: [],
+              isbundle: false
         }
     },
      computed:{
@@ -359,7 +393,61 @@ export default {
           })
           .catch(_ => {});
       },
-      
+      onchoosebundleofsix: function(qty){
+        this.bundleOrderTask.bundleQuantity = qty
+        if(!this.bundleOrderTask.bundleQuantity){
+
+        }else{ 
+         this.$vs.loading({
+                  type: 'sound'
+              })
+              setTimeout(() => {
+                const req = client.get(`/api/orders/bundle-validate-cart/${this.bundleOrderTask.bundleQuantity}/${this.bundleOrderTask.externalIDQTY}`)
+                return req.then(({data}) => {
+                  if(data === "invalid qty"){
+                     this.$vs.notify({title:'Nope',text:'Invalid Quantity',color:'danger',position:'top-right', icon:'highlight_off'})
+                      this.$vs.loading.close()
+                      return false
+                  }else{ 
+                    const data = new FormData()
+                    data.append("bundle_order_name", this.bundleOrderTask.bundleProdname)
+                    data.append("bundle_order_code", this.bundleOrderTask.bundleProdCode)
+                    data.append("bundle_order_price", this.bundleOrderTask.bundleProdprice)
+                    data.append("bundle_order_qty", this.bundleOrderTask.bundleQuantity)
+                    data.append("bundle_order_category", this.bundleOrderTask.bundleProdCategory)
+                    data.append("bundle_order_image", this.bundleOrderTask.bundleProdimage)
+                    const addreq = client.post(`/api/orders/order-bundle`, data)
+                    return addreq.then((response) => {
+                      if(response.data === "success order") { 
+                         
+                        const reduceQuantity = client.put(`/api/orders/order-decrease-qty-bundle/${this.bundleOrderTask.externalIDQTY}/${this.bundleOrderTask.bundleQuantity}`)
+                        reduceQuantity.then((resp) => {
+                          if(resp.data === "success decrease") { 
+                            this.isbundle = true
+                            this.$vs.notify({title:'Success',text:'Added to cart',color:'success',position:'top-right', icon:'highlight_off'})
+                            this.fetchAllCustomerOrders()
+                            this.fetchAllProduct()
+                            this.$vs.loading.close()
+                            this.popActiveBundle = false
+                          }
+                        })
+                      }
+                    })
+                  }
+                })
+              }, 3000)
+        }
+      },
+      onbundleOrder: function(qty, id, name, image, integrated, price, prodcode, category) {
+        this.popActiveBundle = true
+        this.bundleOrderTask.externalIDQTY = id;
+        this.bundleOrderTask.bundleProdname = name;
+        this.bundleOrderTask.bundleProdimage = image;
+        this.bundleOrderTask.bundleProdIntegrated = integrated;
+        this.bundleOrderTask.bundleProdprice = price
+        this.bundleOrderTask.bundleProdCode = prodcode
+        this.bundleOrderTask.bundleProdCategory = category
+      },
       onconfirmpayment: function(paymentID){
         this.$confirm('Are you sure you want to make this payment?', 'Warning', {
                 cancelButtonText: 'Cancel',
@@ -385,7 +473,7 @@ export default {
              }
              
            }
-           client.put(`/api/payment/approve-payment-update-to-receipt/${paymentID}`)
+           client.put(`/api/payment/approve-payment-update-to-receipt/${paymentID}/${this.isbundle}`)
              .then((res) => {
                if(res.data == "done payment") {
                  this.$message({
@@ -591,7 +679,7 @@ export default {
           return req.then(({data}) => {
             if(data === "invalid qty") { 
               this.$vs.notify({title:'Nope',text:'Invalid Quantity',color:'danger',position:'top-right', icon:'highlight_off'})
-              this.$vs.loading.close()
+              this.$vs.loading.close() 
               return false
             }else {   
               const data = new FormData()
@@ -609,6 +697,7 @@ export default {
                   reducer.then((resp) => {
                     console.log("second request",resp.data)
                     if(resp.data === "success decrease") { 
+                      this.isbundle = false
                       this.$vs.notify({title:'Success',text:'Added to cart',color:'success',position:'top-right', icon:'highlight_off'})
                       this.fetchAllCustomerOrders()
                       this.fetchAllProduct()

@@ -1214,3 +1214,35 @@ export function getrequestListOfData(){
 
     }
 }
+
+export function attemptRequest(obj, counter){
+    try {
+        return httpauth.put(`/api/csrf-login/attemptUpdater?email=${obj.email}&receivedCount=${counter}`)
+    } catch(e){
+        alert(e)
+    }
+}
+
+export function getAttempts(obj){
+    try {
+        return httpauth.get(`/api/csrf-login/get-attempts?useremail=${obj.email}`)
+    } catch(e){
+        alert(e)
+    }
+}
+
+export function updateAttemptStatus(obj){
+    try {
+        return httpauth.put(`/api/csrf-login/update-attempts-status?email=${obj.email}`)
+    } catch(e){
+        alert(e)
+    }
+}
+
+export function resetAttemptStatus(obj){
+    try {
+        return httpauth.put(`/api/csrf-login/reset-attempts?email=${obj.email}`)
+    } catch(e){
+        alert(e)
+    }
+}

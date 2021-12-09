@@ -12,6 +12,9 @@ export default new Vuex.Store({
     productInventoryResponse : {
       response: []
     },
+    productSales: {
+      salesArray: []
+    },
     archives_users_uri: {
       responseDataAPI: []
     },
@@ -125,6 +128,9 @@ export default new Vuex.Store({
         state.productInventoryResponse.response = response.data
       })
     },
+    MUTATE_LIST_SALES: (state, payload) => {
+      state.productSales.salesArray = payload
+    },
     MUTATE_GET_ARCHIVES_USERS(state, data){
       state.archives_users_uri.responseDataAPI = data
     },
@@ -163,6 +169,18 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    actions_get_sales({commit}){
+      try {
+        return new Promise((resolve) => {
+          httpauth.get(`/api/product-sales/get-sales`)
+          .then(response => {
+            resolve(commit(`MUTATE_LIST_SALES`, response.data))
+          })
+        })
+      } catch (error) {
+        
+      }
+    },
     actions_fetch_full_client_details({commit}, {email}){
       try {
         return new Promise((resolve, reject) => {

@@ -143,6 +143,11 @@ const routes = [
         name: 'bundle',
         component: () => import("@/views/admin/dashboard_content/admin_product_bundle")
       },
+      {
+        path: '/sales' + makeid(200),
+        name: 'Sales',
+        component: () => import("@/views/admin/dashboard_content/admin_sales")
+      }
     ]
   }
 ]
