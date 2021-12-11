@@ -1,14 +1,17 @@
 <template>
     <div>
        <div class="mt-3">
-            <h3>Dashboard</h3>
-        <p>Welcome to admin Dashboard</p>
+            <h1>Dashboard</h1>
+        <p style="font-size: 15px">Welcome to Admin Dashboard</p>
         <el-alert
-            title="This is your dashboard, Here you can check all the system activity and reports."
+            title="This is your dashboard, here you can check all the system activity and reports."
             type="success" :closable="false">
         </el-alert>
        </div>
-    <dashcontent style="margin-top: 40px;"/>
+       <div id="testscroll">
+           <dashcontent style="margin-top: 40px;"/>
+       </div>
+    
     </div>
 </template>
 
@@ -20,3 +23,11 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+#testscroll{
+    height: 900px;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+</style>

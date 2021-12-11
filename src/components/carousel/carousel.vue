@@ -1,182 +1,281 @@
+
+
 <template>
-    <div>
-        <div class="carousel fade-carousel slide" data-ride="carousel" data-interval="4000" id="bs-carousel">
-  <!-- Overlay -->
-
-  <!-- Indicators -->
-  <ol class="carousel-indicators">
-    <li data-target="#bs-carousel" data-slide-to="0" class="active"></li>
-  </ol>
-
-  <!-- Wrapper for slides -->
-  <div class="carousel-inner">
-    <div class="item slides active">
-      <div class="slide-1">
-        <div class="overlay"></div>
-      </div>
-      <div class="hero">
-         <a class="navbar-brand me-2" href="#">
-      <p><img src="https://scontent.xx.fbcdn.net/v/t1.15752-0/p206x206/207068843_498974621378006_8840947028308824016_n.png?_nc_cat=109&ccb=1-3&_nc_sid=aee45a&_nc_eui2=AeEES1hsBXC9Khbz9lRKPtoZmJxyC32ut7WYnHILfa63te-BP4IEbp6GyeoaaV4dHrvfEGbPTYDt_qcLihzUF1h6&_nc_ohc=1Mm9Ks8f6QAAX9L_NUA&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&tp=30&oh=9f84f641a0909f37cb48bc0dc8f9bf85&oe=60D725AE" alt="bmlogo" width="270" height="270" style="display: block; margin-left: auto; margin-right: auto;" >
-      </p>
-    </a>
-        <hgroup>
-          <font style="font-size: 100px; letter-spacing:4.6px; text-shadow: #474747 3px 5px 2px, 2px 4px 2px rgba(81,72,0,0.28); color: white;">
-           <strong> <img src="" style="width: 10%; height: auto;" alt="">
-            BURGER MANIA</strong></font>
-          <h2 style="color: white;"><font style="letter-spacing: 6px">Point-of-Sales | Inventory Management</font></h2>
+   
          
-        </hgroup>
-      </div>
-    </div>
-   
-   
-  </div>
+<div>
+
+  <b-card style="height:100%"
+    overlay
+    :img-src="dataimage"
+    img-alt="Card Image"
+    text-variant="white"
+    
+  >
+
+    <b-card-text>
+      <b-container fluid>
+
+        <div style="margin-left:50%; margin-top:15%;margin-right: -150px;"></div>
+
+ <div class="container">
+   <div class="row">
+   <div class="col-md-9"></div>
+   <div class="col-md-3">
+      <el-card style="margin-right: -100px; padding: 25px" shadow="always">
+          <h3>Welcome to login</h3>
+          <el-input
+          @keyup.enter.native="checkEnter"
+          placeholder="Enter email"
+          clearable
+          v-model="task.email"
+          style="margin-top: 10px; margin-bottom: 10px;"
+          ></el-input>
+
+          <el-input
+          @keyup.enter.native="checkEnter"
+          placeholder="Enter password"
+          type="password"
+          v-model="task.password"
+          show-password
+          clearable
+          style="margin-top: 10px; margin-bottom: 10px;"
+          ></el-input>
+        <div v-if="countDown == 10">
+
+        </div>
+        <div v-else-if="countDown < 10">
+          <span>Please wait for : {{countDown}}</span>
+        </div>
+        <div v-else>
+
+        </div>
+<!--          <el-link type="primary" @click="onforgot()">Forgot password</el-link>-->
+          <el-button  v-on:keyup="validateconfirm" @click="onsignin()" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 10px;" type="primary" round>Login</el-button>
+      </el-card>
+   </div>
+ </div>
+ </div>
+  
+      </b-container>
+    </b-card-text>
+  </b-card>
 </div>
-    </div>
+       
+         
+       
 </template>
 <script>
+import {csrf_google_login, csrf_session_indicator, standardLogin, loginhistory, attemptRequest, getAttempts, updateAttemptStatus, resetAttemptStatus} from "@/store/request-common"
+import testimage from "@/assets/loginbackground.png"
+import routers from "@/router/index";
+import client from "@/store/0AuthRequest"
   export default {
     data() {
       return {
         slide: 0,
-        sliding: null
+        sliding: null,
+         task: {
+        email: '', password: ''
+      },
+      sessionTask: {
+                  sessionID: 0,
+                  sessionEmail: ''
+                },
+                dataimage: testimage,
+        jukeCount: 0,
+        countDown : 10
       }
     },
     methods: {
       onSlideStart(slide) {
         this.sliding = true
       },
+      historyloginmanagement(){
+      loginhistory(this.task.email).then(response => {
+        if(response.data.message === "success"){
+          console.log(response.data.message)
+        }
+      })
+    },
+      session_update_or_add: function() {
+          csrf_session_indicator(this.sessionTask).then((response) => {
+            // console.log(response.data)
+            if(response.data === "session added") { 
+              routers.push({name: 'admindashboard'})
+              this.$notify.success({
+                            title: 'Welcome!',
+                            message: 'Successfully logged in.',
+                            offset: 100
+                            });
+            } else if(response.data === "update session") { 
+              routers.push({name: 'admindashboard'})
+              this.$notify.success({
+                            title: 'Welcome!',
+                            message: 'Successfully logged in.',
+                            offset: 100
+                            });
+            }
+          })
+                     
+        },
       onSlideEnd(slide) {
         this.sliding = false
+      },
+      onforgot(){
+      this.$router.push({name: 'Forgot Password'}).catch(() => {})
+    },
+    checkEnter(){
+      this.onsignin()
+    },
+    localStrg_Attempts : function() {
+      const getAttempStorage = localStorage.getItem("attempts")
+      var a = 0;
+      if(parseInt(getAttempStorage) != null || getAttempStorage != null || getAttempStorage != undefined){
+        if(parseInt(getAttempStorage) !== 3){
+          localStorage.setItem("attempts", a += 1)
+          console.log("api request if")
+          //api request
+        } else{
+          //api request
+          console.log("api request else")
+        }
       }
+    },
+      countDownTimer(){
+        if(this.countDown >0){
+          setTimeout(() =>{
+            this.countDown -= 1
+            this.countDownTimer()
+            if(this.countDown == 0){
+              this.countDown = 10;
+              resetAttemptStatus(this.task)
+            }
+          }, 1000)
+        }
+      },
+    onsignin(){
+      if(!this.task.email || !this.task.password){
+        this.$notify.error({
+                            title: 'Uh oh!',
+                            message: 'empty fields.',
+                            offset: 100
+                            });
+                            return false;
+      }else{
+        const loading = this.$loading({
+                    lock: true,
+                    text: 'Logging in, please wait..',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                    setTimeout(() => {
+                      standardLogin(this.task).then((rs) => {
+                        console.log(rs.data)
+                        if(rs.data.message === "empty"){
+                          loading.close()
+                          this.$notify.error({
+                            title: 'Uh oh!',
+                            message: 'empty fields.',
+                            offset: 100
+                            });
+                            return false;
+                        }else if(rs.data === "disabled"){
+                          loading.close()
+                          this.$notify.error({
+                            title: 'Uh oh!',
+                            message: 'Unfortunately your account is disable.',
+                            offset: 100
+                            });
+                            return false;
+                        }else if(rs.data === "attempt failed"){
+                          loading.close()
+                          this.$notify.error({
+                            title: 'Uh oh!',
+                            message: 'Please wait for your attempt to expire',
+                            offset: 100
+                          });
+                          return false;
+                        }
+                        else if(rs.data === "invalid"){
+                          getAttempts(this.task).then((response) => {
+                            console.log("BE response attempts", response.data)
+                            this.jukeCount = response.data
+                            if(this.jukeCount != 3){
+                              this.jukeCount = this.jukeCount + 1
+                                attemptRequest(this.task, this.jukeCount).then((res) => {
+                                  console.log(res.data)
+                                })
+                            }else{
+                              updateAttemptStatus(this.task)
+                              .then((res) => {
+                                if(res.data === "attempt status update"){
+                                  this.countDownTimer()
+                                }
+                              })
+                            }
+                          })
+
+                          loading.close()
+                          this.$notify.error({
+                            title: 'Uh oh!',
+                            message: 'Invalid password.',
+                            offset: 100
+                            });
+
+                            return false;
+                        }
+                        else if(rs.data === "not found"){
+                          loading.close()
+                          this.$notify.error({
+                            title: 'Uh oh!',
+                            message: 'This account was not found.',
+                            offset: 100
+                            });
+                            return false;
+                        }
+                        else if(rs.data.message === "SUCCESS"){
+                          localStorage.setItem("oauth2_ss::_ss_", this.task.email)
+                          sessionStorage.setItem("oauth2_ss::_ss_", this.task.email)
+                          loading.close()
+                          this.historyloginmanagement()
+                           var logObject = { 
+                            firstname: rs.data.databulk.firstname,
+                            lastname: rs.data.databulk.lastname,
+                            uid: rs.data.databulk.id,
+                            istype : rs.data.databulk.istype,
+                            email: rs.data.databulk.email
+                          }
+                   localStorage.setItem("oauth2_ss::_profileinfo_", JSON.stringify(logObject))
+                          sessionStorage.setItem("oauth2_ss::_ss_", this.task.email)
+                          
+                          this.sessionTask.sessionEmail = this.task.email;
+                          this.$router.push({name: 'admindashboard'}).catch(() =>{})
+                          
+                        } else if(rs.data.message === "SUCCESS CASHIER") {
+                          localStorage.setItem("oauth2_ss::_ss_", this.task.email)
+                          sessionStorage.setItem("oauth2_ss::_ss_", this.task.email)
+                          loading.close()
+                          this.historyloginmanagement()
+                          var logObject = {
+                            firstname: rs.data.databulk.firstname,
+                            lastname: rs.data.databulk.lastname,
+                            uid: rs.data.databulk.id,
+                            istype : rs.data.databulk.istype,
+                            email: rs.data.databulk.email
+                          }
+                          localStorage.setItem("oauth2_ss::_profileinfo_", JSON.stringify(logObject))
+                          sessionStorage.setItem("oauth2_ss::_ss_", this.task.email)
+
+                          this.sessionTask.sessionEmail = this.task.email;
+
+                          this.$router.push({name: 'cashierdashboard'}).catch(() =>{})
+                        }
+                      })
+                    }, 3000)
+        
+      }
+    },
     }
   }
 </script>
-
-<style scoped>
-/*
-Fade content bs-carousel with hero headers
-Code snippet by maridlcrmn (Follow me on Twitter @maridlcrmn) for Bootsnipp.com
-Image credits: unsplash.com
-*/
-
-/********************************/
-/*       Fade Bs-carousel       */
-/********************************/
-.fade-carousel {
-    position: relative;
-    height: 100vh;
-}
-.fade-carousel .carousel-inner .item {
-    height: 100vh;
-}
-.fade-carousel .carousel-indicators > li {
-    margin: 0 2px;
-    background-color: #f39c12;
-    border-color: #f39c12;
-    opacity: .7;
-}
-.fade-carousel .carousel-indicators > li.active {
-  width: 10px;
-  height: 10px;
-  opacity: 1;
-}
-
-/********************************/
-/*          Hero Headers        */
-/********************************/
-.hero {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    z-index: 3;
-    color: #fff;
-    text-align: center;
-    text-transform: uppercase;
-      -webkit-transform: translate3d(-50%,-50%,0);
-         -moz-transform: translate3d(-50%,-50%,0);
-          -ms-transform: translate3d(-50%,-50%,0);
-           -o-transform: translate3d(-50%,-50%,0);
-              transform: translate3d(-50%,-50%,0);
-}
-.hero h1 {
-    font-size: 6em;    
-    font-weight: bold;
-    margin: 0;
-    padding: 0;
-}
-
-.fade-carousel .carousel-inner .item .hero {
-    opacity: 0;
-    -webkit-transition: 2s all ease-in-out .1s;
-       -moz-transition: 2s all ease-in-out .1s; 
-        -ms-transition: 2s all ease-in-out .1s; 
-         -o-transition: 2s all ease-in-out .1s; 
-            transition: 2s all ease-in-out .1s; 
-}
-.fade-carousel .carousel-inner .item.active .hero {
-    opacity: 1;
-    -webkit-transition: 2s all ease-in-out .1s;
-       -moz-transition: 2s all ease-in-out .1s; 
-        -ms-transition: 2s all ease-in-out .1s; 
-         -o-transition: 2s all ease-in-out .1s; 
-            transition: 2s all ease-in-out .1s;    
-}
-
-/********************************/
-/*            Overlay           */
-/********************************/
-.overlay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-    opacity: .7;
-}
-
-/********************************/
-/*          Custom Buttons      */
-/********************************/
-.btn.btn-lg {padding: 10px 40px;}
-.btn.btn-hero,
-.btn.btn-hero:hover,
-.btn.btn-hero:focus {
-    color: #f5f5f5;
-    background-color: #1abc9c;
-    border-color: #1abc9c;
-    outline: none;
-    margin: 20px auto;
-}
-
-/********************************/
-/*       Slides backgrounds     */
-/********************************/
-.fade-carousel .slides .slide-1, 
-.fade-carousel .slides .slide-2,
-.fade-carousel .slides .slide-3 {
-  height: 100vh;
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  opacity: 0.7;
-}
-.fade-carousel .slides .slide-1 {
-  background-image: url(https://scontent.fmnl16-1.fna.fbcdn.net/v/t1.15752-9/204156274_4019352851497132_8201507836755536948_n.jpg?_nc_cat=111&ccb=1-3&_nc_sid=ae9488&_nc_eui2=AeEjVNWHx40tJmi2aIOsx8VAMekFEy1bQB0x6QUTLVtAHW6bMsU15Zy9awUPqynieJUiqpZJeJgvlGO3mkB3LF7A&_nc_ohc=cnfzIU4npkIAX98RWuS&_nc_ht=scontent.fmnl16-1.fna&oh=02dc2f59fe2ae013cb08ca6304c37b00&oe=60D73889); 
-}
-/* .fade-carousel .slides .slide-2 {
-  background-image: url(https://ununsplash.imgix.net/photo-1416339684178-3a239570f315?q=75&fm=jpg&s=c39d9a3bf66d6566b9608a9f1f3765af);
-}
-.fade-carousel .slides .slide-3 {
-  background-image: url(https://ununsplash.imgix.net/photo-1416339276121-ba1dfa199912?q=75&fm=jpg&s=9bf9f2ef5be5cb5eee5255e7765cb327);
-} */
-
-/********************************/
-/*          Media Queries       */
-/********************************/
-@media screen and (min-width: 980px){
-    .hero { width: 980px; }    
-}
-@media screen and (max-width: 640px){
-    .hero h1 { font-size: 4em; }    
-}
-</style>

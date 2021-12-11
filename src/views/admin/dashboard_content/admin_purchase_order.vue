@@ -1,16 +1,19 @@
 <template>
     <div>
         <div class="mt-3">
-            <h3>Purchase Orders</h3>
-        <p>Here you can add your purchase orders</p>
+            <h1>Purchase Orders</h1>
+        <p style="font-size: 15px">Here you can add your purchase orders</p>
         <el-alert
             title="Purchase Orders"
             type="success" :closable="false">
         </el-alert>
         </div>
-        <div style="margin-top: 30px;">
+        <div id="testscroll">
+            <div style="margin-top: 30px;">
             <puchase />
         </div>
+        </div>
+        
     </div>
 </template>
 
@@ -22,3 +25,11 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+#testscroll{
+    height: 900px;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+</style>

@@ -27,6 +27,33 @@ const routes = [
     component: () => import("@/views/registration")
   },
   {
+    path: '/about_us',
+    name: 'About Us',
+    component: () => import("@/views/aboutus")
+  },
+  {
+    path: '/forgot_account',
+    name: 'Forgot Password',
+    component: () => import("@/views/forgot")
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import("@/views/login")
+  },
+  {
+    path: '/cashierdashboard' + makeid(200),
+    name: 'cashierdashboard',
+    component: () => import('@/views/cashier/cashier'),
+    children: [
+      {
+        path: '/cashierdashboard' + makeid(200),
+        name: 'cashierdashboard',
+        component: () => import('@/views/cashier/cashier_dashboard_content/cashierIndex')
+      }
+    ]
+  },
+  {
     path: '/admindashboard' + makeid(200),
     name: 'admindashboard',
     component: () => import('@/views/admin/admin'),
@@ -37,7 +64,7 @@ const routes = [
         component: () => import("@/views/admin/dashboard_content/adminIndex")
       },
       {
-        path: '/usermanagement' + makeid(200),
+        path: '/admindashboard/usermanagement' + makeid(200),
         name: 'User Management',
         component: () => import("@/views/admin/dashboard_content/admin_user_management")
       },
@@ -80,13 +107,54 @@ const routes = [
         path: '/received_orders' + makeid(200),
         name: 'Receive Orders',
         component: () => import("@/views/admin/dashboard_content/admin_received_order")
+      },
+      {
+        path: '/stocks_on_hand' + makeid(200),
+        name: 'Stocks on hand',
+        component: () => import("@/views/admin/dashboard_content/admin_stock_on_hand")
+      },
+      {
+        path: '/product_final' + makeid(200),
+        name: 'Product Final',
+        component: () => import("@/views/admin/dashboard_content/admin_product_final")
+      },
+      {
+        path: '/product_activator' + makeid(200),
+        name: 'Product Activator',
+        component: () => import("@/views/admin/dashboard_content/admin_product_activation")
+      },
+      {
+        path: '/product_history' + makeid(200),
+        name: 'Product History',
+        component: () => import("@/views/admin/dashboard_content/admin_histories")
+      },
+      {
+        path: '/return_orders' + makeid(200),
+        name: 'Return Orders',
+        component: () => import("@/views/admin/dashboard_content/admin_return_orders")
+      },
+      {
+        path: '/profile' + makeid(200),
+        name: 'Profile',
+        component: () => import("@/views/admin/dashboard_content/admin_profile_management")
+      },
+      {
+        path: '/prodbundle' + makeid(200),
+        name: 'bundle',
+        component: () => import("@/views/admin/dashboard_content/admin_product_bundle")
+      },
+      {
+        path: '/sales' + makeid(200),
+        name: 'Sales',
+        component: () => import("@/views/admin/dashboard_content/admin_sales")
       }
     ]
   }
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
+  mode: 'history'
 })
 
 export default router

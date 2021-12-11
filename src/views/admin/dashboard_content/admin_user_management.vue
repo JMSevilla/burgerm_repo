@@ -1,14 +1,17 @@
 <template>
     <div>
         <div class="mt-3">
-            <h3>User Management</h3>
-        <p>You have full control of all the users</p>
+            <h1>User Management</h1>
+        <p style="font-size: 15px">Manage system user access and information.</p>
         <el-alert
             title="Viewing user management."
             type="success" :closable="false">
         </el-alert>
         </div>
-        <dashusermanagement style="margin-top: 40px;"/>
+        <div id="testscroll">
+            <dashusermanagement style="margin-top: 40px;"/>
+        </div>
+        
     </div>  
 </template>
 
@@ -20,3 +23,11 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+#testscroll{
+    height: 900px;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+</style>

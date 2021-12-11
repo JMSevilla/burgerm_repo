@@ -3,15 +3,15 @@
         <div class="container-fluid">
              <div class="container" style="margin-bottom: 20px;">
                  <div style="display: inline;">
-                     <el-button style="margin-bottom: 5px;" type="primary" @click="onadd_admin()">Add administrator</el-button>
-                     <el-button style="margin-bottom: 5px;" type="primary" @click="onadd_cashier()">Add cashier</el-button>
+                     <el-button style="margin-bottom: 5px;" type="primary" @click="onadd_admin()">Add Administrator</el-button>
+                     <el-button style="margin-bottom: 5px;" type="primary" @click="onadd_cashier()">Add Cashier</el-button>
                  </div>
                 <!-- Add Admin Dialog -->
                  <el-drawer
             title="Add Administrator"
             :visible.sync="drawer"
             :with-header="false">
-            
+
             <div class="container" style="margin-top: 50px; padding: 25px;">
                 <h4>Add administrators</h4>
                 <el-alert
@@ -23,16 +23,16 @@
                     <!-- 1 -->
                     <div class="row" style="margin-bottom: 20px;">
                         <div class="col-sm">
-                            
+
                             <el-input
-                            placeholder="Please input firstname"
+                            placeholder="Please input first name"
                             v-model="add_admin_task.adminfirstname"
                             clearable>
                             </el-input>
                         </div>
                         <div class="col-sm">
                             <el-input
-                            placeholder="Please input lastname"
+                            placeholder="Please input last name"
                             v-model="add_admin_task.adminlastname"
                             clearable>
                             </el-input>
@@ -115,7 +115,7 @@
             title="Add Cashier"
             :visible.sync="cashierdrawer"
             :with-header="false">
-            
+
             <div class="container" style="margin-top: 50px; padding: 25px;">
                 <h4>Add Cashier</h4>
                 <el-alert
@@ -127,16 +127,16 @@
                     <!-- 1 -->
                     <div class="row" style="margin-bottom: 20px;">
                         <div class="col-sm">
-                            
+
                             <el-input
-                            placeholder="Please input firstname"
+                            placeholder="Please input first name"
                             v-model="add_cashier_task.cashierfirstname"
                             clearable>
                             </el-input>
                         </div>
                         <div class="col-sm">
                             <el-input
-                            placeholder="Please input lastname"
+                            placeholder="Please input last name"
                             v-model="add_cashier_task.cashierlastname"
                             clearable>
                             </el-input>
@@ -232,9 +232,9 @@
                                         </el-option>
                                     </el-select>&nbsp;
 
-                                    
 
-                                    <el-popover
+
+                                    <!-- <el-popover
                                         placement="right"
                                         width="400"
                                         trigger="click">
@@ -248,7 +248,7 @@
                                                     <h3>Administrator</h3>
                                                     <p>Show all archives for administrator</p>
                                                     <el-button @click="fetch_archive_admin()" style="width: 100%;" type="warning">Fetch list</el-button>
-                                                    <!-- admin -->
+
                                                 </div>
                                             </div>
                                         </el-card>
@@ -262,13 +262,13 @@
                                                     <h3>Cashiers</h3>
                                                     <p>Show all archives for cashiers</p>
                                                     <el-button style="width: 100%;" type="warning" @click="fetch_archive_customer()">Fetch list</el-button>
-                                                    <!-- cashier -->
+
                                                 </div>
                                             </div>
                                         </el-card>
-                                        
+
                                         <el-button type="warning" slot="reference">Show archives</el-button>
-                                    </el-popover>&nbsp;
+                                    </el-popover>&nbsp; -->
                                     <el-button @click="fetch_all()"  type="info">Fetch all</el-button>
                                   </div>
                                     <h3>{{dynamicTitle}}</h3>
@@ -280,29 +280,33 @@
                                     fit
                                     highlight-current-row
                                     style="width: 100%;"
-                                    
+
                                     >
-                                    <el-table-column label="ID" prop="id" sortable="custom" align="center"  >
+                                    <el-table-column label="ID" prop="id" align="center"  >
                                         <template slot-scope="{row}">
                                         <span>{{ row.id }}</span>
                                         </template>
                                     </el-table-column>
+
                                     
-                                    <el-table-column label="Firstname" >
+                                    <el-table-column label="First name" align="center" >
+
                                         <template slot-scope="{row}">
                                         <span class="link-type" >{{ row.firstname }}</span>
                                         <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
                                         </template>
                                     </el-table-column>
 
-                                     <el-table-column label="Lastname" >
+                                     <el-table-column label="Last name"  align="center">
                                         <template slot-scope="{row}">
                                         <span class="link-type" >{{ row.lastname }}</span>
                                         <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
                                         </template>
                                     </el-table-column>
+
                                     
-                                    <el-table-column label="Status" class-name="status-col" >
+                                    <!-- <el-table-column label="Status"  align="center">
+
                                         <template slot-scope="{row}">
                                         <div v-if="row.isstatus == 1 && row.isarchive == 0">
                                             <el-tag type="success">
@@ -322,7 +326,7 @@
                                         </template>
                                     </el-table-column>
 
-                                    <el-table-column label="Verified" class-name="status-col" >
+                                    <el-table-column label="Verified" align="center">
                                         <template slot-scope="{row}">
                                         <div v-if="row.isverified == 1 && row.isarchive == 0">
                                             <el-tag type="success">
@@ -340,39 +344,48 @@
                                         </el-tag>
                                         </div>
                                         </template>
+                                    </el-table-column> -->
+
+
+                                    <el-table-column label="User Level" width="150" align="center">
+                                        <template slot-scope="{row}">
+                                        <div v-if="row.istype == 1">
+                                            <el-tag effect="dark" type="success">
+                                            Administrator
+                                        </el-tag>
+                                        </div>
+                                        <div v-else>
+                                            <el-tag effect="dark" type="warning">
+                                            Cashier
+                                        </el-tag>
+                                        </div>
+                                        
+                                        </template>
                                     </el-table-column>
-                                    
+
                                     <el-table-column label="Created"  align="center">
                                         <template slot-scope="{row}">
                                         <span>{{ row.createdAt | moment("calendar") }}</span>
                                         </template>
                                     </el-table-column>
 
-                                    <el-table-column label="More actions"  align="center">
+                                    <el-table-column width="300" label="More Actions"  align="center">
                                         <template slot-scope="{row}">
-                                        <div v-if="row.isstatus == 1 && row.istype == 1">
-                                           <!-- admin -->
-                                        </div>
-                                        <div v-else-if="row.isstatus == 1 && row.istype == 0 && row.isarchive == 0">
-                                            <!-- Customers -->
-                                             <el-button style="width: 100%; margin-bottom: 4px;" type="danger" plain @click="ondeactivate(row.id)">Deactivate</el-button>
-                                            <el-button style="width: 100%; margin-left: -2px;" type="danger" plain @click="onremove(row.id)">Remove</el-button>
-                                        </div>
-                                        <div v-else-if="row.isstatus == 1 && row.istype == 2"> 
-                                            <!-- cashier -->
-                                            <el-button style="width: 100%; margin-left: -2px;" type="danger" plain @click="onremove(row.id)">Remove</el-button>
-                                        </div>
-                                        <div v-else-if="row.istype == 0 && row.isarchive == 1"> 
-                                            <!-- cashier -->
-                                            
-                                        </div>
-                                        <div v-else-if="row.isarchive == 0">
-                                            <el-button style="width: 100%; margin-bottom: 4px;" type="success" plain @click="onactivate(row.id)">Activate</el-button>
-                                            <el-button style="width: 100%; margin-left: -2px;" type="danger" plain @click="onremove(row.id)">Remove</el-button>
-                                        </div>
-                                        <div v-else>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                     <div v-if="row.isstatus == 1">
 
                                         </div>
+                                        <div v-else>
+                                            <el-button @click="onremoveuser(row.id, row.firstname, row.lastname, row.istype)" type="danger" size="small">Remove</el-button>&nbsp;
+                                            
+                                        </div>
+                                       
+                                                </div>
+                                                <div class="col-md-6">
+ <el-button type="warning" size="small">Change Password</el-button>
+                                                </div>
+                                            </div>
                                         </template>
                                     </el-table-column>
 
@@ -389,9 +402,10 @@ import {
 listofuseres,
 deactivate_user,
 activate_user,
-filter_user, 
+filter_user,
 archive_user,
-fetch_archive_list, add_admin,add_cashier
+fetch_archive_list, add_admin,add_cashier, activitylog_usermanagement, activitylog_usermanagement_remove, remove_user,
+archive_users
 } from "@/store/request-common";
 //import dialogusermanagement from "@/components/admin_dashboard/admin_dashboard_content/usrmngmnt_modal/dialog_usermanagement";
 export default {
@@ -406,7 +420,7 @@ export default {
                 isactivate: true,
                 googleverified: true,
                 adminfirstname: '', adminlastname: '',
-                adminemail: '', adminpassword: '', adminconfirmpass: '', 
+                adminemail: '', adminpassword: '', adminconfirmpass: '',
                 imgurl: 'https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png'
                 },
                 drawer: false,
@@ -420,13 +434,13 @@ export default {
                 isactivate: true,
                 googleverified: true,
                 cashierfirstname: '', cashierlastname: '',
-                cashieremail: '', cashierpassword: '', cashierconfirmpass: '', 
+                cashieremail: '', cashierpassword: '', cashierconfirmpass: '',
                 imgurl: 'https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png'
                 },
             //end cashier registered data
 
 
-              
+
               dynamicTitle: 'All Users',
               oopusers: [],
               searchable: '',
@@ -443,13 +457,12 @@ export default {
                     value: '1',
                     label: 'Administrators'
                     }, {
-                    value: '2',
-                    label: 'Cashiers'
-                    }, {
                     value: '0',
-                    label: 'Customers'
-                    }],
-                    value: ''
+                    label: 'Cashiers'
+                    }, ],
+                    value: '',
+                    codeactivity: '',
+                    archiveID: ''
           }
       },
     computed: {
@@ -461,13 +474,76 @@ export default {
       }else{
         return this.oopusers.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
       }
-       
+
      }
     },
     created(){
         this.fetchAllUsersdata()
+        this.makeid(5)
+        this.makearchiveid(5)
     },
     methods: {
+        onremoveuser(uid, firstname, lastname, type){
+            this.$confirm('Are you sure you want to remove this user?', 'Warning', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+                }).then(() =>
+                {
+                    const loading = this.$loading({
+                    lock: true,
+                    text: 'Removing, Please wait..',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                    setTimeout(()=> {
+                      archive_users(uid, firstname, lastname, type, this.archiveID).then(res => {
+                          if(res.data.message === "success"){
+                            loading.close()
+                            this.$notify.success({
+                            title: 'Success',
+                            message: 'Successfully remove',
+                            offset: 100
+                            });
+                            this.fetchAllUsersdata();
+                            activitylog_usermanagement_remove(this.codeactivity).then(res => {
+                                    if(res.data.message === "success"){
+                                        this.makeid(5)
+                                        this.makearchiveid(5)
+                                    }
+                                })
+                          }
+                      })
+                    }, 3000)
+                }).catch(() => {
+                        this.$notify.info({
+                            title: 'Info',
+                            message: 'Cancel remove',
+                            offset: 100
+                            });
+                            return false;
+                })
+        },
+        makeid(length) {
+            var result           = [];
+            var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for ( var i = 0; i < length; i++ ) {
+                result.push(characters.charAt(Math.floor(Math.random() *
+            charactersLength)));
+            }
+            return this.codeactivity = result.join('');
+            },
+            makearchiveid(length) {
+            var result           = [];
+            var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for ( var i = 0; i < length; i++ ) {
+                result.push(characters.charAt(Math.floor(Math.random() *
+            charactersLength)));
+            }
+            return this.archiveID = result.join('');
+            },
         onsubmitcashier(){
             this.$confirm('Are you sure you want to add this user as cashier?', 'Warning', {
                 confirmButtonText: 'OK',
@@ -512,7 +588,7 @@ export default {
                                 message: 'Successfully copied to clipboard',
                                 offset: 100
                                 });
-                                return false;          
+                                return false;
             })
         },
         copyclipcashier(){
@@ -522,7 +598,7 @@ export default {
                                 message: 'Successfully copied to clipboard',
                                 offset: 100
                                 });
-                                return false;          
+                                return false;
             })
         },
         ongenerate(){
@@ -552,7 +628,7 @@ export default {
                 }).then(() => {
                     this.add_admin_task.adminpassword = "";
                     this.add_admin_task.adminconfirmpass = "";
-                    
+
                      const loading = this.$loading({
                     lock: true,
                     text: 'generating, Please wait..',
@@ -579,7 +655,7 @@ export default {
                                 return false;
                 })
             }
-            
+
         },
         ongeneratecashier(){
             if(!this.add_cashier_task.cashierpassword){
@@ -608,7 +684,7 @@ export default {
                 }).then(() => {
                     this.add_cashier_task.cashierpassword = "";
                     this.add_cashier_task.cashierconfirmpass = "";
-                    
+
                      const loading = this.$loading({
                     lock: true,
                     text: 'generating, Please wait..',
@@ -635,7 +711,7 @@ export default {
                                 return false;
                 })
             }
-            
+
         },
         generateSystemPassword(length){
             var result = "";
@@ -678,6 +754,11 @@ export default {
                                         type: 'success'
                                     })
                                     this.fetchAllUsersdata();
+                                    activitylog_usermanagement(this.codeactivity).then(res => {
+                                        if(res.data.message === "success"){
+                                            this.makeid(5)
+                                        }
+                                    })
                                     //clear fields - assign to jastine or sherilyn
                                 }
                             })
@@ -697,7 +778,7 @@ export default {
         },
         fetch_archive_admin(){
           this.listLoading = true;
-           setTimeout(() => { 
+           setTimeout(() => {
                 fetch_archive_list(1).then((response) => {
                     this.listLoading = false;
                 this.oopusers = response.data;
@@ -706,7 +787,7 @@ export default {
         },
         fetch_archive_customer(){
         this.listLoading = true;
-           setTimeout(() => { 
+           setTimeout(() => {
                 fetch_archive_list(3).then((response) => {
                     this.listLoading = false;
                 this.oopusers = response.data;
@@ -719,7 +800,7 @@ export default {
                 confirmButtonText: 'OK',
                 cancelButtonText: 'Cancel',
                 type: 'warning'
-                }).then(() => 
+                }).then(() =>
                 {
                     const loading = this.$loading({
                     lock: true,
@@ -762,10 +843,8 @@ export default {
                     this.oopusers = response.data
                     if(this.value === "1"){
                         this.dynamicTitle = "All administrators";
-                    }else if(this.value === "2") {
+                    }else {
                          this.dynamicTitle = "All cashiers";
-                    }else{
-                        this.dynamicTitle = "All customers";
                     }
                    }, 3000)
                 }
@@ -859,15 +938,15 @@ export default {
         },
       setPage (val) {
         this.page = val
-      },  
+      },
       fetchAllUsersdata(){
           listofuseres().then((response) => {
               this.listLoading = false;
-              this.oopusers = response.data
+              this.oopusers = response.data.bulk
               console.log(this.oopusers)
           })
       }
     },
-    
+
 }
 </script>

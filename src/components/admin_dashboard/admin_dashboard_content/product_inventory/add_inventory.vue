@@ -1,10 +1,49 @@
 <template>
     <div>
-        <div class="container-fluid">
+        <div class="container">
             <div class="row">
                 <div class="col-sm" v-show="inventoryform">
                     <el-card shadow="always" style="margin-bottom: 20px;">
                         <h5>Add product form</h5>
+                        <!-- <el-switch
+                            style="display: block"
+                            v-model="productTask.decisionval"
+                            active-color="#13ce66"
+                            inactive-color="#ff4949"
+                            active-text="Sync on stocks"
+                            inactive-text="Sync on inventory">
+                            </el-switch>
+                            <div v-if="productTask.decisionval == false">
+                                <el-alert
+                                        style="margin-top: 20px; margin-bottom: 30px;"
+                                            title="Product Sync to inventory"
+                                            type="warning"
+                                            effect="dark"
+                                            :closable="false"
+                                            description="Sync on inventory is turned on means you are adding products directly on your inventory, this will not create a stock on hand products."
+                                            show-icon>
+                                        </el-alert>
+                            </div>
+                            <div v-else>
+                                 <el-alert
+                                        style="margin-top: 20px; margin-bottom: 10px;"
+                                            title="Product Sync to stocks (Recommended)"
+                                            type="success"
+                                            effect="dark"
+                                            :closable="false"
+                                            description="Sync on stocks is turned on means you are adding products to your stocks."
+                                            show-icon>
+                                        </el-alert>
+                                        <el-alert
+                                        style="margin-top: 10px; margin-bottom: 30px;"
+                                            title="Pull products from stocks"
+                                            type="info"
+                                            effect="dark"
+                                            :closable="false"
+                                            description="After adding the products on your stocks you can simply pull products for your inventory."
+                                            show-icon>
+                                        </el-alert>
+                            </div> -->
                     <div style="margin-top: 20px;"><label>Product Code :</label> <el-tag type="danger" effect="dark">{{productTask.productCode}}</el-tag></div>
                     <center>
                         <el-avatar shape="square" :size="100" fit="fill" style="margin-bottom: 3px;" :src="img1"></el-avatar>
@@ -15,7 +54,7 @@
                     </center>
                             <div class="row" style="margin-top: 50px;">
                                 <div class="col-sm">
-                                    <label>Product name</label>
+                                    <label>Product Name</label>
                                     <el-input
                                         placeholder="Please input product name"
                                         v-model="productTask.productName"
@@ -23,7 +62,7 @@
                                         </el-input>
                                 </div>
                                 <div class="col-sm">
-                                    <label>Product quantity</label>
+                                    <label>Product Quantity</label>
                                     <el-input
                                         placeholder="Please input product quantity"
                                         v-model="productTask.productQuantity"
@@ -33,7 +72,7 @@
                                 </div>
                             </div>
                             <div class="row" style="margin-top: 20px;">
-                                <div class="col-sm">
+                                <!-- <div class="col-sm">
                                     <label>Product price</label>
                                     <el-input
                                         placeholder="Please input product price"
@@ -41,9 +80,9 @@
                                         type="number"
                                         clearable>
                                         </el-input>
-                                </div>
+                                </div> -->
                                 <div class="col-sm">
-                                    <label>Product category</label>
+                                    <label>Product Category</label>
                                       <el-select v-model="productTask.productcategory" style="width: 100%;" filterable placeholder="Select category">
                                         <el-option
                                         v-for="item in categoryoptions"
@@ -56,7 +95,7 @@
                                 <!-- must show if enable on settings -->
                                 <div v-show="inventorysupplier">
                                     <div class="col-sm">
-                                    <label>Product supplier</label> <el-tag type="success" effect="dark" size="mini" style="margin-bottom: 10px; margin-top: 10px;">Enabled from settings</el-tag>
+                                    <label>Product Supplier</label> <el-tag type="success" effect="dark" size="mini" style="margin-bottom: 10px; margin-top: 10px;">Enabled from settings</el-tag>
                                       <el-select v-model="productTask.productSupplier" style="width: 100%;" filterable placeholder="Select supplier">
                                       <el-option
                                             v-for="item in listofsuppliers"
@@ -69,7 +108,7 @@
                                 </div>
                                 <div v-show="inventoryexpiration">
                                     <div class="col-sm">
-                                    <label>Product expiration</label> <el-tag type="success" effect="dark" size="mini" style="margin-bottom: 10px; margin-top: 10px;">Enabled from settings</el-tag>
+                                    <label>Product Expiration</label> <el-tag type="success" effect="dark" size="mini" style="margin-bottom: 10px; margin-top: 10px;">Enabled from settings</el-tag>
                                        <el-date-picker
                                             style=" width: 100%; margin-bottom: 5px;"
                                             v-model="productTask.productExpiration"
@@ -88,7 +127,7 @@
                                     type="warning" :closable="false">
                                 </el-alert>
                                   <el-timeline style="margin-top: 50px;">
-                                        <el-timeline-item :timestamp="preview.previewData | moment('calendar')" placement="top">
+                                        <el-timeline-item :timestamp="preview.previewData | moment('dddd, MMMM Do YYYY')" placement="top">
                                         <el-card>
                                            <div class="row">
                                                <div class="col-md-3">
@@ -100,23 +139,24 @@
                                                     <h4>Product Name : {{productTask.productName}}</h4>
                                                     <p>Product Category : {{productTask.productcategory}}</p>
                                                     <p>Product Quantity : {{productTask.productQuantity}}</p>
-                                                    <p>Product price : &#8369; {{productTask.productPrice}}</p>
                                                     <div v-show="inventorysupplier">
                                                         <p>Product supplier : {{productTask.productSupplier}}</p>
                                                     </div>
-                                                    <p>Administrator added : {{preview.previewData | moment('calendar')}}</p>
-                                                    <p>Status : <el-tag effect="dark" type="danger">Inactive</el-tag></p>
+                                                    <p>Administrator added : {{preview.previewData | moment('dddd, MMMM Do YYYY')}}</p>
+                                                    <!-- <p>Status : <el-tag effect="dark" type="success">Active</el-tag></p> -->
                                                     <div style="margin-top: 20px;">
-                                                        <h4>Total Price : {{productTask.productPrice * productTask.productQuantity}}</h4>
+                                                        <!-- <h4>Total Price : {{productTask.productPrice * productTask.productQuantity}}</h4> -->
                                                     </div>
                                                </div>
                                            </div>
                                         </el-card>
                                         </el-timeline-item>
                                     </el-timeline>
+                                    <el-button type="primary" plain style="float: right; margin-bottom: 20px; margin-top: 20px;"
+                            @click="onsaveproduct()">Save</el-button>
                             </el-card>
-                            <el-card style="margin-top: 30px;" shadow="always">
-                                <h5>Default settings</h5>
+                            <!-- <el-card style="margin-top: 30px;" shadow="always"> -->
+                                <!-- <h5>Default settings</h5>
                                 <el-switch
                                 style="display: block; margin-bottom: 30px;"
                                 v-model="productTask.isadmin"
@@ -125,8 +165,8 @@
                                 inactive-color="#ff4949"
                                 active-text="Administrator"
                                 inactive-text="Not admin">
-                                </el-switch>
-                                <el-switch
+                                </el-switch> -->
+                                <!-- <el-switch
                                 style="display: block; margin-bottom: 30px;"
                                 v-model="productTask.isstatus"
                                 disabled
@@ -134,19 +174,16 @@
                                 inactive-color="#ff4949"
                                 active-text="Active"
                                 inactive-text="Inactive">
-                                </el-switch>
-                            </el-card>
-                            <el-button type="primary" plain style="float: right; margin-bottom: 20px; margin-top: 20px;"
-                            @click="onsaveproduct()">Save</el-button>
+                                </el-switch> -->
                     </el-card>
                 </div>
                 <div class="col-sm">
                     <el-card shadow="always" id="mycustomscroll" >
-                        <h5>All added products</h5>
+                        <h5>All Added Products</h5>
                         
                         <div class="row">
                             <div class="col-md-6">
-                                <label>Search:</label>&nbsp;
+                                <label>Search :</label>&nbsp;
                         <el-input
                                     style="margin-bottom: 5px; width: 50%;"
                                     placeholder="Search"
@@ -155,7 +192,7 @@
                                     </el-input><br>
                             </div>
                             <div class="col-md-6">
-                                <el-button type="warning" plain size="mini" @click="onchangeview()">{{dataview ? 'Switch to Listview' : 'Switch to Gridview'}}</el-button>
+                                <el-button type="warning" plain size="mini" @click="onchangeview()">{{dataview ? 'Switch to List View' : 'Switch to Grid View'}}</el-button>
                             </div>
                         </div>
 
@@ -177,13 +214,13 @@
                         placeholder="Select date to">
                         </el-date-picker>
                         <div style="display: inline;">
-                            <el-button type="warning" plain size="mini" @click="dialogVisible = true">More filters</el-button>
+                            <!-- <el-button type="warning" plain size="mini" @click="dialogVisible = true">More filters</el-button> -->
                         <el-button type="primary" plain size="mini" @click="onsearchbydate()">Search</el-button>
                         
                         </div>
                         
                         <!-- Element Dialog for More Filters -->
-                            <el-dialog
+                            <!-- <el-dialog
                             
                                 title="Edit more search filters"
                                 :visible.sync="dialogVisible"
@@ -268,7 +305,7 @@
                                     <el-button @click="dialogVisible = false">Cancel</el-button>
                                     <el-button type="primary" @click="onsearchnow()">Search now</el-button>
                                 </span>
-                                </el-dialog>
+                                </el-dialog> -->
                         <!-- Element Dialog for more filters end -->
                         <hr>
                           <div v-if="dataview == true">
@@ -282,7 +319,7 @@
                           </div>
                           <div v-else>
                               <el-timeline style="margin-top: 50px;" >
-                                <el-timeline-item v-for="item in pagedTableData" :key="item.productID" :timestamp="item.createdAt | moment('calendar')" placement="top">
+                                <el-timeline-item v-for="item in pagedTableData" :key="item.productID" :timestamp="item.createdAt | moment('dddd, MMMM Do YYYY')" placement="top">
                                 <el-card style="padding: 15px;">
                                     <div class="row">
                                         <div class="col-md-3">
@@ -301,34 +338,35 @@
                                                     <h4>Product Name : {{item.productName}}</h4>
                                                     <p>Product Category : {{item.product_category}}</p>
                                                     <p>Product Quantity : {{item.product_quantity}}</p>
-                                                    <p>Product price : &#8369; {{item.product_price}}</p>
                                                     <div v-show="inventorysupplier">
                                                         <p>Product supplier : {{item.product_supplier}}</p>
                                                     </div>
-                                                    <p>Administrator added : {{item.createdAt | moment('calendar')}}</p>
-                                                    <p>Status : <el-tag effect="dark" type="danger">Inactive</el-tag></p>
+                                                    <p>Administrator added : {{item.createdAt | moment('dddd, MMMM Do YYYY')}}</p>
+                                                    <!-- <p>Status : <el-tag effect="dark" type="success">Activated</el-tag></p> -->
                                                     <div style="margin-top: 20px;">
-                                                        <h4>Total Price : &#8369; {{item.product_price * item.product_quantity}}</h4>
+                                                        <!-- <h4>Total Price : &#8369; {{item.product_price * item.product_quantity}}</h4> -->
                                                     </div>
-                                                    <el-card shadow="always" style="background-color: #2D2D30; color: white; border-radius: 20px;">
-                                                        <h5>More Actions</h5>
+                                                    <el-card shadow="always" style="background-color: #2D2D30; width:100%; color: white; border-radius: 10px;">
+                                                        <h5><center>More Actions</center></h5>
                                                         <div class="row">
-                                                            <div class="col-sm">
-                                                                <el-button type="primary" style="width: 100%;"
+                                                            <div class="col-md">
+                                                                <el-button type="primary" style="width:100%; margin-right:90%"
                                                                 @click="onmodifyproduct(
+                                                                    item.productCode,
                                                                     item.productID,
                                                                     item.productName,
-                                                                    item.product_price,
                                                                     item.product_quantity,
+                                                                    item.product_price,
                                                                     item.product_supplier,
                                                                     item.productimgurl,
-                                                                    item.product_category
+                                                                    item.product_category,
+                                                                    item.expirationprod
                                                                 )"
                                                                 >Modify</el-button>
                                                             
                                                             </div>
-                                                            <div class="col-sm">
-                                                                <el-button type="danger" style="width: 100%;" @click="onremoveproduct(item.productID)">Remove</el-button>
+                                                            <div class="col-md">
+                                                                <el-button type="danger" style="width: 100%;" @click="onremoveproduct(item.productID, item.product_quantity, item.productCode)">Remove</el-button>
                                                             </div>
                                                         </div>
                                                         <!-- Modify dialog -->
@@ -337,6 +375,17 @@
                                                             :visible.sync="modifyDialog"
                                                             width="50%"
                                                             :before-close="handleClose">
+                                                            <div v-show="tagalertshow">
+                                                                <el-alert
+                                                                    style="margin-top: 20px; margin-bottom: 30px;"
+                                                                        title="Product Exist On Stock"
+                                                                        type="warning"
+                                                                        effect="dark"
+                                                                        :closable="false"
+                                                                        description="Modifying this product may also take effect on your stock on hand product"
+                                                                        show-icon>
+                                                                    </el-alert>
+                                                            </div>
                                                                 <center>
                                                                     <el-avatar shape="square" :size="100" fit="fill" style="margin-bottom: 3px;" :src="modifyimg1"></el-avatar>
                                                                         <p style="color: gray;">Preview of image will appear after the uploading.</p>
@@ -356,15 +405,16 @@
                                                                     <div class="col-sm">
                                                                         <label>Product quantity</label>
                                                                         <el-input
-                                                                            placeholder="Please input product quantity"
+                                                                            placeholder="Product Quantity"
                                                                             v-model="modifyTask.modifyproductquantity"
                                                                             type="number"
+                                                                            disabled
                                                                             clearable>
                                                                             </el-input>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row" style="margin-top: 20px;">
-                                                                        <div class="col-sm">
+                                                                        <!-- <div class="col-sm">
                                                                             <label>Product price</label>
                                                                             <el-input
                                                                                 placeholder="Please input product price"
@@ -372,7 +422,30 @@
                                                                                 type="number"
                                                                                 clearable>
                                                                                 </el-input>
-                                                                        </div>
+                                                                        </div> -->
+                                                                        <div v-show="inventoryexpiration">
+                                                                                    <div class="col-sm">
+                                                                                    <label>Product Expiration</label> <el-tag type="success" effect="dark" size="mini" style="margin-bottom: 10px; margin-top: 10px; margin-right: 10px;">Enabled from settings</el-tag>
+                                                                                     <el-link v-if="editableexpiry == true" @click="oncancel()" style="margin-bottom: 10px; margin-top: 10px;" type="primary">Cancel</el-link>
+                                                                                     <el-link v-else @click="oneditable()" style="margin-bottom: 10px; margin-top: 10px;" type="primary">Edit</el-link>
+                                                                                    <el-date-picker
+                                                                                            v-if="editableexpiry == true"
+                                                                                            style=" width: 100%; margin-bottom: 5px;"
+                                                                                            v-model="modifyTask.modifyexpired"
+                                                                                            format="yyyy/MM/dd hh:mm:ss A"
+                                                                                            value-format="yyyy/MM/dd hh:mm:ss A"
+                                                                                            type="datetime"
+                                                                                            placeholder="Select date and time">
+                                                                                            </el-date-picker>
+                                                                                            <el-input
+                                                                                            v-else
+                                                                                            placeholder="Product Expiration"
+                                                                                            v-model="modifyTask.modifyexpired"
+                                                                                            disabled
+                                                                                            clearable>
+                                                                                            </el-input>
+                                                                                </div>
+                                                                                </div>
                                                                         <div class="col-sm">
                                     <label>Product category</label>
                                       <el-select v-model="modifyTask.modifycategory" style="width: 100%;" filterable placeholder="Select category">
@@ -472,23 +545,9 @@
                                         </template>
                                     </el-table-column>
 
-                                    <el-table-column label="Product Price" >
-                                        <template slot-scope="{row}">
-                                        <span class="link-type" >&#8369;{{ row.product_price }}</span>
-                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
-                                        </template>
-                                    </el-table-column>
-
-                                     <el-table-column label="Product Total" >
-                                        <template slot-scope="{row}">
-                                            
-                                        <span class="link-type" >&#8369;{{ row.product_price * row.product_quantity }}</span>
-                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
-                                        </template>
-                                    </el-table-column>
-
+                                   
                                     
-                                    <el-table-column label="Status" class-name="status-col" >
+                                    <!-- <el-table-column label="Status" class-name="status-col" >
                                         <template slot-scope="{row}">
                                         <div v-if="row.product_status == 1">
                                             <el-tag type="success">
@@ -501,12 +560,12 @@
                                         </el-tag>
                                         </div>
                                         </template>
-                                    </el-table-column>
+                                    </el-table-column> -->
 
                                     
                                     <el-table-column label="Created"  align="center">
                                         <template slot-scope="{row}">
-                                        <span>{{ row.createdAt | moment("calendar") }}</span>
+                                        <span>{{ row.createdAt | moment("dddd, MMMM Do YYYY") }}</span>
                                         </template>
                                     </el-table-column>
 
@@ -532,14 +591,18 @@ fetchAllProductInventory,
 removeproduct,
 filter_by_date,
 more_filter_search,
-product_modify, listcategory, getsystemsettingsforinventory, fetchaddedsuppliers, viewingexpirationdate, productexpired} from "@/store/request-common"
+product_modify, listcategory, getsystemsettingsforinventory, fetchaddedsuppliers, viewingexpirationdate, productexpired, CHECK_STOCK_BEFORE_MODIFY} from "@/store/request-common"
+import client from "@/store/0AuthRequest"
 import firebase from 'firebase';
 export default {
     props: {
-        getallproductlist: Array
+        getallproductlist: Array,
+        getallstocks: Function,
+        getListProductInventory: Function
     },
     data(){
         return {
+            editableexpiry: false,
             drawerviewexpiration: false,
             listofsuppliers: [],
              pageSize: 5,
@@ -554,6 +617,7 @@ export default {
             dialogVisible: false,
             modifyDialog: false,
             categoryoptions: [],
+            productSizesOptions: [],
              options: [{
           value: 'Option1',
           label: 'Option1'
@@ -595,7 +659,8 @@ export default {
                 isstatus: false,
                 productImageUrl: '',
                 productcategory: '',
-                productExpiration: ''
+                productExpiration: '',
+                decisionval: true,
             },
             getallproductlist:[],
             filterable: {
@@ -617,14 +682,19 @@ export default {
                 modifyproductprice: '',
                 modifyproductsupplier: '',
                 modifyPID: '',
-                modifycategory: ''
+                modifycategory: '',
+                tagalert: false,
+                pcode: '',
+                modifyexpired: '',
+                fakeexpired: ''
             },
             
             //preview area
             pageSize: 2,
               page: 1,
               dynamicTitle: '',
-              getexpirydatearry: []
+              getexpirydatearry: [],
+              tagalertshow: false
         }
     },
     computed: {
@@ -640,6 +710,7 @@ export default {
      }
     },
     created(){
+        this.fetchAllSizes()
         this.getListProductInventory()
         this.makeproductCode(5)
         this.getallcategories()
@@ -649,8 +720,21 @@ export default {
         }, 3000)
         this.getallsuppliers()
         this.producthasexpired()
+        this.listLoading = false;
     },
     methods:{
+        fetchAllSizes: function(){
+            client.get(`/api/size/fetchAll-size`).then(({ data }) => {
+                this.productSizesOptions = data
+            })
+        },
+        oncancel(){
+            this.editableexpiry = false
+        },
+        oneditable(){
+            this.editableexpiry = true
+            this.modifyTask.modifyexpired = ''
+        },
         producthasexpired(){
             productexpired().then(response => {
                 console.log(response.data)
@@ -668,11 +752,22 @@ export default {
                 setTimeout(() => {
                     viewingexpirationdate(pcode)
                     .then(response => {
-                        console.log(response.data)
+                        if(response.data === "no expiration"){
+                            console.log(response.data)
+                            loading.close()
+                            this.$notify.error({
+                                title: 'Oops',
+                                message: 'There is no expiration date for this product.',
+                                offset: 100
+                                });   
+                                return false;
+                        }else{
+                            console.log(response.data)
                         this.getexpirydatearry = response.data[0].expirydate
                         loading.close()
                          this.drawerviewexpiration = true;
             this.dynamicTitle = "Expiration date for " + " " + pname;
+                        }
                     })
                 }, 2000)
         },
@@ -718,18 +813,10 @@ export default {
 this.page = val
         },
         onmodifysave(){
-             if(!this.modifyTask.modifyproductname ||  !this.modifyTask.modifyproductquantity
-            || !this.modifyTask.modifyproductprice){
+             if(!this.modifyTask.modifyproductname ||  !this.modifyTask.modifyproductquantity){
                  this.$notify.error({
                                 title: 'Oops',
                                 message: 'Something is empty, please try again.',
-                                offset: 100
-                                });   
-                                return false;
-            } else if(this.modifyTask.modifyproductquantity <= 0 || this.modifyTask.modifyproductprice <= 0){
-                 this.$notify.error({
-                                title: 'Oops',
-                                message: 'This is invalid quantity or product price.',
                                 offset: 100
                                 });   
                                 return false;
@@ -777,16 +864,49 @@ this.page = val
                 })
             }
         },
-        onmodifyproduct(productID,productName,product_price,product_quantity,product_supplier,productimgurl, category){
-            this.modifyDialog = true;
+        onmodifyproduct(pcode,productID,productName, prodquantity,product_price,product_supplier,productimgurl, category, expirationcheck){
+            CHECK_STOCK_BEFORE_MODIFY(pcode)
+            .then(response => {
+                if(response.data === "exist"){
+                    this.$confirm('We detect that this product is existing on your stock on hand. Continue?', 'Product Exist On Stock', {
+                        cancelButtonText: 'NO',
+                    confirmButtonText: 'YES',
+                    type: 'info'
+                    }).then(() => {
+                        this.modifyDialog = true;
+                        this.tagalertshow = true;
+                        this.modifyTask.modifyPID = productID
+                        this.modifyTask.modifyproductname = productName
+                        this.modifyTask.modifyproductprice = product_price
+                        this.modifyTask.modifyproductquantity = prodquantity
+                        this.modifyTask.modifyproductsupplier = product_supplier
+                        this.modifyimg1 = productimgurl
+                        this.modifyTask.modifyproductimageurl = productimgurl
+                        this.modifyTask.modifycategory = category
+                        this.modifyTask.pcode  = pcode
+                        this.modifyTask.tagalert = true;
+                        this.modifyTask.modifyexpired = expirationcheck
+                        this.modifyTask.fakeexpired = expirationcheck
+                    })
+                }
+                else{
+                    this.tagalertshow = false;
+                    this.modifyDialog = true;
+            this.modifyTask.tagalert = false;
             this.modifyTask.modifyPID = productID
             this.modifyTask.modifyproductname = productName
             this.modifyTask.modifyproductprice = product_price
-            this.modifyTask.modifyproductquantity = product_quantity
             this.modifyTask.modifyproductsupplier = product_supplier
+            this.modifyTask.modifyproductquantity = prodquantity
             this.modifyimg1 = productimgurl
             this.modifyTask.modifyproductimageurl = productimgurl
             this.modifyTask.modifycategory = category
+            this.modifyTask.modifyexpired = expirationcheck
+            this.modifyTask.fakeexpired = expirationcheck
+                }
+            })
+            
+            // console.log(this.modifyTask)
         },
         ongetall(){
              const loading = this.$loading({
@@ -858,7 +978,7 @@ this.page = val
                     }, 3000)      
             }  
         },
-        onremoveproduct(id){
+        onremoveproduct(id, quantity, pcode){
            this.$confirm('Are you sure you want to remove this product?', 'Warning', {
                 confirmButtonText: 'OK',
                 cancelButtonText: 'Cancel',
@@ -871,7 +991,7 @@ this.page = val
                     background: 'rgba(0, 0, 0, 0.7)'
                 });
                 setTimeout(() => {
-                    removeproduct(id).then((response) => {
+                    removeproduct(id, quantity, pcode).then((response) => {
                         if(response.data === "success deletion"){
                             loading.close()
                             this.getListProductInventory()
@@ -892,24 +1012,16 @@ this.page = val
                     return false; 
                 }) 
         },
-        getListProductInventory(){
-            fetchAllProductInventory().then((response) => {
-                this.listLoading = false;
-                this.getallproductlist = response.data
-                console.log(response.data)
-                this.makeproductCode(5)
-            })
-        },
+        
         onsaveproduct(){
-            if(!this.productTask.productName ||  !this.productTask.productQuantity
-            || !this.productTask.productPrice || !this.productTask.productImageUrl || !this.productTask.productExpiration){
+            if(!this.productTask.productName ||  !this.productTask.productQuantity || !this.productTask.productImageUrl){
                  this.$notify.error({
                                 title: 'Oops',
                                 message: 'Something is empty, please try again.',
                                 offset: 100
                                 });   
                                 return false;
-            } else if(this.productTask.productQuantity <= 0 || this.productTask.productPrice <= 0){
+            } else if(this.productTask.productQuantity <= 0){
                  this.$notify.error({
                                 title: 'Oops',
                                 message: 'This is invalid quantity or product price.',
@@ -934,11 +1046,13 @@ this.page = val
                         if(resp.data === "success product inventory"){
                             loading.close()
                             this.$notify.success({
-                                title: 'Yey',
-                                message: 'Successfully Added',
+                                title: 'Yey!',
+                                message: 'Successfully Added to Stock on Hand',
                                 offset: 100
                                 });
                                 this.getListProductInventory()
+                                this.getallstocks()
+                                this.makeproductCode(5)
                         } else if(resp.data === "empty"){
                              loading.close()
                             this.$notify.error({
@@ -951,6 +1065,7 @@ this.page = val
                     })
                 }, 3000)
                 }).catch(() => {
+                    
                     this.$notify.info({
                     title: 'Info',
                     message: 'No Action',

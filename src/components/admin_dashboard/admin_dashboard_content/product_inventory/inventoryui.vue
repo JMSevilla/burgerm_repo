@@ -32,44 +32,33 @@
                                         </template>
                                     </el-table-column>
                                     
-                                    <el-table-column label="Product Image" >
+                                    <el-table-column label="Product Image" align="center">
                                         <template slot-scope="{row}">
                                         <img :src="row.productimgurl" style="width: 100%; height: auto;" class="img-fluid" alt="No image">
                                         <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
                                         </template>
                                     </el-table-column>
 
-                                    <el-table-column label="Product Name" >
+                                    <el-table-column label="Product Name" align="center">
                                         <template slot-scope="{row}">
                                         <span class="link-type" >{{ row.productName }}</span>
                                         <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
                                         </template>
                                     </el-table-column>
 
-                                     <el-table-column label="Product Quantity" >
+                                     <el-table-column label="Product Quantity" align="center">
                                         <template slot-scope="{row}">
                                         <span class="link-type" >{{ row.product_quantity }}</span>
                                         <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
                                         </template>
                                     </el-table-column>
 
-                                    <el-table-column label="Product Price" >
-                                        <template slot-scope="{row}">
-                                        <span class="link-type" >&#8369;{{ row.product_price }}</span>
-                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
-                                        </template>
-                                    </el-table-column>
-
-                                     <el-table-column label="Product Total" >
-                                        <template slot-scope="{row}">
-                                            
-                                        <span class="link-type" >&#8369;{{ row.product_price * row.product_quantity }}</span>
-                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
-                                        </template>
-                                    </el-table-column>
+                                    
 
                                     
-                                    <el-table-column label="Status" class-name="status-col" >
+
+                                    
+                                    <el-table-column label="Status" class-name="status-col" align="center">
                                         <template slot-scope="{row}">
                                         <div v-if="row.product_status == 1">
                                             <el-tag type="success">
@@ -91,16 +80,21 @@
                                         </template>
                                     </el-table-column>
 
-                                    <el-table-column label="More actions"  align="center">
+                                    <el-table-column label="More Actions" align="center">
                                         <template slot-scope="{row}">
                                         <div v-if="row.product_status == 1">
-                                            <el-button type="danger" style="width: 100%;" @click="ondeactivate(row.productID)">Deactivate</el-button>
+                                           <el-button @click="ondeactivate(row.productID)" type="danger" style="width: 100%;" size="medium">
+                                                   Deactivate
+                                               </el-button>
                                         </div>
                                         <div v-else>
-                                            <el-button type="success" style="width: 100%;" @click="onactivate(row.productID)">Activate</el-button>
+                                               <el-button @click="onactivate(row.productID)" type="success" style="width: 100%;" size="medium">
+                                                   Activate
+                                               </el-button>
                                         </div>
                                         </template>
                                     </el-table-column>
+                                    
 
                                     </el-table>
                                     <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.productArray.length" @current-change="setPage">
@@ -111,6 +105,7 @@
 
 <script>
 import {fetchAllProductInventoryByFilter, activateproduct, deactivateproduct} from "@/store/request-common"
+import {mapGetters} from 'vuex'
 export default {
     computed: {
           pagedTableData() {
@@ -122,7 +117,10 @@ export default {
         return this.productArray.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
       }
        
-     }
+     },
+     ...mapGetters({
+         get_response_product_history_activation: 'get_response_product_history_activation'
+     })
     },
     data(){
         return {
@@ -131,11 +129,13 @@ export default {
               page: 1,
               listLoading: true,
               productArray: [],
-              searchable: ''
+              searchable: '',
+              activitylog_code: ''
         }
     },
     created(){
         this.fetchproducts()
+        this.makeactivation_code(5)
     },
     methods:{
         ondeactivate(id){
@@ -171,6 +171,16 @@ export default {
                     loading.close()
                 }, 2000)
         },
+        makeactivation_code(length) {
+            var result           = [];
+            var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for ( var i = 0; i < length; i++ ) {
+                result.push(characters.charAt(Math.floor(Math.random() *
+            charactersLength)));
+            }
+            return this.activitylog_code = result.join('');
+            },
         onactivate(id){
             const loading = this.$loading({
                     lock: true,
@@ -188,9 +198,26 @@ export default {
                                 });
                                 loading.close();
                                 this.fetchproducts()
+                            this.$store.dispatch(`ACTIONS_PRODUCT_HISTORY_ACTIVATION`, {
+                                self: this,
+                                code: this.activitylog_code
+                            })
+                    } else if(response.data === "cant activate"){
+                        this.$notify.error({
+                                title: 'Oops',
+                                message: 'Sorry but this product cant activate',
+                                offset: 100
+                                });
+                                loading.close();
+                                return false
                     }
                 })
             }, 3000)
+        },
+        activity_log_product_activation_response(){
+            if(this.get_response_product_history_activation === "success"){
+                console.log(this.get_response_product_history_activation)
+            }
         },
         fetchproducts(){
             fetchAllProductInventoryByFilter(this.value2).then(response => {

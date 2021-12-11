@@ -26,13 +26,13 @@
                         <div v-else-if="stepsactive == 1">
                             <el-card shadow="always" style="padding: 20px; margin-top: 20px; margin-bottom: 20px;">
                                 <div>
-                                    <h5>Suppliers Identification Code</h5>
+                                    <h3>Suppliers Identification Code</h3>
                        <el-tag type="danger">Suppliers IC (Required)</el-tag>&nbsp;
                        <el-tooltip content="This identification code is for search feature" placement="top">
   <i class="el-icon-info"></i>
 </el-tooltip>
                        <br>
-                       <label style="margin-top: 10px;">Identification Code</label>
+                       <label style="margin-top: 10px; font-size:16px">Identification Code</label>
                                <el-input
                                     placeholder="Please input identification code"
                                     v-model="supplierTask.supplierIC"
@@ -41,21 +41,21 @@
                                 </div>
                               <div style="margin-top: 20px;">
                                   <hr>
-                                    <h5>Suppliers Details</h5>
+                                    <h3>Suppliers Details</h3>
                        <el-tag type="danger">Suppliers Details (Required)</el-tag>
                        <div class="row" style="margin-top: 20px;">
                            <div class="col-sm">
-                               <label>Firstname</label>
+                               <label style="font-size:16px">First name</label>
                                <el-input
-                                    placeholder="Please input firstname"
+                                    placeholder="Please input first name"
                                     v-model="supplierTask.supplierfirstname"
                                     clearable>
                                     </el-input>
                            </div>
                            <div class="col-sm">
-                               <label>Lastname</label>
+                               <label style="font-size:16px">Last name</label>
                                <el-input
-                                    placeholder="Please input lastname"
+                                    placeholder="Please input last name"
                                     v-model="supplierTask.supplierlastname"
                                     clearable>
                                     </el-input>
@@ -64,10 +64,10 @@
                               </div>
                            <div style="margin-top: 20px;">
                                <hr>
-                               <h5>Suppliers Address</h5>
+                               <h3>Suppliers Address</h3>
                        <el-tag type="danger">Suppliers Address (Required)</el-tag>
                        <div style="margin-top: 20px;">
-                           <label>Primary Address</label>
+                           <label style="font-size:16px">Primary Address</label>
                            <el-input
                             type="textarea"
                             style="margin-bottom: 20px;"
@@ -75,7 +75,7 @@
                             placeholder="Please input primary address"
                             v-model="supplierTask.supplierprimary">
                             </el-input>
-                            <label>Secondary Address (Optional)</label>
+                            <label style="font-size:16px">Secondary Address (Optional)</label>
                            <el-input
                             type="textarea"
                             :autosize="{ minRows: 2, maxRows: 4}"
@@ -85,11 +85,11 @@
                        </div>
                        <div style="margin-top: 20px;">
                            <hr>
-                               <h5>Suppliers Contact Details</h5>
+                               <h3>Suppliers Contact Details</h3>
                        <el-tag type="danger">Suppliers Contact Details (Required)</el-tag>
                            <div class="row" style="margin-top: 20px;">
                                <div class="col-sm">
-                                   <label>Mobile Number</label>
+                                   <label style="font-size:16px">Mobile Number</label>
                                    <el-input
                                     placeholder="Please input mobile number"
                                     v-model="supplierTask.suppliernumber"
@@ -97,7 +97,7 @@
                                     </el-input>
                                </div>
                                <div class="col-sm">
-                                   <label>Email</label>
+                                   <label style="font-size:16px">Email</label>
                                    <el-input
                                     placeholder="Please input email address"
                                     v-model="supplierTask.supplieremail"
@@ -185,14 +185,106 @@
                                             <span>Created : {{item.createdAt | moment("calendar")}}</span>
                                         </div>
                                     </div>
-                                    <el-button @click="oncall(item.suppliernumber)" type="info" style="float: right; margin-bottom: 10px; margin-top: 20px;"><i class="el-icon-phone"></i> Call</el-button>
+                                    <!-- <el-button @click="oncall(item.suppliernumber)" type="info" style="float: right; margin-bottom: 10px; margin-top: 20px;"><i class="el-icon-phone"></i> Call</el-button> -->
                                     <el-button @click="onsendemailoutlook(item.supplieremail)" type="warning" style="float: right; margin-bottom: 10px; margin-top: 20px; margin-right: 10px;"><i class="el-icon-message"></i> Send an email</el-button>
-                                    <el-button @click="onremovesupplier(item.id)" type="danger" style="float: right; margin-bottom: 10px; margin-top: 20px; "><i class="el-icon-delete-solid"></i> Remove</el-button>
+                                    <el-button @click="onremovesupplier(item.id)" type="danger" style="float: right; margin-bottom: 10px; margin-top: 20px; margin-right: 10px;  "><i class="el-icon-delete-solid"></i> Remove</el-button>
                                     <el-button @click="onmodifysupplier(
                                         item.id, item.supplierfirstname, item.supplierlastname, item.supplieremail, item.suppliernumber, item.supplierimgurl
                                     )" type="primary" style="float: right; margin-bottom: 10px; margin-top: 20px; "><i class="el-icon-edit"></i> Modify</el-button>
                                 </el-card>
-                                <!-- modify supplier starts -->
+                                
+                                <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.suppliersList.length" @current-change="setPage">
+                                    </el-pagination>
+                            </div>
+                        </div>
+                            </div>
+                        </div>
+                        <!-- list view mode -->
+                        <div v-else>
+                            <el-table
+                                    :key="0"
+                                    v-loading="listLoading"
+                                    :data="pagedTableData"
+                                    border
+                                    fit
+                                    highlight-current-row
+                                    style="width: 100%;"
+                                    
+                                    >
+                                    <el-table-column label="IC" prop="id" sortable="custom" align="center"  >
+                                        <template slot-scope="{row}">
+                                        <span>{{ row.supplierIdentificationCode }}</span>
+                                        </template>
+                                    </el-table-column>
+                                    
+                                    <el-table-column label="Image" >
+                                        <template slot-scope="{row}">
+                                        <img :src="row.supplierimgurl" style="width: 100%; height: auto;" class="img-fluid" alt="No image">
+                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column label="First name" >
+                                        <template slot-scope="{row}">
+                                        <span class="link-type" >{{ row.supplierfirstname }}</span>
+                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
+                                        </template>
+                                    </el-table-column>
+
+                                     <el-table-column label="Last name" >
+                                        <template slot-scope="{row}">
+                                        <span class="link-type" >{{ row.supplierlastname }}</span>
+                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column label="Mobile Number" >
+                                        <template slot-scope="{row}">
+                                        <span class="link-type" >&#8369;{{ row.suppliernumber }}</span>
+                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column label="Status" class-name="status-col" >
+                                        <template slot-scope="{row}">
+                                        <div v-if="row.isstatus == 1">
+                                            <el-tag type="success">
+                                            Active
+                                        </el-tag>
+                                        </div>
+                                        <div v-else>
+                                                <el-tag type="warning">
+                                            Inactive
+                                        </el-tag>
+                                        </div>
+                                        </template>
+                                    </el-table-column>
+
+                                    
+                                    <el-table-column label="Created"  align="center">
+                                        <template slot-scope="{row}">
+                                        <span>{{ row.createdAt | moment("calendar") }}</span>
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column label="More actions"  align="center">
+                                        <template slot-scope="{row}">
+                                        <div v-if="row.isstatus == 0">
+                                            <el-button type="primary" @click="onmodifysupplier(
+                                        row.id, row.supplierfirstname, row.supplierlastname, row.supplieremail, row.suppliernumber, row.supplierimgurl
+                                    )" size="mini" style="width: 100%; margin-bottom: 10px;">Modify</el-button>
+                                            <el-button type="danger" @click="onremovesupplier(row.id)" size="mini" style="width: 100%; margin-left: 0px;">Remove</el-button>
+                                        </div>
+                                        <div v-else>
+                                        </div>
+                                        </template>
+                                    </el-table-column>
+
+                                    </el-table>
+                                    <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.suppliersList.length" @current-change="setPage">
+                                    </el-pagination>
+                        </div>
+                        <!-- modify supplier starts -->
                                             <el-dialog
                                             style="background-color: #ECEFFC;"
                                                     title="Modify Supplier"
@@ -259,95 +351,6 @@
                                                     
                                                     </el-dialog>
                                                     <!-- modify supplier ends -->
-                                <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.suppliersList.length" @current-change="setPage">
-                                    </el-pagination>
-                            </div>
-                        </div>
-                            </div>
-                        </div>
-                        <!-- list view mode -->
-                        <div v-else>
-                            <el-table
-                                    :key="0"
-                                    v-loading="listLoading"
-                                    :data="pagedTableData"
-                                    border
-                                    fit
-                                    highlight-current-row
-                                    style="width: 100%;"
-                                    
-                                    >
-                                    <el-table-column label="IC" prop="id" sortable="custom" align="center"  >
-                                        <template slot-scope="{row}">
-                                        <span>{{ row.supplierIdentificationCode }}</span>
-                                        </template>
-                                    </el-table-column>
-                                    
-                                    <el-table-column label="Image" >
-                                        <template slot-scope="{row}">
-                                        <img :src="row.supplierimgurl" style="width: 100%; height: auto;" class="img-fluid" alt="No image">
-                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
-                                        </template>
-                                    </el-table-column>
-
-                                    <el-table-column label="Firstname" >
-                                        <template slot-scope="{row}">
-                                        <span class="link-type" >{{ row.supplierfirstname }}</span>
-                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
-                                        </template>
-                                    </el-table-column>
-
-                                     <el-table-column label="Lastname" >
-                                        <template slot-scope="{row}">
-                                        <span class="link-type" >{{ row.supplierlastname }}</span>
-                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
-                                        </template>
-                                    </el-table-column>
-
-                                    <el-table-column label="Mobile Number" >
-                                        <template slot-scope="{row}">
-                                        <span class="link-type" >&#8369;{{ row.suppliernumber }}</span>
-                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
-                                        </template>
-                                    </el-table-column>
-
-                                    <el-table-column label="Status" class-name="status-col" >
-                                        <template slot-scope="{row}">
-                                        <div v-if="row.isstatus == 1">
-                                            <el-tag type="success">
-                                            Active
-                                        </el-tag>
-                                        </div>
-                                        <div v-else>
-                                                <el-tag type="warning">
-                                            Inactive
-                                        </el-tag>
-                                        </div>
-                                        </template>
-                                    </el-table-column>
-
-                                    
-                                    <el-table-column label="Created"  align="center">
-                                        <template slot-scope="{row}">
-                                        <span>{{ row.createdAt | moment("calendar") }}</span>
-                                        </template>
-                                    </el-table-column>
-
-                                    <el-table-column label="More actions"  align="center">
-                                        <template slot-scope="{row}">
-                                        <div v-if="row.isstatus == 0">
-                                            <el-button type="primary" size="mini" style="width: 100%; margin-bottom: 10px;">Modify</el-button>
-                                            <el-button type="danger" size="mini" style="width: 100%; margin-left: 0px;">Remove</el-button>
-                                        </div>
-                                        <div v-else>
-                                        </div>
-                                        </template>
-                                    </el-table-column>
-
-                                    </el-table>
-                                    <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.suppliersList.length" @current-change="setPage">
-                                    </el-pagination>
-                        </div>
                     </el-card>
                 </el-tab-pane>
             </el-tabs>
