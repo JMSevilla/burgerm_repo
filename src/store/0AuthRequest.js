@@ -3,7 +3,7 @@ import axios from 'axios'
 export default axios.create({
     // baseURL: 'https://capstonebackend20210621232104.azurewebsites.net', // live site
     
-    baseURL: 'https://localhost:44370',// local host site
+    baseURL: 'https://burgermaniacapstone.azurewebsites.net',// local host site
     // baseURL:'https://capstonebackend20210817141609.azurewebsites.net',
      headers: {
          "Content-type" : "application/json",
