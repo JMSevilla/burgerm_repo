@@ -424,6 +424,13 @@ export default new Vuex.Store({
       }).catch((e) => {
         alert("error in removing logs" + e)
       })
+    },
+    ACTIONS_UPDATE_FINALIZED_PRODUCT({commit}, {object}){
+     try {
+       httpauth.put(`/api/product-category-management/update-category-name?id=${object.id}`, data);
+     } catch (error) {
+       alert("error in updating stocks" + error)
+     }
     }
   },
   modules: {

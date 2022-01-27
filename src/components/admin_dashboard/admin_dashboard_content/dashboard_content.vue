@@ -18,9 +18,9 @@
                             style="width: 90%; margin-top: 10px; height: auto;" class="img-fluid" alt="no image">
                                 </div>
                                 <div class="col-sm-8">
-                                    <h2>Active Products</h2>
+                                    <h2>Sales Today</h2>
                                     <hr>
-                                    <h3>50</h3>
+                                    <h3>{{ summary.SalesToday }}</h3>
                                 </div>
                             </div>
                         </el-card>
@@ -35,7 +35,7 @@
                                 <div class="col-sm-8">
                                     <h2>System Users</h2>
                                     <hr>
-                                    <h3>3</h3>
+                                    <h3>{{ summary.SystemUsers }}</h3>
                                 </div>
                             </div>
                         </el-card>
@@ -50,7 +50,7 @@
                                 <div class="col-sm-8">
                                     <h2>Total Products</h2>
                                     <hr>
-                                    <h3>62</h3>
+                                    <h3>{{ summary.TotalProducts }}</h3>
                                 </div>
                             </div>
                         </el-card>
@@ -63,9 +63,9 @@
                             style="width: 90%; margin-top: 10px; height: auto;" class="img-fluid" alt="no image">
                                 </div>
                                 <div class="col-sm-8">
-                                    <h2>Pending Deliveries</h2>
+                                    <h2>Warning Products</h2>
                                     <hr>
-                                    <h3>8</h3>
+                                    <h3>{{ summary.WarningProduct }}</h3>
                                 </div>
                             </div>
                         </el-card>
@@ -95,8 +95,8 @@
 </template>
 
 <script>
-import { getallstocks} from "@/store/request-common"
-import {Chart} from 'highcharts-vue'
+import { getallstocks, getDashboardSummary } from "@/store/request-common"
+import { Chart } from 'highcharts-vue'
 import Highcharts from "highcharts";
 import exportingInit from "highcharts/modules/exporting";
 import offlineExporting from "highcharts/modules/offline-exporting";
@@ -107,11 +107,11 @@ export default {
     high: Chart ,
   },
     data: () => ({
-         editableTabsValue: '1',
-        editableTabs: [{
-          title: 'Dashboard',
-          name: '1',
-          content: ''
+            editableTabsValue: '1',
+            editableTabs: [{
+            title: 'Dashboard',
+            name: '1',
+            content: ''
         }],
         tabIndex: 1,
         chartOptions: {
@@ -142,12 +142,20 @@ export default {
                 }
             },
             productArray: [],
-            listLoading: false
+            listLoading: false,
+            summary: []
     }),
     created(){
-        this.allstocks()
+        this.allstocks();
+        this.getSummary();
     },
     methods: {
+        getSummary() {
+            getDashboardSummary().then(response => {
+                this.summary = response.data
+                console.log(response.data);
+            })
+        },
         allstocks(){
             getallstocks().then(res => {
                 

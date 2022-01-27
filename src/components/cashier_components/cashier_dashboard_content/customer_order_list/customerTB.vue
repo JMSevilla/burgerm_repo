@@ -349,8 +349,8 @@
                                                                  <el-table-column
                                                                 label="More Actions">
                                                                      <div v-for="(t) in longRangeArraysOrders" :key="t.paymentinfo.orderID">
-                                                                         <el-link type="primary" @click="onconfirmpayment(t.paymentapprvl.paymentID)">Approve</el-link>&nbsp; |
-                                                                      <el-link @click="onfail()" type="primary">Decline</el-link>
+                                                                         <el-link type="primary" @click="onconfirmpayment(t.paymentapprvl.paymentID)">View receipt</el-link>
+                                                                      <!-- <el-link @click="onfail()" type="primary">Decline</el-link> -->
                                                                      </div>
                                                                 </el-table-column>
                                                             </el-table>
