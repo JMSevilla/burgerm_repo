@@ -208,7 +208,7 @@
                         :closable="false">
                     </el-alert>
                                    <el-input
-                                    placeholder="Please input barcode"
+                                    placeholder="Please input quantity"
                                     v-model="searchSettings.barcodeInput"
                                     clearable
                                     style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
@@ -585,8 +585,7 @@ export default {
         })
       },
       onpay: function(){
-        if(!this.paymentObject.customerName || !this.paymentObject.customerNumber
-        || !this.paymentObject.amount){
+        if(!this.paymentObject.amount){
           this.$message({
           showClose: true,
           message: 'Please provide payment details.',

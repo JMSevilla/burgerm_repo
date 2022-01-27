@@ -9,7 +9,7 @@
                                     </el-input>
           <download-excel
               class="btn btn-default"
-              :data="productArray"
+              :data="exportProductSales"
               worksheet="My Worksheet"
               name="filename.xls"
               style="width: 100%;"
@@ -137,6 +137,7 @@
 
 <script>
 import client from '@/store/0AuthRequest'
+import moment from 'moment'
 import JsonExcel from "vue-json-excel";
 export default {
   components:{
@@ -147,6 +148,7 @@ export default {
              pageSize: 5,
               page: 1,
               productArray: [],
+              exportProductSales: [],
               searchable: '',
               listLoading: false,
               dialogVisible: false,
@@ -185,7 +187,8 @@ export default {
      },
     },
     created(){
-        this.getAllSales()
+        this.getAllSales();
+        this.exportSales();
     },
     methods:{
         getAllSales: function(){
@@ -227,7 +230,57 @@ export default {
                     this.customerInformation.totalPrice = customerArray.totalPrice
                 }
             })
-        }
+        },
+        exportSales: function(){
+            this.$store.dispatch(`actions_get_sales`).then(() => {
+                for(var x = 0; x < this.$store.state.productSales.salesArray.length; x++){
+                    let salesHandler = []
+                    salesHandler = JSON.parse(this.$store.state.productSales.salesArray[x].orderInfo)
+                    this.exportProductSales.push({
+                        MENU : salesHandler[0].orderName,
+                        PRICE : salesHandler[0].orderPrice,
+                        SALES : salesHandler[0].orderQuantity,
+                        SALES_AMOUNT : ( salesHandler[0].orderPrice * salesHandler[0].orderQuantity)
+                    })
+                }
+                this.exportProductSales.push({
+                    MENU : "TOTAL SALES"
+                }),
+                this.exportProductSales.push({
+                    MENU : "TOTAL SALES PER ORDER"
+                }),
+                this.exportProductSales.push({
+                    MENU : "ACTUAL CASH TURN IN"
+                }),
+                this.exportProductSales.push({
+                    MENU : "ACTUAL SALES"
+                }),
+                this.exportProductSales.push({
+                    MENU : "VARIANCE"
+                }),
+                this.exportProductSales.push({
+                    MENU : "EMPLOYEE CHARGED ORDERS"
+                }),
+                this.exportProductSales.push({
+                    MENU : "CASH ADVANCES"
+                }),
+                this.exportProductSales.push({
+                    MENU : "ICE/OTHER EXPENSES"
+                }),
+                this.exportProductSales.push({
+                    MENU : "SENIOR DISCOUNT"
+                }),
+                this.exportProductSales.push({
+                    MENU : "SHORT/OVER"
+                }),
+                this.exportProductSales.push({
+                    MENU : "FOOD PANDA DELIVER"
+                }),
+                this.exportProductSales.push({
+                    MENU : "FOOD PANDA PICK UP"
+                })
+            })
+        },
     }
 }
 </script>

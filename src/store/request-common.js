@@ -442,6 +442,23 @@ export function savedsettings(){
     return httpauth.get(`/api/system-settings/get-po-settings`)
 }
 
+
+//get dashboard summary
+export function getDashboardSummary() {
+    return httpauth.get("/api/dashboard/summary")
+}
+
+//refill finalized product
+export function updateProductQuantity(quantity, id) {
+    return httpauth.put(`/api/product-finalization/modify-finalize-product?quantity=${quantity}&id=${id}`)
+}
+
+//remove finalized product
+export function deleteFinalizedProduct(id) {
+    return httpauth.delete(`/api/product-finalization/remove-finalize-product?id=${id}`)
+}
+
+
 /*
 category deleting
 created at : 22/06/2021
@@ -1245,4 +1262,6 @@ export function resetAttemptStatus(obj){
     } catch(e){
         alert(e)
     }
+
+
 }

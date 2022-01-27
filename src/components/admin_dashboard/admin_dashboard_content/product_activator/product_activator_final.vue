@@ -1,7 +1,7 @@
 <template>
-<div>
-  <div style="margin-top: 30px; margin-bottom: 30px;" class="container">
-    <!-- <el-card shadow="always" style="margin-bottom: 20px;">
+  <div>
+    <div style="margin-top: 30px; margin-bottom: 30px" class="container">
+      <!-- <el-card shadow="always" style="margin-bottom: 20px;">
       <div class="row">
         <div class="col-md-5">
           <h3>Product Activation Graph</h3>
@@ -20,16 +20,17 @@
       </div>
       <high :options="chartOptions" :redraw="true" style="margin-top: 30px;"></high>
     </el-card> -->
-    <el-card shadow="always">
-      <h3>List of Final Product</h3>
-      <el-input
-          style="margin-bottom: 5px; width: 30%; margin-right: 10px;"
+      <el-card shadow="always">
+        <h3>List of Final Product</h3>
+        <el-input
+          style="margin-bottom: 5px; width: 30%; margin-right: 10px"
           placeholder="Search"
           v-model="searchable"
-          clearable>
-      </el-input>
-      
-      <!-- <el-popover
+          clearable
+        >
+        </el-input>
+
+        <!-- <el-popover
         placement="right"
         width="400"
         trigger="click">
@@ -59,108 +60,240 @@
         </div>
         <el-button slot="reference" type="danger"><i class="el-icon-setting"></i> Actions</el-button>
       </el-popover> -->
-      <el-table
+        <el-table
           v-loading="listLoading"
           ref="filterTable"
           :data="pagedTableData"
-          style="width: 100%">
-        <el-table-column  label="Product ID" prop="id" sortable="custom" align="center"  >
-          <template slot-scope="{row}">
-            <span>{{ row.id }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="120" label="Product Code" prop="id" sortable="custom" align="center"  >
-          <template slot-scope="{row}">
-            <span>{{ row.productCode }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="Product Image" prop="id" sortable="custom" align="center"  >
-          <template slot-scope="{row}">
-            <img :src="row.prodimg" alt="No image"
-            style="width: 50%; height: auto;" class="img-fluid"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="Product Name" sortable="custom" align="center"  >
-          <template slot-scope="{row}">
-            <span>{{ row.prodname }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="350" fixed="right" label="Operations" sortable="custom" align="center"  >
-          <template slot-scope="{row}">
-            <div v-if="row.prodstatus == 1">
-              <!-- <el-button size="small" type="danger" @click="ondeactivate(row.id)">Deactivate</el-button>&nbsp; -->
-              <!-- <el-button size="small" type="danger" @click="onremove(row.id, row.productCode, row.prodquantity)">Remove</el-button>&nbsp; -->
-              <el-popover
-                  placement="left"
-                  width="550"
-                  trigger="click">
+          style="width: 100%"
+        >
+          <el-table-column
+            label="Product ID"
+            prop="id"
+            sortable="custom"
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.id }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            width="120"
+            label="Product Code"
+            prop="id"
+            sortable="custom"
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.productCode }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="Product Image"
+            prop="id"
+            sortable="custom"
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              <img
+                :src="row.prodimg"
+                alt="No image"
+                style="width: 50%; height: auto"
+                class="img-fluid"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="Product Name"
+            sortable="custom"
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.prodname }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="Product Quantity"
+            sortable="custom"
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.prodquantity }}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            width="350"
+            fixed="right"
+            label="Operations"
+            sortable="custom"
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              <div v-if="row.prodstatus == 1">
+                <!-- <el-button size="small" type="danger" @click="ondeactivate(row.id)">Deactivate</el-button>&nbsp; -->
+                <!-- <el-button size="small" type="danger" @click="onremove(row.id, row.productCode, row.prodquantity)">Remove</el-button>&nbsp; -->
+                <el-popover placement="left" width="550" trigger="click">
                   <div class="container">
                     <el-card shadow="always">
                       <h3>Ingredients List</h3>
                       <table class="table table-hover table-bordered">
-                            <thead>
-                              <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Product Name</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr v-for="item in listofingredients" :key="item.productCode">
-                                <th scope="row">{{item.productCode}}</th>
-                                <td>{{item.productName}}</td>
-                              </tr>
-                            </tbody>
-                          </table>
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Product Name</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="item in listofingredients"
+                            :key="item.productCode"
+                          >
+                            <th scope="row">{{ item.productCode }}</th>
+                            <td>{{ item.productName }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </el-card>
                   </div>
-                
-                  <el-button @click="ongetrawmats(row.productCode)" slot="reference" size="small" type="info" >View ingredients</el-button>
-                  
+
+                  <el-button
+                    @click="ongetrawmats(row.productCode)"
+                    slot="reference"
+                    size="small"
+                    type="info"
+                    >View ingredients</el-button
+                  >
                 </el-popover>
-            </div>
-           
-            <div v-else>
-              <!-- <el-button size="small" @click="onactivate(row.id)" type="success">Activate</el-button>&nbsp; -->
-              <!-- <el-button size="small" @click="onremove(row.id, row.productCode, row.prodquantity)" type="danger">Remove</el-button>&nbsp; -->
-              
-              <el-popover
-                  placement="left"
-                  width="550"
-                  trigger="click">
+
+                <div class="col-md-6" style="width: 100%; margin-left: 80px">
+                  <el-popover placement="left" width="400" trigger="click">
+                      <div style="display: inline">
+                        <h4>Enter quantity to add</h4>
+                        <el-input
+                          style="width: 100%; margin-bottom: 10px"
+                          placeholder="Please input quantity"
+                          v-model="newProductQuantity"
+                          type="number"
+                          :min="0">
+                        </el-input>
+                      </div>
+                      <div style="display: inline">
+                        <el-button
+                          @click="onUpdateProductQuantity(row.id)"
+                          type="primary"
+                          style="float: right; margin-bottom: 10px"
+                          >Add</el-button>
+                      </div>
+                    
+                    <el-button
+                      slot="reference"
+                      type="warning"
+                      size="small"
+                      style="width: 65%; margin-top: 10%"
+                      plain
+                      >Refill
+                    </el-button>
+                  </el-popover>
+                </div>
+
+                <div class="col-md-6" style="width: 100%; margin-left: 80px">
+                  <el-button
+                    @click="onRemoveProduct(row.id)"
+                    type="danger"
+                    size="small"
+                    style="width: 65%; margin-top: 10%"
+                    plain
+                    >Remove</el-button
+                  >
+                </div>
+              </div>
+
+              <div v-else>
+                <!-- <el-button size="small" @click="onactivate(row.id)" type="success">Activate</el-button>&nbsp; -->
+                <!-- <el-button size="small" @click="onremove(row.id, row.productCode, row.prodquantity)" type="danger">Remove</el-button>&nbsp; -->
+
+                <el-popover placement="left" width="550" trigger="click">
                   <div class="container">
                     <el-card shadow="always">
                       <h3>Ingredients List</h3>
-                         <table class="table table-hover table-bordered">
-                            <thead>
-                              <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Product Name</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr v-for="item in listofingredients" :key="item.productCode">
-                                <th scope="row">{{item.productCode}}</th>
-                                <td>{{item.productName}}</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                                    <!-- <el-pagination layout="prev, pager, next" :page-size="pageSizeRaw" :total="this.listofingredients.length" @current-change="setPageraw">
+                      <table class="table table-hover table-bordered">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Product Name</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="item in listofingredients"
+                            :key="item.productCode"
+                          >
+                            <th scope="row">{{ item.productCode }}</th>
+                            <td>{{ item.productName }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <!-- <el-pagination layout="prev, pager, next" :page-size="pageSizeRaw" :total="this.listofingredients.length" @current-change="setPageraw">
                                     </el-pagination> -->
                     </el-card>
                   </div>
-                  
-                  <el-button @click="ongetrawmats(row.productCode)" slot="reference" size="small" type="info" style="margin-bottom: -10%;">View ingredients</el-button>
-                 
+
+                  <el-button
+                    @click="ongetrawmats(row.productCode)"
+                    slot="reference"
+                    size="small"
+                    type="info"
+                    style="margin-bottom: -10%"
+                  >
+                    View ingredients
+                  </el-button>
                 </el-popover>
-                 
-            </div>
-            <div class="col-md-6" style="width: 100%; margin-left: 80px;" >
-                       <el-button @click="onremovefinal(row.stockID)" type="danger" size="small" style="width: 65%; margin-top: 10%;"
-                       plain>Remove</el-button>
-                    </div>
-          </template>
-        </el-table-column>
-        <!-- <el-table-column
+
+                <div class="col-md-6" style="width: 100%; margin-left: 80px">
+                  <el-popover placement="left" width="400" trigger="click">
+                      <div style="display: inline">
+                        <h4>Enter quantity to add</h4>
+                        <el-input
+                          style="width: 100%; margin-bottom: 10px"
+                          placeholder="Please input quantity"
+                          v-model="newProductQuantity"
+                          type="number"
+                          :min="0">
+                        </el-input>
+                      </div>
+                      <div style="display: inline">
+                        <el-button
+                          @click="onUpdateProductQuantity(row.id)"
+                          type="primary"
+                          style="float: right; margin-bottom: 10px"
+                          >Add</el-button
+                        >
+                      </div>
+                    <el-button
+                      slot="reference"
+                      type="warning"
+                      size="small"
+                      style="width: 65%; margin-top: 10%"
+                      plain
+                      >Refill
+                    </el-button>
+                  </el-popover>
+                </div>
+
+                <div class="col-md-6" style="width: 100%; margin-left: 80px">
+                  <el-button
+                    @click="onRemoveProduct(row.id)"
+                    type="danger"
+                    size="small"
+                    style="width: 65%; margin-top: 10%"
+                    plain
+                    >Remove</el-button
+                  >
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+          <!-- <el-table-column
 prop="prodstatus"
             label="Status"
             width="100"
@@ -180,89 +313,114 @@ prop="prodstatus"
             </el-tag>
           </template>
         </el-table-column> -->
-      </el-table>
-     
-      <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.tableData.length" @current-change="setPage">
-      </el-pagination>
-    </el-card>
+        </el-table>
+
+        <el-pagination
+          layout="prev, pager, next"
+          :page-size="pageSize"
+          :total="this.tableData.length"
+          @current-change="setPage"
+        >
+        </el-pagination>
+      </el-card>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
-import {getallfinalize, graphcheck, activate_product_finalization,
- deactivate_product_finalization, getactivatedproducts,
-getdeactivatedproducts, removeproductfinalization,
-getrawpercreatedproducts, getallproductfinalize, ascendquantity} from "@/store/request-common"
-import {Chart} from 'highcharts-vue'
+import {
+  getallfinalize,
+  graphcheck,
+  activate_product_finalization,
+  deactivate_product_finalization,
+  getactivatedproducts,
+  getdeactivatedproducts,
+  removeproductfinalization,
+  getrawpercreatedproducts,
+  getallproductfinalize,
+  ascendquantity,
+  deleteFinalizedProduct,
+  updateProductQuantity,
+} from "@/store/request-common";
+import { Chart } from "highcharts-vue";
 import Highcharts from "highcharts";
 import exportingInit from "highcharts/modules/exporting";
 import offlineExporting from "highcharts/modules/offline-exporting";
-exportingInit(Highcharts)
-offlineExporting(Highcharts)
-import {mapGetters} from 'vuex'
+exportingInit(Highcharts);
+offlineExporting(Highcharts);
+import { mapGetters } from "vuex";
 export default {
   name: "product_activator_final",
-  components:{
-    high: Chart
+  components: {
+    high: Chart,
   },
-  data(){
-    return{
-       listofingredients: [],
-       searchablerawmats: '',
-       listLoadingraw: false,
+  data() {
+    return {
+      listofingredients: [],
+      searchablerawmats: "",
+      listLoadingraw: false,
       prodbulkaction_activation: false,
       tableData: [],
       filtergraph: true,
-      searchable: '',
+      searchable: "",
       pageSize: 5,
       page: 1,
       pageSizeRaw: 5,
       pageraw: 1,
       listLoading: true,
+      newProductQuantity: "",
       chartOptions: {
         chart: {
-          type: 'bar'
+          type: "bar",
         },
         tooltip: {
-          valueSuffix: ' count',
+          valueSuffix: " count",
           crosshairs: true,
-          shared: true
+          shared: true,
         },
         credits: {
-          enabled: false
+          enabled: false,
         },
         plotOptions: {
           series: {
             dataLabels: {
-              enabled: true
-            }
-          }
+              enabled: true,
+            },
+          },
         },
         series: [],
         subtitle: {
-          text: 'Bar Graph'
+          text: "Bar Graph",
         },
         title: {
-          text: 'Activated and Deactivated Products graph'
-        }
+          text: "Activated and Deactivated Products graph",
+        },
       },
-    }
+    };
   },
   computed: {
     pagedTableData() {
-      if(this.searchable){
-        return this.tableData.filter((item)=>{
-          return this.searchable.toLowerCase().split(' ').every(v => item.prodname.toLowerCase().includes(v) || item.id.toString().toLowerCase().includes(v))
-        })
-      }else{
-        return this.tableData.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
+      if (this.searchable) {
+        return this.tableData.filter((item) => {
+          return this.searchable
+            .toLowerCase()
+            .split(" ")
+            .every(
+              (v) =>
+                item.prodname.toLowerCase().includes(v) ||
+                item.id.toString().toLowerCase().includes(v)
+            );
+        });
+      } else {
+        return this.tableData.slice(
+          this.pageSize * this.page - this.pageSize,
+          this.pageSize * this.page
+        );
       }
-
     },
     ...mapGetters({
-      remove_raws: 'get_response_product_finalization_raw'
-    })
+      remove_raws: "get_response_product_finalization_raw",
+    }),
     // pagedtabledataforraw(){
     //   if(this.searchablerawmats){
     //     return this.listofingredients.filter((item) => {
@@ -274,222 +432,249 @@ export default {
     // }
   },
   created() {
-    this.getallproductfromfinalize()
-    this.trialanderrorgraph()
+    this.getallproductfromfinalize();
+    this.trialanderrorgraph();
   },
   methods: {
-    ongetrawmats(pcode){
-        getrawpercreatedproducts(pcode).then(res => {
-          getallproductfinalize(pcode).then(respo => {
-            console.log(respo.data)
-            this.listofingredients = respo.data
-          })
-        })
+    ongetrawmats(pcode) {
+      getrawpercreatedproducts(pcode).then((res) => {
+        getallproductfinalize(pcode).then((respo) => {
+          //console.log(respo.data);
+          this.listofingredients = respo.data;
+        });
+      });
     },
-    onremove(id, pcode, pquantity){
-      
-      this.$confirm('Are you sure you want to remove this product?', 'Warning', {
-                cancelButtonText: 'No',
-                confirmButtonText: 'Yes',
-                type: 'warning'
-                }).then(() => {
-                  const loading = this.$loading({
-                    lock: true,
-                    text: 'please wait...',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                    });
-                  setTimeout(() => {
-                    removeproductfinalization(id, pcode).then(response => {
-                      if(response.data.msg === "success remove"){
-                        loading.close()
-                        this.$notify.success({
-                                title: 'Nicely done!',
-                                message: 'Successfully remove.',
-                                offset: 100
-                                }); 
-                            this.getallproductfromfinalize()
-                            this.trialanderrorgraph()
-                            ascendquantity(pquantity, response.data.getobj).then(() => {
-                              this.$store.dispatch(`actions_product_remove_raw`, {
-                                pcode
-                              }).then(() => {
-                                if(this.remove_raws === "success"){
-                                  this.$notify.success({
-                                title: 'Nicely done!',
-                                message: 'Successfully remove raws.',
-                                offset: 100
-                                }); 
-                                }
-                              })
-                            })
-                      }
-                    })
-                  }, 2000)
-                })
-    },
-    onchoosegetall(){
-      const loading = this.$loading({
-                    lock: true,
-                    text: 'please wait...',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                    });
-      setTimeout(()=> {
-        this.getallproductfromfinalize()
-    this.trialanderrorgraph()
-    loading.close()
-      }, 1000)
-    },
-    onchoosegetdeactivated(){
-      const loading = this.$loading({
-                    lock: true,
-                    text: 'please wait...',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                    });
-      setTimeout(() => {
-        getdeactivatedproducts().then(resp => {
-          this.tableData = resp.data
-          loading.close()
-          console.log(resp.data)
-          this.getallproductfromfinalize()
-                            this.trialanderrorgraph()
-        })
-      }, 1000)
-      
-    },
-    onchoosegetactivated(){
-      const loading = this.$loading({
-                    lock: true,
-                    text: 'please wait...',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                    });
-      setTimeout(() => {
-        getactivatedproducts().then(resp => {
-          this.tableData = resp.data
-          loading.close()
-          console.log(resp.data)
-          this.getallproductfromfinalize()
-                            this.trialanderrorgraph()
-        })
-      }, 1000)
-    },
-    ondeactivate(id){
-      this.$confirm('Are you sure you want to deactivate this product?', 'Warning', {
-                cancelButtonText: 'No',
-                confirmButtonText: 'Yes',
-                type: 'warning'
-                }).then(() => {
-                  const loading = this.$loading({
-                    lock: true,
-                    text: 'please wait...',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                    });
-                  setTimeout(() => {
-                    deactivate_product_finalization(id)
-                    .then(res => {
-                      if(res.data === "success deactivate"){
-                        loading.close()
-                        this.$notify.success({
-                                title: 'Nicely done!',
-                                message: 'Successfully deactivated.',
-                                offset: 100
-                                }); 
-                            this.getallproductfromfinalize()
-                            this.trialanderrorgraph()     
-                      }
-                    })
-                  }, 3000)
-                })
-    },
-     toggleSelection(rows) {
-        if (rows) {
-          rows.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row);
-          });
-        } else {
-          this.$refs.multipleTable.clearSelection();
+    onremove(id, pcode, pquantity) {
+      this.$confirm(
+        "Are you sure you want to remove this product?",
+        "Warning",
+        {
+          cancelButtonText: "No",
+          confirmButtonText: "Yes",
+          type: "warning",
         }
-      },
+      ).then(() => {
+        const loading = this.$loading({
+          lock: true,
+          text: "please wait...",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)",
+        });
+        setTimeout(() => {
+          removeproductfinalization(id, pcode).then((response) => {
+            if (response.data.msg === "success remove") {
+              loading.close();
+              this.$notify.success({
+                title: "Nicely done!",
+                message: "Successfully remove.",
+                offset: 100,
+              });
+              this.getallproductfromfinalize();
+              this.trialanderrorgraph();
+              ascendquantity(pquantity, response.data.getobj).then(() => {
+                this.$store
+                  .dispatch(`actions_product_remove_raw`, {
+                    pcode,
+                  })
+                  .then(() => {
+                    if (this.remove_raws === "success") {
+                      this.$notify.success({
+                        title: "Nicely done!",
+                        message: "Successfully remove raws.",
+                        offset: 100,
+                      });
+                    }
+                  });
+              });
+            }
+          });
+        }, 2000);
+      });
+    },
+    onchoosegetall() {
+      const loading = this.$loading({
+        lock: true,
+        text: "please wait...",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      setTimeout(() => {
+        this.getallproductfromfinalize();
+        this.trialanderrorgraph();
+        loading.close();
+      }, 1000);
+    },
+    onchoosegetdeactivated() {
+      const loading = this.$loading({
+        lock: true,
+        text: "please wait...",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      setTimeout(() => {
+        getdeactivatedproducts().then((resp) => {
+          this.tableData = resp.data;
+          loading.close();
+          //console.log(resp.data);
+          this.getallproductfromfinalize();
+          this.trialanderrorgraph();
+        });
+      }, 1000);
+    },
+    onchoosegetactivated() {
+      const loading = this.$loading({
+        lock: true,
+        text: "please wait...",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      setTimeout(() => {
+        getactivatedproducts().then((resp) => {
+          this.tableData = resp.data;
+          loading.close();
+          //.log(resp.data);
+          this.getallproductfromfinalize();
+          this.trialanderrorgraph();
+        });
+      }, 1000);
+    },
+    ondeactivate(id) {
+      this.$confirm(
+        "Are you sure you want to deactivate this product?",
+        "Warning",
+        {
+          cancelButtonText: "No",
+          confirmButtonText: "Yes",
+          type: "warning",
+        }
+      ).then(() => {
+        const loading = this.$loading({
+          lock: true,
+          text: "please wait...",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)",
+        });
+        setTimeout(() => {
+          deactivate_product_finalization(id).then((res) => {
+            if (res.data === "success deactivate") {
+              loading.close();
+              this.$notify.success({
+                title: "Nicely done!",
+                message: "Successfully deactivated.",
+                offset: 100,
+              });
+              this.getallproductfromfinalize();
+              this.trialanderrorgraph();
+            }
+          });
+        }, 3000);
+      });
+    },
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach((row) => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
+    },
     handleSelectionChange1(val) {
-        this.multipleSelection = val;
-      },
-    onactivate(id){
-      this.$confirm('Are you sure you want to activate this product?', 'Warning', {
-                cancelButtonText: 'No',
-                confirmButtonText: 'Yes',
-                type: 'warning'
-                }).then(() => {
-                  const loading = this.$loading({
-                    lock: true,
-                    text: 'please wait...',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                    });
-                  setTimeout(() => {
-                    activate_product_finalization(id)
-                    .then(res => {
-                      if(res.data === "success activate"){
-                        loading.close()
-                        this.$notify.success({
-                                title: 'Nicely done!',
-                                message: 'Successfully activated.',
-                                offset: 100
-                                }); 
-                            this.getallproductfromfinalize()
-                            this.trialanderrorgraph()     
-                      }
-                    })
-                  }, 3000)
-                })
+      this.multipleSelection = val;
     },
-    onswitchgraphview(){
-      this.trialanderrorgraph()
+    onactivate(id) {
+      this.$confirm(
+        "Are you sure you want to activate this product?",
+        "Warning",
+        {
+          cancelButtonText: "No",
+          confirmButtonText: "Yes",
+          type: "warning",
+        }
+      ).then(() => {
+        const loading = this.$loading({
+          lock: true,
+          text: "please wait...",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)",
+        });
+        setTimeout(() => {
+          activate_product_finalization(id).then((res) => {
+            if (res.data === "success activate") {
+              loading.close();
+              this.$notify.success({
+                title: "Nicely done!",
+                message: "Successfully activated.",
+                offset: 100,
+              });
+              this.getallproductfromfinalize();
+              this.trialanderrorgraph();
+            }
+          });
+        }, 3000);
+      });
     },
-    trialanderrorgraph(){
-      graphcheck(this.filtergraph).then(res => {
+    onswitchgraphview() {
+      this.trialanderrorgraph();
+    },
+    trialanderrorgraph() {
+      graphcheck(this.filtergraph).then((res) => {
         var vm = this;
 
-        for(var x = 0; x < res.data.bulk.length; x++){
+        for (var x = 0; x < res.data.bulk.length; x++) {
           var ifExist = 0;
-          if(vm.chartOptions.series.length > 0)
-          {
-            for(var check = 0;check <= vm.chartOptions.series.length; check++) {
-              if(res.data.bulk[x].prodname == vm.chartOptions.series[check].name){
+          if (vm.chartOptions.series.length > 0) {
+            for (
+              var check = 0;
+              check <= vm.chartOptions.series.length;
+              check++
+            ) {
+              if (
+                res.data.bulk[x].prodname == vm.chartOptions.series[check].name
+              ) {
                 ifExist = 1;
                 check = vm.chartOptions.series.length;
-                vm.chartOptions.series = []
+                vm.chartOptions.series = [];
                 var data1 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-                for(var dataCount1 = 0; dataCount1 < res.data.bulk.length; dataCount1++){
-                  if(res.data.bulk[dataCount1].prodname == res.data[x].prodname){
-                    data1[res.data.bulk[dataCount1].id] = res.data.counter
+                for (
+                  var dataCount1 = 0;
+                  dataCount1 < res.data.bulk.length;
+                  dataCount1++
+                ) {
+                  if (
+                    res.data.bulk[dataCount1].prodname == res.data[x].prodname
+                  ) {
+                    data1[res.data.bulk[dataCount1].id] = res.data.counter;
                   }
                 }
                 vm.chartOptions.series.push({
                   name: res.data.bulk[x].prodname,
-                  data: data1
-                })
+                  data: data1,
+                });
               }
             }
           }
-          if(ifExist == 0){
+          if (ifExist == 0) {
             var data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-            for(var dataCount = 0; dataCount < res.data.bulk.length; dataCount++){
-              if(res.data.bulk[dataCount].prodname == res.data.bulk[x].prodname){
-                data[dataCount] = res.data.counter
+            for (
+              var dataCount = 0;
+              dataCount < res.data.bulk.length;
+              dataCount++
+            ) {
+              if (
+                res.data.bulk[dataCount].prodname == res.data.bulk[x].prodname
+              ) {
+                data[dataCount] = res.data.counter;
               }
             }
-            console.log(data)
+            //console.log(data);
             vm.chartOptions.series.push({
               name: res.data.bulk[x].prodname,
-              data: data
-            })
+              data: data,
+            });
           }
         }
-      })
+      });
     },
 
     formatter(row, column) {
@@ -498,22 +683,97 @@ export default {
     filterTag(value, row) {
       return row.prodstatus === value;
     },
-    getallproductfromfinalize(){
-      getallfinalize().then(res => {
-        this.tableData = res.data
+    getallproductfromfinalize() {
+      getallfinalize().then((res) => {
+        this.tableData = res.data;
         this.listLoading = false;
-      })
+        console.log(res.data);
+      });
     },
-    setPage (val) {
-      this.page = val
+    setPage(val) {
+      this.page = val;
     },
-    setPageraw(val){
-      this.pageraw = val
-    }
-  }
-}
+    setPageraw(val) {
+      this.pageraw = val;
+    },
+    onUpdateProductQuantity(id) {
+      if (this.newProductQuantity == 0) {
+        this.$notify.error({
+          title: "Error",
+          message: "Empty, please choose enter valid quantity.",
+          offset: 0,
+        });
+        return false;
+      }
+      else {
+        this.$confirm(
+          "Are you sure you want to refill this product?",
+          "Warning",
+          {
+            cancelButtonText: "No",
+            confirmButtonText: "Yes",
+            type: "warning",
+          }
+        ).then(() => {
+          const loading = this.$loading({
+            lock: true,
+            text: "please wait...",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)",
+          });
+          setTimeout(() => {
+            updateProductQuantity(this.newProductQuantity, id).then((response) => {
+                if (response.data === "success refill") {
+                  this.newProductQuantity = 0;;
+                  loading.close();
+                  this.$notify.success({
+                    title: "Success!",
+                    message: "Successfully refill product.",
+                    offset: 0,
+                  });
+                  this.getallproductfromfinalize();
+                }
+              }
+            );
+          }, 1000);
+        });
+      }
+    },
+    onRemoveProduct(id) {
+      this.$confirm(
+        "Are you sure you want to remove this product?",
+        "Warning",
+        {
+          cancelButtonText: "No",
+          confirmButtonText: "Yes",
+          type: "warning",
+        }
+      ).then(() => {
+        const loading = this.$loading({
+          lock: true,
+          text: "please wait...",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)",
+        });
+        setTimeout(() => {
+          console.log(id);
+          deleteFinalizedProduct(id).then((response) => {
+            if (response.data === "success delete") {
+              loading.close();
+              this.$notify.success({
+                title: "Success",
+                message: "Product removed",
+                offset: 100,
+              });
+              this.getallproductfromfinalize();
+            }
+          });
+        }, 1000);
+      });
+    },
+  },
+};
 </script>
 
 <style scoped>
-
 </style>

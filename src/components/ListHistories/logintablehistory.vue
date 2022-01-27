@@ -10,31 +10,24 @@
   <thead>
     <tr>
       <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Status</th>
-      <th scope="col">Logged in at</th>
-      <th scope="col">More Actions</th>
+      <th scope="col">User Email</th>
+      <th scope="col">Login</th>
+      <th scope="col">Logout</th>
     </tr>
   </thead>
   <tbody>
     <tr v-for="item in pagedTableData" :key="item.id">
       <th scope="row">{{item.id}}</th>
       <td>{{item.email}}</td>
-      <td>{{item.message}}</td>
       <td>
         <div v-if="item.loggedinstatus == 1">
-          <el-tag type="success" size="small">Logged in</el-tag>
-        </div>
-        <div v-else>
-          <el-tag type="danger" size="small">Logged out</el-tag>
+          {{item.logindate | moment('calendar')}}
         </div>
       </td>
       <td>
-        {{item.logindate | moment('calendar')}}
-      </td>
-      <td>
-        <el-button @click="onremovehistory(item.id)" type="danger" size="small" plain style="width: 100%;">Remove</el-button>
+        <div v-if="item.loggedinstatus == 0">
+          {{item.logindate | moment('calendar')}}
+        </div>
       </td>
     </tr>
   </tbody>
