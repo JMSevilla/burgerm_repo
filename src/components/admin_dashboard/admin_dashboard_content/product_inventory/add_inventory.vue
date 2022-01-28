@@ -67,6 +67,7 @@
                                         placeholder="Please input product quantity"
                                         v-model="productTask.productQuantity"
                                         type="number"
+                                        :min="1"
                                         clearable>
                                         </el-input>
                                 </div>
@@ -152,6 +153,11 @@
                                         </el-card>
                                         </el-timeline-item>
                                     </el-timeline>
+                                    <el-button
+                                     type="info"
+                                     plain
+                                     @click="onstartover()"
+                                    >Clear</el-button>
                                     <el-button type="primary" plain style="float: right; margin-bottom: 20px; margin-top: 20px;"
                             @click="onsaveproduct()">Save</el-button>
                             </el-card>
@@ -408,6 +414,7 @@
                                                                             placeholder="Product Quantity"
                                                                             v-model="modifyTask.modifyproductquantity"
                                                                             type="number"
+                                                                            :min="1"
                                                                             disabled
                                                                             clearable>
                                                                             </el-input>
@@ -690,7 +697,7 @@ export default {
             },
             
             //preview area
-            pageSize: 2,
+            pageSize: 5,
               page: 1,
               dynamicTitle: '',
               getexpirydatearry: [],
@@ -728,6 +735,7 @@ export default {
                 this.productSizesOptions = data
             })
         },
+         
         oncancel(){
             this.editableexpiry = false
         },
@@ -810,7 +818,7 @@ export default {
             })
         },
         setPage(val){
-this.page = val
+        this.page = val
         },
         onmodifysave(){
              if(!this.modifyTask.modifyproductname ||  !this.modifyTask.modifyproductquantity){
@@ -1013,6 +1021,7 @@ this.page = val
                 }) 
         },
         
+        
         onsaveproduct(){
             if(!this.productTask.productName ||  !this.productTask.productQuantity || !this.productTask.productImageUrl){
                  this.$notify.error({
@@ -1075,6 +1084,7 @@ this.page = val
                 })
             }
         },
+        
         makeproductCode(length) {
             var result           = [];
             var characters       = '0123456789';
@@ -1200,6 +1210,17 @@ this.page = val
                 })
             })
             })
+        },
+       onstartover() {
+            this.productTask.productName = '';
+                this.productTask.productQuantity = 0;
+                this.productTask.productPrice = '';
+                this.productTask.productSupplier = '';
+                this.productTask.productImageUrl = '';
+                this.productTask.productcategory = '';
+                this.productTask.productExpiration = '';
+                this.preview.previewData = '';
+                
         },
     }
 }
