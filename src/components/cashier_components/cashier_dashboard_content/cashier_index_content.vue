@@ -195,7 +195,8 @@
                         :handleClose="handleClose"
                         :onpayerror="onpayerror"
                         :savedSubPayment="savedSubPayment"
-                        :OrderInformation="OrderInformation" />
+                        :OrderInformation="OrderInformation"
+                        :onDecline="onDecline" />
                     </el-card>
                 </div>
             </div>
@@ -226,7 +227,7 @@
                         :closable="false">
                     </el-alert>
                                    <el-input
-                                    placeholder="Please input barcode"
+                                    placeholder="Please input quantity"
                                     v-model="soloOrderTask.soloQuantity"
                                     clearable
                                     style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
@@ -819,7 +820,32 @@ export default {
           .then((response) => {
             this.$store.state.customerTotalPrice = response.data
           })
-      }
+      },
+      onDecline: function(paymentID){
+        this.$confirm('Are you sure you want to decline this transaction?', 'Warning', {
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Yes',
+                type: 'warning'
+                }).then(() => {
+                  const loading = this.$loading({
+                    lock: true,
+                    text: 'please wait...',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                  });
+                  setTimeout(() => { 
+                    client.post(`/api/orders/decline-payment/${paymentID}`)
+                      .then((res) => {
+                        loading.close()
+                            this.fetchAllProduct()
+                            this.fetchAllCustomerOrders()
+                            this.countAllReady()
+                            this.listof_ready_payments()
+                      })
+                  }, 2000)
+                })
+           
+      },
     }
 }
 </script>

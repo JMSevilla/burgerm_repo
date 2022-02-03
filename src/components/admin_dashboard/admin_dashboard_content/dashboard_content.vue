@@ -152,8 +152,7 @@ export default {
     methods: {
         getSummary() {
             getDashboardSummary().then(response => {
-                this.summary = response.data
-                console.log(response.data);
+                this.summary = response.data;
             })
         },
         allstocks(){

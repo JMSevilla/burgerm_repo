@@ -127,13 +127,13 @@
                                                    <div class="row">
                                                        <div class="col-sm">
                                                            <el-button style="width: 100%;" @click="pay" size="small" type="primary" >
-                                                       <i class="el-icon-money"></i> Make payment [F1]
+                                                       <i class="el-icon-money"></i> Make payment
                                                    </el-button>
                                                        </div>
                                                        <div class="col-sm">
                                                            <el-badge :value="countready" style="width: 100%;"  class="item">
                                                     <el-button size="small" @click="onready" style="width: 100%;" :disabled="onreadypay" type="success" >
-                                                       <i class="el-icon-check"></i> Ready [F2]
+                                                       <i class="el-icon-check"></i> Ready
                                                    </el-button>
                                                     </el-badge>
                                                        </div>
@@ -349,8 +349,8 @@
                                                                  <el-table-column
                                                                 label="More Actions">
                                                                      <div v-for="(t) in longRangeArraysOrders" :key="t.paymentinfo.orderID">
-                                                                         <el-link type="primary" @click="onconfirmpayment(t.paymentapprvl.paymentID)">View receipt</el-link>
-                                                                      <!-- <el-link @click="onfail()" type="primary">Decline</el-link> -->
+                                                                         <el-link type="primary" @click="onconfirmpayment(t.paymentapprvl.paymentID)">Approve</el-link> | 
+                                                                         <el-link @click="onDecline(t.paymentapprvl.paymentID)" type="primary">Decline</el-link>
                                                                      </div>
                                                                 </el-table-column>
                                                             </el-table>
@@ -438,7 +438,8 @@ export default {
         handleClose: Function,
         onpayerror: Boolean,
         savedSubPayment: Array,
-        OrderInformation: Array
+        OrderInformation: Array,
+        onDecline : Function,
     },
     data(){
         return {
