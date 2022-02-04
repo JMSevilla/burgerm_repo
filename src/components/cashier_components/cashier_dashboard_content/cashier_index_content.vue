@@ -5,10 +5,9 @@
               <div class="col-md-2">
                 <el-card shadow="always">
                   <h4>Categories</h4>
-                  <b-button variant="primary" size="lg" style="margin-top: 20px; padding: 15px; width: 100%;" >Bundle</b-button>
-                  <b-button variant="primary" size="lg" style="margin-top: 20px; padding: 15px; width: 100%;" >Bundle</b-button>
-  <b-button variant="primary" size="lg" style="margin-top: 20px; padding: 15px; width: 100%;" >Bundle</b-button>
-  <b-button variant="primary" size="lg" style="margin-top: 20px; padding: 15px; width: 100%;" >Bundle</b-button>
+                  <div class="bundleProducts" v-for="bundle in bundleCategory" :key="bundle.bundleID">
+                  <b-button variant="primary" size="lg" style="margin-top: 20px; padding: 15px; width: 100%;" >{{bundle.bundleTitle}}</b-button>
+                  </div>
                 </el-card>
               </div>
                 <div class="col-md-6">
@@ -309,6 +308,7 @@ export default {
                 {text:'Thor Ragnarok',value:3},
             ],
             AllProduct:[],
+            bundleCategory:[],
             fit: ['fill'],
             customerOrderArray: [],
             listLoading: true,
@@ -382,6 +382,7 @@ export default {
         this.fetchAllCustomerOrders()
         this.countAllReady()
         this.listof_ready_payments()
+        this.getBundleCategory()
     },
     methods: {
       OnPrint: function(){
@@ -713,14 +714,18 @@ export default {
         }
       },
       onaddsolocard: function(qty, id, name, image, integrated, price, prodcode, category){
+        const discount = 0.20;
         this.popupActivoSolo = true
         this.soloOrderTask.externalIDQTY = id;
         this.soloOrderTask.soloProdname = name;
         this.soloOrderTask.soloProdimage = image;
         this.soloOrderTask.soloProdIntegrated = integrated;
-        this.soloOrderTask.soloProdprice = price
+        const decimal = Number(this.soloOrderTask.soloProdprice);
+        const newValue = decimal + (price - (price * discount));
+        this.soloOrderTask.soloProdprice = newValue.toString();
         this.soloOrderTask.soloProdCode = prodcode
         this.soloOrderTask.soloProdCategory = category
+
       },  
       onaddcartbundle: function(title, price, image){
         const data = new FormData()
@@ -846,6 +851,13 @@ export default {
                 })
            
       },
+      getBundleCategory: async function(){
+        await client.get(`api/bundle/fetchAll-bundle`).
+        then(({data}) =>{
+              this.bundleCategory =data;
+        })
+      }
+
     }
 }
 </script>

@@ -7,6 +7,7 @@
       <th scope="col">Fullname</th>
       <th scope="col">Message</th>
       <th scope="col">User Type</th>
+      <th scope="col">Archive date</th>
       <th scope="col">Handle</th>
     </tr>
   </thead>
@@ -19,6 +20,12 @@
         <div v-if="item.usertype == 1">
           <el-tag type="success" effect="dark" size="small">Administrator</el-tag>
         </div>
+        <div v-else-if="item.usertype == 0">
+          <el-tag type="warning" effect="dark" size="small">Cashier</el-tag>
+        </div>
+      </td>
+      <td>
+        {{item.archiveCreated | moment('calendar')}}
       </td>
       <td>
         <el-button type="warning" size="mini" @click="recovery(item.id, item.client_id)">Recover</el-button>

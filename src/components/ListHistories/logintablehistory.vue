@@ -25,8 +25,8 @@
         </div>
       </td>
       <td>
-        <div v-if="item.loggedinstatus == 0">
-          {{item.logindate | moment('calendar')}}
+        <div v-if="item.loggedoutstatus == 0">
+          {{item.logoutdate | moment('calendar')}}
         </div>
       </td>
     </tr>
@@ -47,7 +47,7 @@ export default {
     data(){
       return{
         listofhistorieslogindata: [],
-        pageSize: 5,
+        pageSize: 15,
               page: 1,
               searchable:''
       }
