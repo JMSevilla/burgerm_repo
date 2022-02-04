@@ -160,9 +160,16 @@
 
           <el-table-column label="Product Expiration" align="center">
             <template slot-scope="{ row }">
-              <span class="link-type">{{
+              <div v-if="row.expirationprod == null">
+                <el-tag type="danger" size="medium"
+                  >No Expiration</el-tag
+                >
+              </div>
+              <div v-else>
+                <span class="link-type">{{
                 row.expirationprod | moment("MMM DD, YYYY")
               }}</span>
+              </div>
             </template>
           </el-table-column>
 
@@ -633,7 +640,8 @@ export default {
           this.$store.dispatch('actions_modify_stocks', {
             object : this.stockModification
           }).then(() => {
-            if(this.this.getModifiedProductResponse.data === "success update") {
+            if(this.getModifiedProductResponse.data === "success update") {
+              this.dialogVisibleModify = false
               loading.close()
               this.$notify.success({
                 title: "Nicely done!",

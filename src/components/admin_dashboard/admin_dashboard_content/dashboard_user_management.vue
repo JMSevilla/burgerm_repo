@@ -159,7 +159,7 @@
                                     type="password"
                                     clearable show-password>
                                     </el-input>
-                                    <el-button type="warning" @click="ongeneratecashier()" style="width: 100%; margin-bottom: 5px;" plain size="small">Generate Password</el-button>
+                                    <!-- <el-button type="warning" @click="ongeneratecashier()" style="width: 100%; margin-bottom: 5px;" plain size="small">Generate Password</el-button> -->
                                     <el-button type="primary" @click="copyclipcashier()" style="width: 100%; margin-left: 0px;" plain size="small">Copy to clipboard</el-button>
                                 </div>
                                 <div class="col-sm">

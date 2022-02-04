@@ -66,12 +66,7 @@
                                     <el-input
                                         placeholder="Please input product quantity"
                                         v-model="productTask.productQuantity"
-<<<<<<< HEAD
                                         type="text"
-=======
-                                        type="number"
-                                        :min="1"
->>>>>>> 5d1d19964d9a5bf80ade2a96b24294566ca67eb5
                                         clearable>
                                         </el-input>
                                 </div>

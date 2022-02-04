@@ -6,6 +6,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    productArrayByCategories : [],
+    POSCategoriesSidebar : [],
     modifyProductResponse : null,
     Userinfo: [
       {firstname: ''},{lastname: ''}, {uid: 0}, {istype: ''}, {email: ''}
@@ -56,6 +58,12 @@ export default new Vuex.Store({
     readyDialogVisible: false
   },
   getters: {
+    getProductByCategories : (state) => {
+      return state.productArrayByCategories
+    },
+    getState_getPOS : (state) => {
+      return state.POSCategoriesSidebar
+    },
     getState_modifyprod : (state) => {
       return state.modifyProductResponse
     },
@@ -118,6 +126,12 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    mutate_get_product_by_categories : (state, data) => {
+      state.productArrayByCategories = data
+    },
+    mutate_get_pos_categories : (state, data) => {
+      state.POSCategoriesSidebar = data
+    },
     mutate_modify_stocks : (state, data) => {
       state.modifyProductResponse = data
     },
@@ -176,6 +190,31 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    actions_get_product_onClickCategories({commit}, {val}){
+      const promise = new Promise(resolve => {
+        httpauth.get(`/api/product-category-management/get-prod-final-by-categories?category=${val}`).then(r => {
+          return resolve(commit(`mutate_get_product_by_categories`, r))
+        })
+      })
+      return promise;
+    },
+    actions_get_product_viaCategories({val}){
+      const promise = new Promise(resolve => {
+        httpauth.get(`/api/product-category-management/get-prod-final-by-categories/${val}`).then(r => {
+          return resolve(r)
+        })
+      })
+      return promise;
+    },
+    actions_get_pos_categories({commit}){
+      const promise = new Promise((resolve) => {
+        httpauth.get(`/api/product-category-management/get-categories-pos`)
+        .then(r => {
+          return resolve(commit(`mutate_get_pos_categories`, r))
+        })
+      })  
+      return promise;
+    },
     actions_modify_stocks({commit}, {object}) {
       return new Promise((resolve) => {
         var data = new FormData()
