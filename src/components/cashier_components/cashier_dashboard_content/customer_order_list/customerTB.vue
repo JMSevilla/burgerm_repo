@@ -33,13 +33,40 @@
                                     <el-table-column label="Order Price" align="center">
                                         <template slot-scope="{row}">
                                             <sequential-entrance fromRight delay="2000">
-                                        <span class="link-type" >{{ row.orderPrice }}</span>
+                                        <span class="link-type" > &#8369;{{ row.orderPrice }}</span>
                                         </sequential-entrance>
                                         <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
                                         </template>
                                     </el-table-column>
 
-                                     <el-table-column label="Order Quantity" align="center">
+                                    <el-table-column label="Order Status" align="center">
+                                        <template slot-scope="{row}">
+                                            <div v-if="row.orderStatus === '1'">
+                                                <el-tag
+                                                type="success"
+                                                size="mini"
+                                                effect="dark"
+                                                >B1T1</el-tag>
+                                            </div>
+                                            <div v-else-if="row.orderStatus === '2'">
+                                                <el-tag
+                                                type="success"
+                                                size="mini"
+                                                effect="dark"
+                                                >Solo</el-tag>
+                                            </div>
+                                            <div v-else>
+                                                 <el-tag
+                                                type="success"
+                                                size="mini"
+                                                effect="dark"
+                                                >Box of 6</el-tag>
+                                            </div>
+                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
+                                        </template>
+                                    </el-table-column>
+
+                                     <el-table-column label="Order QTY" width="50" align="center">
                                         <template slot-scope="{row}">
                                             <sequential-entrance fromRight delay="2000">
                                         <span class="link-type" >{{ row.orderQuantity }}</span>
@@ -48,60 +75,23 @@
                                         </template>
                                     </el-table-column>
 
-                                    
+                                   
 
-                                     <el-table-column label="More actions" align="center">
+                                     <el-table-column label="More actions"  width="270" align="center">
                                         <template slot-scope="{row}">
                                         <sequential-entrance fromRight delay="2000">
-                                        <el-button type="danger"
+                                            <div style="display: flex;">
+                                                <el-button type="warning" size="mini"
+                                        @click="addDiscountItem(row.orderPrice, row.orderBarcode)">+ Discount</el-button>
+                                        <el-button type="success" size="mini"
+                                        @click="voidItem(row.orderBarcode, row.orderQuantity, row.orderID)">+ Qty</el-button>
+                                                 <el-button type="danger" size="mini"
                                         @click="voidItem(row.orderBarcode, row.orderQuantity, row.orderID)">Void</el-button>
+                                            </div>
                                         </sequential-entrance>
                                         <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
                                         </template>
                                     </el-table-column>
-
-                                    
-
-                                    
-
-                                    
-                                    <!-- <el-table-column label="Status" class-name="status-col" align="center">
-                                        <template slot-scope="{row}">
-                                        <div v-if="row.product_status == 1">
-                                            <el-tag type="success">
-                                            Active
-                                        </el-tag>
-                                        </div>
-                                        <div v-else>
-                                                <el-tag type="warning">
-                                            Inactive
-                                        </el-tag>
-                                        </div>
-                                        </template>
-                                    </el-table-column> -->
-
-                                    
-                                    <!-- <el-table-column label="Created"  align="center">
-                                        <template slot-scope="{row}">
-                                        <span>{{ row.createdAt }}</span>
-                                        </template>
-                                    </el-table-column> -->
-
-                                    <!-- <el-table-column label="More Actions" align="center">
-                                        <template slot-scope="{row}">
-                                        <div v-if="row.product_status == 1">
-                                           <el-button @click="ondeactivate(row.productID)" type="danger" style="width: 100%;" size="medium">
-                                                   Deactivate
-                                               </el-button>
-                                        </div>
-                                        <div v-else>
-                                               <el-button @click="onactivate(row.productID)" type="success" style="width: 100%;" size="medium">
-                                                   Activate
-                                               </el-button>
-                                        </div>
-                                        </template>
-                                    </el-table-column> -->
-                                    
 
                                     </el-table>
                                     <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.passCustomerArray.length" @current-change="setPage">
@@ -499,14 +489,17 @@ export default {
             })
         }
     },
-    created(){
-        this.computeTotalDiscount();
-    },
     mounted(){
         console.log("on mount", this.getTotalPrice)
         this.onfailpayment = true
     },
     methods: {
+        addDiscountItem: function(price, barcode) {
+        // const discount = 0.20;
+        // const decimal = Number(null);
+        // const newValue = decimal + (price - (price * discount));
+
+        },
         onfail: function(){
             this.receiptDrawer = true
         },
@@ -529,10 +522,6 @@ export default {
             this.$store.state.stateDrawer = false
             this.paymentObj.amount = null;
         },
-        computeTotalDiscount: function(){
-            const discount = 0.2
-            this.totalDiscount =  this.getTotalPrice + (this.getTotalPrice + ( this.getTotalPrice * discount))
-        }
     }
 }
 </script>

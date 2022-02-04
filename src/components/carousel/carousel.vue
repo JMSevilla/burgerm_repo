@@ -45,7 +45,7 @@
 
         </div>
         <div v-else-if="countDown < 60">
-          <span>Please wait for : {{countDown}}</span>
+          <label>Please wait for : {{countDown}}</label>
         </div>
         <div v-else>
 
