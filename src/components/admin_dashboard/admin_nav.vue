@@ -21,7 +21,7 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" >
                         <li><router-link class="dropdown-item" :to="{name: 'More Settings'}"><font size="3px;">Settings</font></router-link></li>
                         <li><router-link class="dropdown-item" :to="{name: 'Product History'}"><font size="3px;">Activity Log</font></router-link></li>
-                         <li><router-link class="dropdown-item" :to="{name: 'Profile', query: {email: getemail}}"><font size="3px;">Profile</font></router-link></li>
+                         <!-- <li><router-link class="dropdown-item" :to="{name: 'Profile', query: {email: getemail}}"><font size="3px;">Profile</font></router-link></li> -->
                         <li><hr class="dropdown-divider" /></li>
                         <li>
                             <center>
@@ -52,7 +52,7 @@ export default {
     },
    methods: {
       addinglogouthistory(email){
-          logouthistory(email)
+          logouthistory()
           .then(res => {
               if(res.data.message === "success"){
                   console.log(res.data)

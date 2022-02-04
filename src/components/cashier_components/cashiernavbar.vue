@@ -17,7 +17,7 @@
             <template #button-content>
               <em>{{fullname()}}</em>
             </template>
-            <b-dropdown-item href="#">Profile</b-dropdown-item>
+            <!-- <b-dropdown-item href="#">Profile</b-dropdown-item> -->
              <center>
               <el-button style="width: 80%" type="danger" size="small" @click="onlogout()">Logout</el-button>     
               </center>

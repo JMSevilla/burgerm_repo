@@ -41,10 +41,10 @@
           clearable
           style="margin-top: 10px; margin-bottom: 10px;"
           ></el-input>
-        <div v-if="countDown == 10">
+        <div v-if="countDown == 60">
 
         </div>
-        <div v-else-if="countDown < 10">
+        <div v-else-if="countDown < 60">
           <span>Please wait for : {{countDown}}</span>
         </div>
         <div v-else>
@@ -84,7 +84,7 @@ import client from "@/store/0AuthRequest"
                 },
                 dataimage: testimage,
         jukeCount: 0,
-        countDown : 10
+        countDown : 60
       }
     },
     methods: {
@@ -148,7 +148,7 @@ import client from "@/store/0AuthRequest"
             this.countDown -= 1
             this.countDownTimer()
             if(this.countDown == 0){
-              this.countDown = 10;
+              this.countDown = 60;
               resetAttemptStatus(this.task)
             }
           }, 1000)
@@ -201,6 +201,7 @@ import client from "@/store/0AuthRequest"
                           getAttempts(this.task).then((response) => {
                             console.log("BE response attempts", response.data)
                             this.jukeCount = response.data
+                            console.log("get juke count", response.data)
                             if(this.jukeCount != 3){
                               this.jukeCount = this.jukeCount + 1
                                 attemptRequest(this.task, this.jukeCount).then((res) => {
@@ -211,6 +212,7 @@ import client from "@/store/0AuthRequest"
                               .then((res) => {
                                 if(res.data === "attempt status update"){
                                   this.countDownTimer()
+                                  this.countDown = 59;
                                 }
                               })
                             }
