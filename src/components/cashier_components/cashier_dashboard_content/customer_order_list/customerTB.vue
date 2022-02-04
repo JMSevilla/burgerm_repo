@@ -108,7 +108,11 @@
                                     </el-pagination>
                                     <div style="margin-top: 10px; margin-bottom: 10px;" class="row">
                                         <div class="col-sm"></div>
-                                        <div class="col-sm"></div>
+                                        <div class="col-sm">
+                                        <el-card>
+                                        <h3 style="margin-bottom : 20px;">Total Discount : &#8369; {{totalDiscount}}</h3>
+                                        </el-card>
+                                        </div>
                                         <div class="col-sm">
                                         <el-card shadow="always">
                                             <h3 style="margin-bottom : 20px;">Total Price : &#8369;{{getTotalPrice}}</h3>
@@ -438,7 +442,8 @@ export default {
         handleClose: Function,
         onpayerror: Boolean,
         savedSubPayment: Array,
-        OrderInformation: Array
+        OrderInformation: Array,
+        totalDiscount: Number
     },
     data(){
         return {
@@ -494,6 +499,9 @@ export default {
             })
         }
     },
+    created(){
+        this.computeTotalDiscount();
+    },
     mounted(){
         console.log("on mount", this.getTotalPrice)
         this.onfailpayment = true
@@ -520,6 +528,10 @@ export default {
         onpaymentclose: function(){
             this.$store.state.stateDrawer = false
             this.paymentObj.amount = null;
+        },
+        computeTotalDiscount: function(){
+            const discount = 0.2
+            this.totalDiscount =  this.getTotalPrice + (this.getTotalPrice + ( this.getTotalPrice * discount))
         }
     }
 }
