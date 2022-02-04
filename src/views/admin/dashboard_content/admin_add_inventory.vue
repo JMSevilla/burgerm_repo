@@ -361,7 +361,6 @@ export default {
          getListProductInventory(){
             fetchAllProductInventory().then((response) => {
                 this.getallproductlist = response.data
-                
             })
         },
         

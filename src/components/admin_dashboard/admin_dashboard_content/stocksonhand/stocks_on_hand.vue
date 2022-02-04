@@ -263,7 +263,7 @@
                   <div class="col-md-6" style="width: 100%; margin-left: 20%">
                     <br />
                     <el-button
-                      @click="onmodifystock(row.stockID)"
+                      @click="onmodifystock(row.stockID, row.productname, row.productcategory, row.expirationprod)"
                       type="info"
                       size="small"
                       plain
@@ -357,7 +357,7 @@
                   <div class="col-md-6" style="width: 100%; margin-left: 20%">
                     <br />
                     <el-button
-                      @click="onmodifystock(row.stockID)"
+                      @click="onmodifystock(row.stockID, row.productname, row.productcategory, row.expirationprod)"
                       type="info"
                       size="small"
                       plain
@@ -400,6 +400,64 @@
           </span>
         </el-dialog>
         <!-- el dialog end if custom -->
+
+        <!-- dialog for modification -->
+          <el-dialog
+          title="Tips"
+          :visible.sync="dialogVisibleModify"
+          width="70%"
+          :before-close="handleCloseModify">
+          
+        <div style="margin-top: 30px" class="container">
+            <el-card shadow="always">
+              <h3>Stocks nn hand modification</h3>
+              <div class="row">
+                <div class="col-sm">
+                  <label>Enter product name</label>
+                  <el-input
+                  type="text"
+                  clearable placeholder="Enter new product name"
+                  style="margin-top: 10px; margin-bottom: 10px;"
+                  v-model="stockModification.prodName"
+                  ></el-input>
+                </div>
+                <div class="col-sm">
+                  <label>Enter product Category</label>
+                  <el-select style="width: 100%; margin-top: 10px; margin-bottom: 10px;" v-model="stockModification.prodCategory" filterable placeholder="Select new category">
+                <el-option
+                  v-for="item in optionsModifyCategory"
+                  :key="item.categoryname"
+                  :label="item.categoryname"
+                  :value="item.categoryname">
+                </el-option>
+              </el-select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm">
+                  <label>Enter product expiration</label>
+                  <el-date-picker
+                        style=" margin-top: 10px; margin-bottom: 10px; width: 100%;"
+                        v-model="stockModification.prodExpiration"
+                        format="yyyy/MM/dd"
+                        value-format="yyyy/MM/dd"
+                        type="date"
+                        placeholder="Select date expiration">
+                        </el-date-picker>
+                </div>
+                <div class="col-sm">
+                 
+                </div>
+              </div>
+            </el-card>
+        </div>
+
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisibleModify = false">Cancel</el-button>
+            <el-button type="primary" @click="onsaveUpdate">Save</el-button>
+          </span>
+        </el-dialog>
+        <!-- end dialog for modification -->
       </el-card>
     </div>
   </div>
@@ -412,25 +470,31 @@ import {
   pushrefillbyviaselect,
   pushrefillbyviacustom,
   removezerostock,
-  sorting_expired_product_stocks,
+  sorting_expired_product_stocks, listcategory
 } from "@/store/request-common";
 import { Chart } from "highcharts-vue";
 import Highcharts from "highcharts";
 import exportingInit from "highcharts/modules/exporting";
 import offlineExporting from "highcharts/modules/offline-exporting";
 import { mapGetters } from "vuex";
+import TextField from "@/components/TextField/TextField"
 //import moment from "moment";
 
 exportingInit(Highcharts);
 offlineExporting(Highcharts);
 export default {
   components: {
-    high: Chart,
+    high: Chart, TextField
   },
   data() {
     return {
+      stockModification : {
+        prodName : '', prodCategory : '', prodExpiration : '', id : ''
+      },
+      optionsModifyCategory: [],
       optionscategory: [],
       optionsfilterval: "",
+      dialogVisibleModify: false,
       sortofexpired: false,
       loading: true,
       chartOptions: {
@@ -530,11 +594,68 @@ export default {
     ...mapGetters({
       category_mapper: "get_category_list_mapper",
       filter_category_mapper: "get_stocks_by_category",
+      getModifiedProductResponse : 'getState_modifyprod'
     }),
   },
   methods: {
+    handleCloseModify(done) {
+        this.$confirm('Are you sure to close this dialog?')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      },
     onfetchall() {
       this.allstocks();
+    },
+     getallcategories(){
+            listcategory().then(response => {
+                this.optionsModifyCategory = response.data
+            })
+        },
+    onsaveUpdate: function() {
+ this.$confirm(
+        "Are you sure you want to modify this product?",
+        "Warning",
+        {
+          cancelButtonText: "No",
+          confirmButtonText: "Yes",
+          type: "warning",
+        }
+      ).then(() => {
+         const loading = this.$loading({
+        lock: true,
+        text: "please wait..",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+        setTimeout(() => {
+          this.$store.dispatch('actions_modify_stocks', {
+            object : this.stockModification
+          }).then(() => {
+            if(this.this.getModifiedProductResponse.data === "success update") {
+              loading.close()
+              this.$notify.success({
+                title: "Nicely done!",
+                message: "Successfully update.",
+                offset: 100,
+              });
+               this.getnotifforcritical();
+    this.allstocks();
+    this.getallcategorylist();
+            }
+            
+          })
+        }, 3000)
+      })
+    },
+    onmodifystock: function(id, pname, pcategory, pexpiration) {
+      this.getallcategories();
+     this.dialogVisibleModify = true
+    this.stockModification.id = id
+    this.stockModification.prodName = pname
+    this.stockModification.prodCategory = pcategory
+    // this.stockModification.prodExpiration = pexpiration
     },
     onfiltercategory() {
       this.listLoading = true;

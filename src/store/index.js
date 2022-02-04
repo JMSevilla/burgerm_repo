@@ -6,6 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    modifyProductResponse : null,
     Userinfo: [
       {firstname: ''},{lastname: ''}, {uid: 0}, {istype: ''}, {email: ''}
     ],
@@ -55,6 +56,9 @@ export default new Vuex.Store({
     readyDialogVisible: false
   },
   getters: {
+    getState_modifyprod : (state) => {
+      return state.modifyProductResponse
+    },
     getState_Drawer: (state) => {
       return state.stateDrawer
     },
@@ -114,6 +118,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    mutate_modify_stocks : (state, data) => {
+      state.modifyProductResponse = data
+    },
     mutate_get_full_client_details: (state, data) => {
       state.emailObject.get_full_client_details = data
     },
@@ -169,6 +176,19 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    actions_modify_stocks({commit}, {object}) {
+      return new Promise((resolve) => {
+        var data = new FormData()
+        data.append("id", object.id)
+        data.append("prodname", object.prodName)
+        data.append("prodcateg", object.prodCategory)
+        data.append("prodexp", object.prodExpiration)
+        httpauth.post(`/api/modificationstocks/updatestocksproducts`, data)
+        .then(r => {
+          resolve(commit(`mutate_modify_stocks`, r))
+        })
+      })
+    },
     actions_get_sales({commit}){
       try {
         return new Promise((resolve) => {

@@ -66,7 +66,7 @@
                                     <el-input
                                         placeholder="Please input product quantity"
                                         v-model="productTask.productQuantity"
-                                        type="number"
+                                        type="text"
                                         clearable>
                                         </el-input>
                                 </div>
@@ -155,26 +155,7 @@
                                     <el-button type="primary" plain style="float: right; margin-bottom: 20px; margin-top: 20px;"
                             @click="onsaveproduct()">Save</el-button>
                             </el-card>
-                            <!-- <el-card style="margin-top: 30px;" shadow="always"> -->
-                                <!-- <h5>Default settings</h5>
-                                <el-switch
-                                style="display: block; margin-bottom: 30px;"
-                                v-model="productTask.isadmin"
-                                disabled
-                                active-color="#13ce66"
-                                inactive-color="#ff4949"
-                                active-text="Administrator"
-                                inactive-text="Not admin">
-                                </el-switch> -->
-                                <!-- <el-switch
-                                style="display: block; margin-bottom: 30px;"
-                                v-model="productTask.isstatus"
-                                disabled
-                                active-color="#13ce66"
-                                inactive-color="#ff4949"
-                                active-text="Active"
-                                inactive-text="Inactive">
-                                </el-switch> -->
+                           
                     </el-card>
                 </div>
                 <div class="col-sm">
@@ -218,95 +199,7 @@
                         <el-button type="primary" plain size="mini" @click="onsearchbydate()">Search</el-button>
                         
                         </div>
-                        
-                        <!-- Element Dialog for More Filters -->
-                            <!-- <el-dialog
-                            
-                                title="Edit more search filters"
-                                :visible.sync="dialogVisible"
-                                width="50%"
-                                :before-close="handleClose">
-                                <div style="padding: 25px;">
-                                     <el-alert
-                                 style="margin-bottom: 20px;"
-                                    title="Note : You can only filter minimal search options here."
-                                    type="error" :closable="false">
-                                </el-alert>
-                                <el-card style="margin-bottom: 20px; width: 30%;" shadow="hover">
-                                    <el-switch
-                                    style="display: block;"
-                                    v-model="morefilter.filterbased"
-                                    active-color="#13ce66"
-                                    inactive-color="#ff4949"
-                                    active-text="Exact result"
-                                    inactive-text="Filter based">
-                                    </el-switch>
-                                </el-card>
-                               <div class="row">
-                                   <div class="col-sm">
-                                        <el-card shadow="hover" id="filter1">
-                                            <h5>Search by product code</h5>
-                                    <el-input
-                                    placeholder="Please input product code"
-                                    v-model="morefilter.filterbycode"
-                                    clearable>
-                                    </el-input>
-                                        </el-card>
-                                   </div>
-                                   <div class="col-sm">
-                                       <el-card shadow="hover" id="filter2">
-                                            <h5>Search by product name</h5>
-                                    <el-input
-                                    placeholder="Please input product name"
-                                    v-model="morefilter.filterbypname"
-                                    clearable>
-                                    </el-input>
-                                       </el-card>
-                                   </div>
-                               </div>
-                               <div class="row" style="margin-top: 30px;">
-                                   <div class="col-sm">
-                                        <el-card shadow="hover" id="filter3">
-                                            <h5>Search by status</h5>
-                                    <el-radio v-model="morefilter.filterbystatus1" label="1">Active</el-radio>
-                                    <el-radio v-model="morefilter.filterbystatus1" label="0">Inactive</el-radio>
-                                        </el-card>
-                                   </div>
-                                   <div class="col-sm">
-                                        <el-card shadow="hover" id="filter4">
-                                            <div style="display: inline;">
-                                                <h6>Get all result</h6>
-                                    <el-button type="primary" size="mini" plain style="width: 100%;" @click="ongetall()">Get All</el-button>
-                                            </div>
-                                        </el-card>
-                                   </div>
-                               </div>
-                               <div class="row" style="margin-top: 30px;">
-                                   <div class="col-sm">
-                                        <el-card shadow="hover" id="filter3">
-                                            <h5>Search by category</h5>
-                                             
-                                      <el-select v-model="morefilter.filterbycateg" style="width: 100%;" filterable placeholder="Select category">
-                                        <el-option
-                                        v-for="item in categoryoptions"
-                                        :key="item.categoryname"
-                                        :label="item.categoryname"
-                                        :value="item.categoryname">
-                                        </el-option>
-                                    </el-select>
-                                        </el-card>
-                                   </div>
-                                   <div class="col-sm">
-                                     
-                                   </div>
-                               </div>
-                                </div>
-                                <span slot="footer" class="dialog-footer">
-                                    <el-button @click="dialogVisible = false">Cancel</el-button>
-                                    <el-button type="primary" @click="onsearchnow()">Search now</el-button>
-                                </span>
-                                </el-dialog> -->
-                        <!-- Element Dialog for more filters end -->
+                       
                         <hr>
                           <div v-if="dataview == true">
                               <div v-if="getallproductlist == null || getallproductlist == ''">
@@ -316,10 +209,10 @@
                                        alt="No Data" style="width: 100%; height: auto;" class="img-fluid">
                                   </div>
                               </center>
-                          </div>
-                          <div v-else>
-                              <el-timeline style="margin-top: 50px;" >
-                                <el-timeline-item v-for="item in pagedTableData" :key="item.productID" :timestamp="item.createdAt | moment('dddd, MMMM Do YYYY')" placement="top">
+                                </div>
+                                <div v-else>
+                                          <el-timeline style="margin-top: 50px;" >
+                                <el-timeline-item v-for="item in pagedTimelineTableData" :key="item.productID" :timestamp="item.createdAt | moment('dddd, MMMM Do YYYY')" placement="top">
                                 <el-card style="padding: 15px;">
                                     <div class="row">
                                         <div class="col-md-3">
@@ -332,7 +225,7 @@
                                                 <p>Product Code : <el-tag effect="dark">{{item.productCode}}</el-tag></p>
                                             </div>
                                             <div class="col-md-7">
-                                                <el-button type="warning" style="float: right;" @click="onviewexpiration(item.productCode, item.productName)">View expiration</el-button>
+                                                <!-- <el-button type="warning" style="float: right;" @click="onviewexpiration(item.productCode, item.productName)">View expiration</el-button> -->
                                             </div>
                                         </div>
                                                     <h4>Product Name : {{item.productName}}</h4>
@@ -486,7 +379,9 @@
                                 </el-card>
                                 </el-timeline-item>
                             </el-timeline>
-                          </div>
+                                    <el-pagination layout="prev, pager, next" :page-size="timelinePageSize" :total="this.getallproductlist.length" @current-change="setPage">
+                                    </el-pagination>
+                                </div>
                             <!-- el dialog view expiration -->
                                 <el-dialog
                                     :title="dynamicTitle"
@@ -503,8 +398,7 @@
                                     </span>
                                     </el-dialog>
                             <!-- end el dialog view expiration -->
-                          <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.getallproductlist.length" @current-change="setPage">
-                                    </el-pagination>
+                          
                           </div>
                           <div v-else>
                               <!-- start table -->
@@ -607,6 +501,7 @@ export default {
             listofsuppliers: [],
              pageSize: 5,
               page: 1,
+              timelinePageSize : 5, timelinePage : 1,
               listLoading: true,
               searchable: '',
             dataview: true,
@@ -705,6 +600,16 @@ export default {
       })
       }else{
         return this.getallproductlist.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
+      }
+       
+     },
+     pagedTimelineTableData() {
+       if(this.searchable){
+      return this.getallproductlist.filter((item)=>{
+        return this.searchable.toLowerCase().split(' ').every(v => item.productName.toLowerCase().includes(v))
+      })
+      }else{
+        return this.getallproductlist.slice(this.timelinePageSize * this.timelinePage - this.timelinePageSize, this.timelinePageSize * this.timelinePage)
       }
        
      }
@@ -1050,6 +955,7 @@ this.page = val
                                 message: 'Successfully Added to Stock on Hand',
                                 offset: 100
                                 });
+                                this.clearFieldsProductAdded();
                                 this.getListProductInventory()
                                 this.getallstocks()
                                 this.makeproductCode(5)
@@ -1074,6 +980,16 @@ this.page = val
                     return false;
                 })
             }
+        },
+        clearFieldsProductAdded : function() {
+            this.productTask.productCode = 0
+            this.productTask.productName = null
+            this.productTask.productQuantity = 0
+            this.productTask.productPrice = null
+            this.productTask.productSupplier = null
+            this.productTask.productImageUrl = null
+            this.productTask.productcategory = null
+            this.productTask.productExpiration = null
         },
         makeproductCode(length) {
             var result           = [];

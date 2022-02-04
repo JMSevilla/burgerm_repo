@@ -1100,13 +1100,9 @@ remove logout history
 created at : 07/20/2021
 */
 
-export function logouthistory(email){
+export function logouthistory(){
     try {
-        var data = new FormData()
-        data.append("email", email)
-        data.append("message" , "This user has been logout")
-        data.append("status", "0")
-        return httpauth.post(`/api/login-history-management/add-logout-history`, data)
+        return httpauth.put(`/api/login-history-management/add-logout-history`)
     } catch (error) {
         alert("error in logout history" + error)
     }
