@@ -205,7 +205,8 @@
                         :handleClose="handleClose"
                         :onpayerror="onpayerror"
                         :savedSubPayment="savedSubPayment"
-                        :OrderInformation="OrderInformation" />
+                        :OrderInformation="OrderInformation"
+                        :fetchingCustomers="fetchAllCustomerOrders" />
                     </el-card>
                 </div>
             </div>
@@ -561,6 +562,7 @@ export default {
                   this.fetchAllCustomerOrders()
                   this.countAllReady()
                   this.listof_ready_payments()
+                  this.$store.state.customerTotalPrice = 0;
                }
              })
                   }, 2000)
@@ -1055,7 +1057,7 @@ export default {
           .get(`/api/orders/order-list`)
           .then(({ data }) => {
               this.customerOrderArray = data
-              console.log(data)
+              console.log("customer cart",data)
               this.totalPriceComputed()
               this.listLoading = false
           })

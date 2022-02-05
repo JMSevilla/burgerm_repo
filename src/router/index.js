@@ -147,6 +147,11 @@ const routes = [
         path: '/sales' + makeid(200),
         name: 'Sales',
         component: () => import("@/views/admin/dashboard_content/admin_sales")
+      }, 
+      {
+        path: '/inventory_reports' + makeid(200),
+        name: 'InventoryReports',
+        component: () => import("@/views/admin/dashboard_content/admin_inventory_reports")
       }
     ]
   }

@@ -11,20 +11,80 @@
         <b-navbar-nav class="ml-auto">
 
 
-
+<el-button type="danger" size="small" plain style="margin-right : 30px;" @click="drawer = true">Close Store Mode</el-button>
           <b-nav-item-dropdown right>
             <!-- Using 'button-content' slot -->
+            
             <template #button-content>
-              <em>{{fullname()}}</em>
+               <em>{{fullname()}}</em>
             </template>
             <!-- <b-dropdown-item href="#">Profile</b-dropdown-item> -->
              <center>
               <el-button style="width: 80%" type="danger" size="small" @click="onlogout()">Logout</el-button>     
               </center>
           </b-nav-item-dropdown>
+          
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
+    <el-drawer
+  title="I am the title"
+  :visible.sync="drawer"
+  :with-header="false"
+  :before-close="handleClose">
+
+    <div style="margin-top: 100px;" class="container">
+      <el-alert
+        title="Warning"
+        style="margin-top: 10px; margin-bottom: 20px;"
+        type="warning"
+        closable="false"
+        description="Upon confirming your close products the data may enter on admin inventory reports"
+        show-icon>
+      </el-alert>
+  <el-card shadow="always" style="margin-top: 20px;">
+        <h3>Closing Product Inventory Reports</h3>
+        <table class="table table-hover table-outline">
+          <thead>
+                            <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Product Name</th>
+                            <th scope="col">BEG</th>
+                            <th scope="col">Available</th>
+                            <th scope="col">END</th>
+                            <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in pagedTableData" :key="item.invID">
+                            <th style="font-size: 14px;" scope="row">{{item.invID}}</th>
+                            <td style="font-size: 14px;">{{item.productName}}</td>
+                            <td style="font-size: 14px;">{{item.beg_qty}}</td>
+                            <td style="font-size: 14px;">{{item.available}}</td>
+                            <td style="font-size: 14px;">{{item.end_qty}}</td>
+                            <td style="font-size: 14px;">
+                              <div v-if="item.refstatus == '1'">
+                                <el-button
+                              type="danger"
+                              size="small"
+                              @click="onCloseStoreMode(item.refId)"
+                              >Confirm Close</el-button>
+                              </div>
+                              <div v-else>
+                                <el-tag size="small" type="success">Closed</el-tag>
+                              </div>
+                            </td>
+                            </tr>
+                        </tbody>
+        </table>
+        <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.inventoryReports.length" @current-change="setPage">
+                                    </el-pagination>
+      </el-card>
+    </div>
+
+
+</el-drawer>
+
   </div>
 </template>
 
@@ -35,7 +95,54 @@ export default {
   props: {
     fullname: Function
   },
+  data(){ 
+    return{
+      drawer : false, pageSize : 5, page: 1, inventoryReports: []
+    }
+  },
+  computed: {
+    pagedTableData(){
+            if(this.searchable){
+                return this.inventoryReports.filter((item)=>{
+                    return this.searchable.toLowerCase().split(' ').every(v => item.productName.toString().toLowerCase().includes(v))
+                })
+                }else{
+                    return this.inventoryReports.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
+                }
+        },
+  },
+  created(){
+    this.getInventoryReports()
+  },
   methods:{
+    onCloseStoreMode(refid){
+      client.put('/api/inventory-reports/get-quantity-current-inventory?refId=' + refid).then(res => {
+        console.log(res.data)
+        if(res.data === "success update end"){
+           this.$notify.success({
+                                title: 'Success!',
+                                message: 'This product successfully close and sent to END Reports',
+                                offset: 100
+                                });
+                                this.getInventoryReports()
+        }
+      })
+    },
+     getInventoryReports: function() {
+           client.get('/api/inventory-reports/get-inventory-reports').then(response => {
+               this.inventoryReports = response.data
+           })
+       },
+    setPage(val){
+      this.page = val
+    },
+    handleClose(done) {
+        this.$confirm('Are you sure you want to close this?')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      },
      addinglogouthistory(email){
           logouthistory(email)
           .then(res => {
