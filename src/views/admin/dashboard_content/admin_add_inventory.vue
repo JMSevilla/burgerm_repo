@@ -190,6 +190,7 @@
 <script>
 import inventoryadding from "@/components/admin_dashboard/admin_dashboard_content/product_inventory/add_inventory"
 import {importExcelGenerateData, fetchAllProductInventory, fetchlistofstocks, pullrequestforproduct} from "@/store/request-common"
+import client from "@/store/0AuthRequest"
 export default {
     data(){
         return{
@@ -315,11 +316,20 @@ export default {
                                 this.getListProductInventory()
                                 this.getallstocks();
                                 this.pullproductsdialogVisible = false;
+                                this.productInventoryReportsEntry(pname, this.task.pquantity, pcode);
                             }
                         })
                     }, 3000)
                 })
             }
+        },
+        productInventoryReportsEntry : function(pname, pquantity, pcode) {
+            client.post('/api/inventory-reports/inventory-report-entry?prodname=' + pname + '&beg=' + pquantity + '&refId=' + pcode)
+            .then(response => {
+                if(response.data === "success entry") {
+                    return true
+                }
+            })
         },
          getallstocks(){
             fetchlistofstocks().then(response => {

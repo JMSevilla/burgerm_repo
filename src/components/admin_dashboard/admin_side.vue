@@ -139,6 +139,12 @@
                                         <img src="https://cdn3.iconfinder.com/data/icons/leto-finance-money-1/64/financsial_audit_business_report_sales_money-256.png"
                                      alt="no image" style="width: 15%; height:auto;">&nbsp;
                                         Sales
+                                        </el-menu-item>
+
+                                        <el-menu-item index="6-3" @click="oninventoryreports()">
+                                        <img src="https://cdn3.iconfinder.com/data/icons/leto-finance-money-1/64/financsial_audit_business_report_sales_money-256.png"
+                                     alt="no image" style="width: 15%; height:auto;">&nbsp;
+                                        Inventory Reports
                                         </el-menu-item><hr>
 
                                         <!-- <el-menu-item index="10-2" @click="onmoresettings()">
@@ -225,6 +231,20 @@ export default {
         
     },
     methods: {
+        oninventoryreports(){
+            
+             const loading = this.$loading({
+          lock: true,
+          text: 'please wait..',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        setTimeout(() => {
+          loading.close()
+          this.$router.push({name: 'InventoryReports'}).catch(() => {})
+
+        }, 2000)
+        },
         onsales: function(){
             const loading = this.$loading({
           lock: true,

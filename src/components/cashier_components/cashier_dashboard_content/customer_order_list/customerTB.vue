@@ -77,16 +77,25 @@
 
                                    
 
-                                     <el-table-column label="More actions"  width="270" align="center">
+                                     <el-table-column label="More actions"  width="300" align="center">
                                         <template slot-scope="{row}">
                                         <sequential-entrance fromRight delay="2000">
                                             <div style="display: flex;">
-                                                <el-button type="warning" size="mini"
-                                        @click="addDiscountItem(row.orderPrice, row.orderBarcode)">+ Discount</el-button>
+                                                <div v-if="row.discountIsApplied === '1'">
+                                                    <el-button @click="oncancelDiscount(row.orderID, row.orderBarcode)" type="danger" size="mini">Cancel Discount</el-button>
                                         <el-button type="success" size="mini"
-                                        @click="voidItem(row.orderBarcode, row.orderQuantity, row.orderID)">+ Qty</el-button>
+                                        @click="onaddqty(row.orderID)">+ Qty</el-button>
                                                  <el-button type="danger" size="mini"
                                         @click="voidItem(row.orderBarcode, row.orderQuantity, row.orderID)">Void</el-button>
+                                                </div>
+                                                <div v-else>
+                                                    <el-button type="warning" size="mini"
+                                        @click="addDiscountItem(row.orderPrice, row.orderID, row.orderBarcode)">+ Discount</el-button>
+                                        <el-button type="success" size="mini"
+                                        @click="onaddqty(row.orderID)">+ Qty</el-button>
+                                                 <el-button type="danger" size="mini"
+                                        @click="voidItem(row.orderBarcode, row.orderQuantity, row.orderID)">Void</el-button>
+                                                </div>
                                             </div>
                                         </sequential-entrance>
                                         <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
@@ -351,6 +360,27 @@
                                                     </el-card>
                                                 </div>
                                             </el-dialog>
+                                            <!-- adding qty -->
+                                            <el-dialog
+                                                                            title="Tips"
+                                                                            :visible.sync="addqtydialogvisible"
+                                                                            width="30%"
+                                                                            :before-close="handleCloseaddqty">
+                                                                            <div class="container">
+                                                                                <span>Enter Quantity</span>
+                                                                                <el-input
+                                                                                type="text"
+                                                                                clearable
+                                                                                placeholder="Enter quantity"
+                                                                                v-model="updateQtyTask.addingQty"
+                                                                                style="margin-top: 10px; margin-bottom : 10px;"
+                                                                                ></el-input>
+                                                                            </div>
+                                                                            <span slot="footer" class="dialog-footer">
+                                                                                <el-button @click="addqtydialogvisible = false">Cancel</el-button>
+                                                                                <el-button type="primary" @click="onconfirmaddqty">Confirm</el-button>
+                                                                            </span>
+                                                                            </el-dialog> 
                                                     <!-- Receipt Printing -->
      <div style="display: none;" id="printMe">
                                                                
@@ -404,7 +434,9 @@
 
 				</div><!--End InvoiceBot-->
   </div><!--End Invoice-->
-                                                                     </div>       
+                                                                     </div>    
+                                                                       <!-- add qty  -->
+                                                                     
 
                                                             </div>
                                                     <!-- end receipt -->
@@ -414,6 +446,7 @@
 
 <script>
 import {mapGetters} from "vuex"
+import client from "@/store/0AuthRequest"
 export default {
     props: {
         passCustomerArray: Array,
@@ -433,10 +466,12 @@ export default {
         onpayerror: Boolean,
         savedSubPayment: Array,
         OrderInformation: Array,
-        totalDiscount: Number
+        totalDiscount: Number,
+        fetchingCustomers: Function
     },
     data(){
         return {
+            discountIsHide : false,
             readyDialogVisible: false,
               tableData: [],
              pageSize: 5,
@@ -450,7 +485,7 @@ export default {
           timestamp: '2018-04-13'
         }],
         onfailpayment: false,
-        receiptDrawer: false
+        receiptDrawer: false, addqtydialogvisible : false, updateQtyTask: { addingQty : '', addingID: ''}
         }
     },
     computed: {
@@ -492,13 +527,96 @@ export default {
     mounted(){
         console.log("on mount", this.getTotalPrice)
         this.onfailpayment = true
+        this.fetchingCustomers()
     },
     methods: {
-        addDiscountItem: function(price, barcode) {
-        // const discount = 0.20;
-        // const decimal = Number(null);
-        // const newValue = decimal + (price - (price * discount));
+        onconfirmaddqty: function(){
+            client.put('/api/orders/update-qty-cart?id=' + this.updateQtyTask.addingID + '&qty=' + this.updateQtyTask.addingQty).then(response => {
+                console.log(response.data)
+                if(response.data === "success update qty"){
+                    this.$notify.success({
+                            title : 'Success',
+                            message : 'Successfully Added Quantity',
+                            offset: 100
+                        })
+                        this.fetchingCustomers()
+                }
+            })
+        },
+        onaddqty(id){
+            this.addqtydialogvisible = true
+            this.updateQtyTask.addingID = id
+        },
+        handleCloseaddqty(done) {
+        this.$confirm('Are you sure to close this dialog?')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      },
+        oncancelDiscount(id, barcode) {
+            this.$confirm('Are you sure you want to cancel this discount ? ', 'Warning', {
+            confirmButtonText : 'OK',
+            cancelButtonText : 'Cancel',
+            type : 'warning'
+        }).then(() => {
+            client.put('/api/orders/cancel-discount?id=' + id + '&barcode=' + barcode).then(response => {
+                console.log("cancellation of discount", response.data)
+                if(response.data === "success cancellation"){
+                     this.$notify.success({
+                            title : 'Success',
+                            message : 'Discount Successfully Applied',
+                            offset: 100
+                        })
+                        this.fetchingCustomers()
+                }
+            })
+        })
+        },
+        addDiscountItem: function(price, id, barcode) {
+        this.$confirm('Are you sure you want to apply this discount ? ', 'Warning', {
+            confirmButtonText : 'OK',
+            cancelButtonText : 'Cancel',
+            type : 'warning'
+        }).then(() => {
+            client.get('/api/orders/check-update-discount').then(resp => {
+                if(resp.data === "exist discount"){
+                    this.$notify.warning({
+                            title : 'Warning',
+                            message : 'Discount Already Applied',
+                            offset: 100
+                        })
+                        return false
+                }else{
+                    const discount = 0.20;
+                        const decimal = Number(null);
+                        const newValue = decimal + (price - (price * discount));
+                    //    const val = parseInt(this.$store.state.customerTotalPrice) + parseInt(this.getTotalPrice)
+            client.get('/api/orders/get-prod-finalization-price?barcode=' + barcode ).then(res => {
+                client.put('/api/orders/update-discount?id=' + id + '&newAmount=' + newValue).then(r => {
 
+                    if(r.data === "success discount") {
+                        this.$notify.success({
+                            title : 'Success',
+                            message : 'Discount Successfully Applied',
+                            offset: 100
+                        })
+                        this.fetchingCustomers()
+
+                    } else {
+                        this.$notify.warning({
+                            title : 'Warning',
+                            message : 'Discount Already Applied',
+                            offset: 100
+                        })
+                        return false
+                    }
+                })
+            })
+                }
+            })
+            
+        })
         },
         onfail: function(){
             this.receiptDrawer = true
