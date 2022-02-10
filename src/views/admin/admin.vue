@@ -176,13 +176,13 @@ export default {
     },
     created(){
         this.checker()
-        this.getafter10daysexpiration();
-        this.exactdateexpired();
-        setTimeout(() => {
-            this.getafter10daysexpiration();
-            this.exactdateexpired();
-            this.checkquantity()
-        }, 10000)
+        // this.getafter10daysexpiration();
+        // this.exactdateexpired();
+        // setTimeout(() => {
+        //     this.getafter10daysexpiration();
+        //     this.exactdateexpired();
+        //     this.checkquantity()
+        // }, 10000)
         this.checkquantity()
     },
     methods: {

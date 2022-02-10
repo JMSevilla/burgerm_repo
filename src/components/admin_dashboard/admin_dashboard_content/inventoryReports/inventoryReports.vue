@@ -3,6 +3,7 @@
         <el-card shadow="always">
             <h3>Inventory Reports</h3>
             <!-- table -->  
+           
       <div style="display : flex;">
                             <el-input type="text" v-model="searchable" clearable style="margin-right : 10px;" placeholder="Search"></el-input>
                             <el-date-picker
@@ -13,7 +14,16 @@
                                             type="datetime"
                                             placeholder="Select date and time">
                                             </el-date-picker> <br>
+                                             
                         </div>
+                        <download-excel
+              class="btn btn-default"
+              :data="invReportsExcel"
+              worksheet="My Worksheet"
+              name="filename.xls"
+          >
+                        <el-button @click="onPrintExcel" style="margin-top: 10px; margin-bottom: 20px;" type="primary" size="small" plain>Print Excel</el-button>
+                        </download-excel>
                     <table class="table table-outline table-hover">
                         <thead>
                             <tr>
@@ -43,7 +53,11 @@
 
 <script>
 import client from "@/store/0AuthRequest"
+import JsonExcel from "vue-json-excel";
 export default {
+    components:{
+    'download-excel':JsonExcel
+  },
     computed : {
         pagedTableData(){
             if(this.searchable){
@@ -57,7 +71,15 @@ export default {
     },
     data(){
         return {
-            searchable : '', dateFiltering : null, pageSize: 5, page: 1, inventoryReports: []
+            searchable : '', dateFiltering : null, pageSize: 5, page: 1, inventoryReports: [],json_meta: [
+            [
+              {
+                key: "charset",
+                value: "utf-8",
+              },
+            ],
+          ],
+          invReportsExcel : []
         }
     },
     created(){
@@ -69,6 +91,21 @@ export default {
                this.inventoryReports = response.data
            })
        },
+       onPrintExcel: function(){
+           client.get('/api/inventory-reports/get-inventory-reports').then(response => {
+               for(var x = 0; x < response.data.length; x++){
+               
+                this.invReportsExcel.push({
+                    PRODUCTNAME: response.data[x].productName,
+                    BEG : response.data[x].beg_qty,
+                    AVAILABLE : response.data[x].available,
+                    END : response.data[x].end_qty
+                })
+            }
+               
+           })
+           
+       }
     },
     setPage(val){
         this.page = val

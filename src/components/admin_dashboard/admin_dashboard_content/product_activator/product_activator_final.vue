@@ -112,6 +112,15 @@
             </template>
           </el-table-column>
           <el-table-column
+            label="Product Category"
+            sortable="custom"
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.prodcategory }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
             label="Product Quantity"
             sortable="custom"
             align="center"

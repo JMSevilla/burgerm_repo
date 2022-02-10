@@ -467,7 +467,7 @@ export default {
         savedSubPayment: Array,
         OrderInformation: Array,
         totalDiscount: Number,
-        fetchingCustomers: Function
+        fetchingCustomers: Function, soloOrderTask : Object
     },
     data(){
         return {
@@ -532,14 +532,20 @@ export default {
     methods: {
         onconfirmaddqty: function(){
             client.put('/api/orders/update-qty-cart?id=' + this.updateQtyTask.addingID + '&qty=' + this.updateQtyTask.addingQty).then(response => {
-                console.log(response.data)
                 if(response.data === "success update qty"){
-                    this.$notify.success({
+                  console.log("first request", response.data)
+                const reducer = client.put(`/api/orders/order-decrease-qty-prod/${this.soloOrderTask.externalIDQTY}/${this.updateQtyTask.addingQty}`)
+                  reducer.then((resp) => {
+                    console.log("second request",resp.data)
+                    if(resp.data === "success decrease") { 
+                         this.$notify.success({
                             title : 'Success',
                             message : 'Successfully Added Quantity',
                             offset: 100
                         })
                         this.fetchingCustomers()
+                    }
+                  })
                 }
             })
         },

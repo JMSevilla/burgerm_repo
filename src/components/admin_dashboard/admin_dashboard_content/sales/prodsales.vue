@@ -191,6 +191,9 @@ export default {
         this.exportSales();
     },
     methods:{
+        setPage(val){
+            this.page = val
+        },
         getAllSales: function(){
             this.$store.dispatch(`actions_get_sales`).then(() => {
                 for(var x = 0; x < this.$store.state.productSales.salesArray.length; x++){

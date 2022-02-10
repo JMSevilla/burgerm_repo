@@ -206,7 +206,8 @@
                         :onpayerror="onpayerror"
                         :savedSubPayment="savedSubPayment"
                         :OrderInformation="OrderInformation"
-                        :fetchingCustomers="fetchAllCustomerOrders" />
+                        :fetchingCustomers="fetchAllCustomerOrders"
+                        :soloOrderTask="soloOrderTask" />
                     </el-card>
                 </div>
             </div>
@@ -850,7 +851,7 @@ export default {
               return addreq.then((response) => {
                 console.log("first request", response.data)
                 if(response.data === "success order") { 
-                  const reducer = client.put(`/api/orders/order-decrease-qty/${this.soloOrderTask.externalIDQTY}/${this.soloOrderTask.soloQuantity}`)
+                  const reducer = client.put(`/api/orders/order-decrease-qty-prod/${this.soloOrderTask.externalIDQTY}/${this.soloOrderTask.soloQuantity}`)
                   reducer.then((resp) => {
                     console.log("second request",resp.data)
                     if(resp.data === "success decrease") { 

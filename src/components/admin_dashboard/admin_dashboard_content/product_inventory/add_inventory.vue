@@ -385,7 +385,7 @@
                                 </el-card>
                                 </el-timeline-item>
                             </el-timeline>
-                                    <el-pagination layout="prev, pager, next" :page-size="timelinePageSize" :total="this.getallproductlist.length" @current-change="setPage">
+                                   <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.getallproductlist.length" @current-change="setPage">
                                     </el-pagination>
                                 </div>
                             <!-- el dialog view expiration -->
@@ -615,7 +615,7 @@ export default {
         return this.searchable.toLowerCase().split(' ').every(v => item.productName.toLowerCase().includes(v))
       })
       }else{
-        return this.getallproductlist.slice(this.timelinePageSize * this.timelinePage - this.timelinePageSize, this.timelinePageSize * this.timelinePage)
+        return this.getallproductlist.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
       }
        
      }
