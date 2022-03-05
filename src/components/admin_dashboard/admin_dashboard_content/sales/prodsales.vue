@@ -5,16 +5,19 @@
                                     style="margin-bottom: 5px; width: 30%;"
                                     placeholder="Search"
                                     v-model="searchable"
+                                    v-show="false"
                                     clearable>
                                     </el-input>
+                                     <el-button @click="onPrint" style="float: right; margin-bottom: 5px; margin-top: 10px;" type="danger">Print PDF</el-button>
           <download-excel
               class="btn btn-default"
               :data="exportProductSales"
               worksheet="My Worksheet"
               name="filename.xls"
-              style="width: 100%;"
+              style="float: right; margin-bottom: 5px; margin-top: 5px; margin-right: 5px;"
           >
-                                     <el-button @click="onPrint" style="float: right; margin-bottom: 5px; margin-top: 5px;" type="danger">Print PDF</el-button>
+                                    
+                                     <el-button  type="success">Print Excel</el-button>
           </download-excel>
                 <div style="display: inline; float: right; margin-top: 10px; margin-bottom: 20px">
                     <label style="margin-right: 10px;">From : </label>
@@ -346,10 +349,10 @@ this.$refs.html2Pdf.generatePdf()
                     let salesHandler = []
                     salesHandler = JSON.parse(this.getsalesreport[x].salesInfo)
                     this.exportProductSales.push({
-                        MENU : salesHandler[0].orderName,
-                        PRICE : salesHandler[0].orderPrice,
-                        SALES : salesHandler[0].orderQuantity,
-                        SALES_AMOUNT : ( salesHandler[0].orderPrice * salesHandler[0].orderQuantity)
+                        MENU : salesHandler.orderName,
+                        PRICE : salesHandler.orderPrice,
+                        SALES : salesHandler.orderQuantity,
+                        SALES_AMOUNT : ( salesHandler.orderPrice * salesHandler.orderQuantity)
                     })
                 }
                 this.exportProductSales.push({

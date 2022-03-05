@@ -113,8 +113,8 @@
                                             :picker-options="pickerOptions"
                                             style=" width: 100%; margin-bottom: 5px;"
                                             v-model="productTask.productExpiration"
-                                            format="yyyy/MM/dd hh:mm:ss A"
-                                            value-format="yyyy/MM/dd hh:mm:ss A"
+                                            format="yyyy/MM/dd"
+                                            value-format="yyyy/MM/dd"
                                             type="datetime"
                                             placeholder="Select date and time">
                                             </el-date-picker>

@@ -6,7 +6,7 @@
                                                     <el-dialog
                                 title="Expired products notification"
                                 :visible.sync="dialogVisible"
-                                width="40%"
+                                width="60%"
                                 :before-close="handleClose">
                                 <div style="margin-top: 20px;" class="container">
                                      <el-alert
@@ -85,6 +85,71 @@
                                      <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.productArray.length" @current-change="setPage">
                                     </el-pagination>
                                         </el-tab-pane>
+                                        <el-tab-pane label="Warning">
+                                               <el-input
+                                    style="margin-bottom: 5px; width: 30%;"
+                                    placeholder="Search"
+                                    v-model="searchablewarning"
+                                    clearable>
+                                    </el-input>
+                                              <el-table
+                                    :key="0"
+                                    v-loading="listLoading"
+                                    :data="pagedTableDataWarning"
+                                    border
+                                    fit
+                                    highlight-current-row
+                                    style="width: 100%;"
+                                    
+                                    >
+                                    <el-table-column label="Stock Number" prop="id" sortable="custom" align="center"  >
+                                        <template slot-scope="{row}">
+                                        <span>{{ row.productCode }}</span>
+                                        </template>
+                                    </el-table-column>
+                                    
+                                    <el-table-column label="Product Image" >
+                                        <template slot-scope="{row}">
+                                        <img :src="row.productimgurl" style="width: 100%; height: auto;" class="img-fluid" alt="No image">
+                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column label="Product Name" >
+                                        <template slot-scope="{row}">
+                                        <span class="link-type" >{{ row.productName }}</span>
+                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
+                                        </template>
+                                    </el-table-column>
+
+                                     <el-table-column label="Product Quantity" >
+                                        <template slot-scope="{row}">
+                                        <span class="link-type" >{{ row.product_quantity }}</span>
+                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
+                                        </template>
+                                    </el-table-column>
+
+                                    
+
+                                    
+                                    <el-table-column label="Status" class-name="status-col" >
+                                        <template >
+                                          <el-tag type="warning" effect="dark">
+                                            Will expire in 10 days
+                                        </el-tag>
+                                        </template>
+                                    </el-table-column>
+
+                                    <!-- <el-table-column label="More actions"  align="center">
+                                        <template slot-scope="{row}">
+                                        
+                                        </template>
+                                    </el-table-column> -->
+
+                                    </el-table>
+                                     <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.productArray.length" @current-change="setPage">
+                                    </el-pagination>
+                                        </el-tab-pane>
                                     </el-tabs>
                                     </el-card>
                                 </div>
@@ -143,6 +208,7 @@
 import navadmin from "@/components/admin_dashboard/admin_nav"
 import sidenavadmin from "@/components/admin_dashboard/admin_side"
 import {scanSession, productexpiredafter10days, productexpired, STOCK_EMPTY_NOTIF, getzero} from "@/store/request-common";
+import client from "@/store/0AuthRequest"
 export default {
     components: {
         navadmin, sidenavadmin
@@ -150,12 +216,14 @@ export default {
     data(){
         return {
             quantityviewerdrawer: false,
+            searchablewarning: '',
             dialogVisible: false,
               pageSize: 5,
               page: 1,
               listLoading: true,
                searchable: '',
                 productArray: [],
+                productWarningArray : [],
                 zeroquantity: []
         }
     },
@@ -169,20 +237,49 @@ export default {
         return this.productArray.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
       }
        
+     },
+     pagedTableDataWarning(){
+         if(this.searchablewarning){
+      return this.productWarningArray.filter((item)=>{
+        return this.searchable.toLowerCase().split(' ').every(v => item.productName.toLowerCase().includes(v) || item.productID.toString().toLowerCase().includes(v))
+      })
+      }else{
+        return this.productWarningArray.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
+      }
      }
     },
     created(){
+        this.getBeforeExpiration()
+        this.getExpiredProduct()
         this.checker()
-        this.getafter10daysexpiration();
-        this.exactdateexpired();
-        setTimeout(() => {
-            this.getafter10daysexpiration();
-            this.exactdateexpired();
-            this.checkquantity()
+        setInterval(() => {
+
         }, 10000)
         this.checkquantity()
     },
     methods: {
+        getExpiredProduct(){
+            const req = client.get(`/api/expired-notif/product-expired`)
+            return req.then(r => {
+                console.log("expired product", r.data)
+                if(r.data === 'not exist expiry'){
+                    this.listLoading = false;
+                    this.dialogVisible = true
+                }else{
+                    this.productArray = r.data
+                    this.listLoading = false;
+                    this.dialogVisible = true
+                }
+            })
+        },
+        getBeforeExpiration: function() {
+            const request = client.get(`/api/expired-notif/check-10-days-before-expiration`)
+            return request.then((response) => {
+               this.productWarningArray = response.data
+               this.listLoading = false
+               this.dialogVisible = true
+            })
+        },
         oncheckstocks(){
             const loading = this.$loading({
                     lock: true,
