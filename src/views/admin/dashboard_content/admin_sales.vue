@@ -2,7 +2,7 @@
     <div>
         <div class="mt-3">
             <h3>Product Sales</h3>
-        <p>Here you can check your product sales</p>
+        <p>Here you can check your product sales.</p>
         <el-alert
             title="Sales."
             type="success" :closable="false">

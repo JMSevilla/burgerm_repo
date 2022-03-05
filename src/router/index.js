@@ -27,6 +27,11 @@ const routes = [
     component: () => import("@/views/registration")
   },
   {
+    path: '/lock_account',
+    name: 'LockAccount',
+    component: () => import("@/views/lockaccount")
+  },
+  {
     path: '/about_us',
     name: 'About Us',
     component: () => import("@/views/aboutus")

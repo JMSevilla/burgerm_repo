@@ -4,7 +4,7 @@
             <h1>Dashboard</h1>
         <p style="font-size: 15px">Welcome to Admin Dashboard</p>
         <el-alert
-            title="This is your dashboard, here you can check all the system activity and reports."
+            title="This is your dashboard, here you can check all the system activity and repo."
             type="success" :closable="false">
         </el-alert>
        </div>

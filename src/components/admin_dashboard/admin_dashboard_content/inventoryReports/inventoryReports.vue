@@ -6,14 +6,24 @@
            
       <div style="display : flex;">
                             <el-input type="text" v-model="searchable" clearable style="margin-right : 10px;" placeholder="Search"></el-input>
-                            <el-date-picker
-                                            style="  margin-bottom: 5px;"
-                                            v-model="dateFiltering"
-                                            format="yyyy/MM/dd hh:mm:ss A"
-                                            value-format="yyyy/MM/dd hh:mm:ss A"
-                                            type="datetime"
-                                            placeholder="Select date and time">
-                                            </el-date-picker> <br>
+                          <label style="margin-right: 10px;">From : </label>
+                        <el-date-picker
+                        v-model="filterable.fromdate"
+                        format="yyyy/MM/dd"
+                        value-format="yyyy/MM/dd"
+                        type="date"
+                        placeholder="Select date from">
+                        </el-date-picker> &nbsp; -->
+                         <label style="margin-right: 10px;">To : </label>
+                        <el-date-picker
+                        style="margin-right: 10px;"
+                        v-model="filterable.todate"
+                        format="yyyy/MM/dd"
+                        value-format="yyyy/MM/dd"
+                        type="date"
+                        placeholder="Select date to">
+                        </el-date-picker>
+                        <el-button @click="onfilter()" type="primary" size="small" plain>Search</el-button>
                                              
                         </div>
                         <download-excel
@@ -79,13 +89,23 @@ export default {
               },
             ],
           ],
-          invReportsExcel : []
+          invReportsExcel : [],
+          filterable: {
+              fromdate : '', todate: ''
+          }
         }
     },
     created(){
         this.getInventoryReports()
     },
     methods : {
+        onfilter: function() {
+            client.get(`/api/inventory-reports/filter-inventory-reports?datefrom=${this.filterable.fromdate}&dateto=${this.filterable.todate}`)
+            .then((response) => {
+                console.log("filter inventory reports", response.data)
+                this.inventoryReports = response.data
+            })
+        },
         getInventoryReports: function() {
            client.get('/api/inventory-reports/get-inventory-reports').then(response => {
                this.inventoryReports = response.data

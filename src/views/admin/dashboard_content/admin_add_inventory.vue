@@ -12,7 +12,7 @@
                 
             <!-- <el-button  type="primary" plain @click="onimportexcel()">Import Excel</el-button> -->
             <el-button  type="warning" plain @click="pullproductsdialogVisible = true">Pull Products from Stocks</el-button>
-            <el-button  type="success" plain @click="onnavigatefinal()">Navigate to product finalization</el-button>
+            <el-button  type="success" plain @click="onnavigatefinal()">Navigate to Product Finalization</el-button>
             <!-- Dialog for pull product from stocks -->
                 <el-dialog
                     title="Pull products from stocks"
@@ -324,9 +324,11 @@ export default {
             }
         },
         productInventoryReportsEntry : function(pname, pquantity, pcode) {
-            client.post('/api/inventory-reports/inventory-report-entry?prodname=' + pname + '&beg=' + pquantity + '&refId=' + pcode)
+            client.put('/api/inventory-reports/check-inventory-reports-exists?prodname=' + pname + '&beg=' + pquantity + '&refId=' + pcode)
             .then(response => {
                 if(response.data === "success entry") {
+                    return true
+                } else if(response.data === "success update"){
                     return true
                 }
             })

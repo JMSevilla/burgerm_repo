@@ -2,7 +2,7 @@
     <div>
         <div class="mt-3">
             <h1>Product Inventory Activation</h1>
-        <p style="font-size: 15px">Here you can activate the status of the product and it can be added on product management</p>
+        <p style="font-size: 15px">Here you can activate the status of the product and it can be added on product management.</p>
         <el-alert
             title="Product Management / Inventory"
             type="success" :closable="false">

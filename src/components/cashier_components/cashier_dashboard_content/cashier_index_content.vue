@@ -4,8 +4,8 @@
             <div class="row">
               <div class="col-md-2">
                 <el-card shadow="always">
-                  <h4>Categories</h4>
-                  <vs-input style="width: 60%;" class="inputx" placeholder="Search" v-model="btnSearchable"/>
+                  <h4 style="font-size:20px" >Categories</h4><br>
+                  <vs-input style="width: 100%;" class="inputx" placeholder="Search" v-model="btnSearchable"/><br>
                   <div class="bundleProducts" v-for="bundle in buttonPagedTableData" :key="bundle.id">
                   <b-button variant="primary" @click="onchooseCategories(bundle.categoryname)" size="lg" style="margin-top: 20px; padding: 15px; width: 100%;" >{{bundle.categoryname}}</b-button>
                   </div>
@@ -19,13 +19,20 @@
                         <div class="row">
                             <div class="col-sm">
                                  <div style="dispaly: flex">
-                                   <vs-input label="Product Search" class="inputx" placeholder="Search" v-model="searchable"/> &nbsp; <br>
-                                 <el-button
+                                   <h4 style="font-size:20px" >Menu</h4><br>
+                                   <div class="row">
+                                   <div class="col-sm">
+                                   <vs-input style="width: 100%;" class="inputx" placeholder="Search" v-model="searchable"/> &nbsp;
+                                   </div>
+                                    <div class="col-sm">
+                                   <el-button
                                  type="primary"
                                  size="small"
                                  plain
                                  @click="FetchAllProduct()"
                                  >Fetch All</el-button>
+                                 </div>
+                                 </div>
                                  </div>
                             </div>
                             <div class="col-sm"></div>
@@ -187,7 +194,7 @@
                 </div>
                 <div class="col-md-4">
                     <el-card shadow="always">
-                        <h4>Customer Cart</h4>
+                        <h4 style="font-size:20px" >Customer Cart</h4><br>
                         <CustomerOrders
                         :paymentapprvl="paymentapprvl" 
                         :paymentinf="paymentinf" 
@@ -206,8 +213,13 @@
                         :onpayerror="onpayerror"
                         :savedSubPayment="savedSubPayment"
                         :OrderInformation="OrderInformation"
-                        :fetchingCustomers="fetchAllCustomerOrders"
-                        :soloOrderTask="soloOrderTask" />
+                        :fetchAllCustomerOrders="fetchAllCustomerOrders"
+                        :soloOrderTask="soloOrderTask"
+                        :bundleOrderTask="bundleOrderTask"
+                        :buyOneTakeOneTask="buyOneTakeOneTask"
+                        :cartTotalPrice="cartTotalPrice"
+                        :onconfirmTransaction="onconfirmTransaction"
+                        :willDisableDiscount="willDisableDiscount" />
                     </el-card>
                 </div>
             </div>
@@ -220,12 +232,14 @@
                         :closable="false">
                     </el-alert>
                                    <el-input
+                                   type="text"
+                                  
                                     placeholder="Please input quantity"
                                     v-model="searchSettings.barcodeInput"
                                     clearable
                                     style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
                                     </el-input>
-                                   <vs-button @click="onbarcodesearch" style="float: right;margin-top: 10px; margin-bottom: 10px;  " type="relief">Search</vs-button>
+                                   <vs-button @click="onbarcodesearch" style="float: right;margin-top: 10px; margin-bottom: 10px;  " type="relief">Search </vs-button>
                                     </vs-popup>
 
                                     <!-- solo add cart modal -->
@@ -239,6 +253,9 @@
                     </el-alert>
                     <div v-if="modalIdentifier == 1">
                       <el-input
+                       @input.native="onquantitychange"
+                       
+                       type="number"
                                     placeholder="Please input quantity"
                                     v-model="bundleOrderTask.bundleQuantity"
                                     clearable
@@ -247,6 +264,9 @@
                     </div>
                     <div v-else-if="modalIdentifier == 2">
                        <el-input
+                       @input.native="onquantitychange"
+                        
+                       type="number"
                                     placeholder="Please input quantity"
                                     v-model="buyOneTakeOneTask.buy1take1Quantity"
                                     clearable
@@ -255,6 +275,9 @@
                     </div>
                     <div v-else>
                       <el-input
+                      @input.native="onquantitychange"
+                       
+                       type="number"
                                     placeholder="Please input quantity"
                                     v-model="soloOrderTask.soloQuantity"
                                     clearable
@@ -263,7 +286,7 @@
                      
                     </div>
                                    
-                                   <vs-button style="float: right;margin-top: 10px; margin-bottom: 10px;" @click="onqtyOk()" type="relief">OK</vs-button>
+                                   <vs-button :disabled="onfailqty" style="float: right;margin-top: 10px; margin-bottom: 10px;" @click="onqtyOk()" type="relief">OK</vs-button>
                                     </vs-popup>
                                     <!-- end solo add card modal -->
 
@@ -292,13 +315,22 @@
 <script>
 import client from "@/store/0AuthRequest"
 import CustomerOrders from "./customer_order_list/customerTB.vue"
-import {mapGetters} from "vuex"
+import {mapGetters, mapActions} from "vuex"
+import { 
+PUSH_TOTAL,
+GET_TOTAL,
+PUSH_B1T1, 
+GET_B1T1, 
+BUNDLE_ID,
+PUSH_CO,
+GET_CO, GET_SALES_ENTRY, PUSH_SALES_ENTRY } from "@/store/types"
 export default {
     components: {
         CustomerOrders
     },
     data(){
         return{
+          onfailqty: true,
             popupSettings: {
                 title: 'Search via barcode',
                 soloaddcartTitle: 'Quantities'
@@ -334,7 +366,7 @@ export default {
               buy1take1Prodimage : '',
               buy1take1ProdIntegrated: '',
               buy1take1Prodprice: '',
-              buy1take1ProdCode: '', buy1take1ProdCategory: ''
+              buy1take1ProdCode: '', buy1take1ProdCategory: '', isstatus : 'buy1take1'
             },
             btnPageSize : 10,
             btnPage : 1,
@@ -396,7 +428,8 @@ export default {
               isbundle: false,
               responsePOSCategories : [],
               btnSearchable : '',
-              modalIdentifier : false
+              modalIdentifier : false,
+              willDisableDiscount: false
         }
     },
      computed:{
@@ -431,7 +464,10 @@ export default {
      ...mapGetters({
        getTotalPrice: 'getTotalPrice',
        getState_getPOS : 'getState_getPOS',
-       getProductByCategories: 'getProductByCategories'
+       getProductByCategories: 'getProductByCategories',
+       cartTotalPrice : GET_TOTAL,
+       getCustomersOrders : GET_CO,
+       get_sales_response : GET_SALES_ENTRY
      })
     },
     created(){
@@ -441,10 +477,83 @@ export default {
         this.listof_ready_payments()
         this.getBundleCategory()
         this.getAllPOSCategories();
+        this.checkTotalPrice()
     },
     methods: {
+      ...mapActions({
+        checkTotalPrice : PUSH_TOTAL,
+        onaddb1t1 : PUSH_B1T1,
+        getb1t1 : GET_B1T1,
+        getBUNDLE : BUNDLE_ID,
+        pushCustomersOrders : PUSH_CO,
+        pushSalesEntry : PUSH_SALES_ENTRY
+        }),
+        
+        onquantitychange(event) {
+          event.target.value =event.target.value.replace(/^0+/, '')
+ if(!event.target.value){
+   
+                this.onfailqty = true
+            } else if(event.target.value < 0){
+                this.onfailqty = true
+            } 
+             else{
+                this.onfailqty = false
+            }
+        },
       FetchAllProduct : function() {
         this.fetchAllProduct()
+      },
+      onconfirmTransaction: function(){
+       if(!this.OrderInformation || this.OrderInformation == []){
+          this.$message({
+          showClose: true,
+          message: 'Please make a payment first.',
+          type: 'error'
+          });
+          return false;
+       }else{
+         this.$confirm('Are you sure you want to confirm this transaction?', 'Warning', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+            const loading = this.$loading({
+            lock: true,
+            text: 'Loading',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
+          setTimeout(() => {
+              for(var x = 0; x < this.OrderInformation.length; x++) {
+                var data = new FormData()
+                data.append("orderInfo", JSON.stringify(this.OrderInformation[x]))
+                client.post(`/api/orders/sales-entry`, data)
+                .then((response) => {
+                  if(response.data === 'success sales entry'){
+                    loading.close()
+                          this.fetchAllProduct()
+                          this.fetchAllCustomerOrders()
+                          this.countAllReady()
+                          this.listof_ready_payments()
+                          this.$store.state.customerTotalPrice = 0;
+                  }
+                })
+              }
+               setTimeout(() => {
+                 this.$htmlToPaper('printMe');
+                 client.delete(`/api/orders/ready-payment-deletion`).then((response) => {
+                   this.willDisableDiscount = false
+                   this.fetchAllProduct()
+                          this.fetchAllCustomerOrders()
+                          this.countAllReady()
+                          this.listof_ready_payments()
+                          this.$store.state.customerTotalPrice = 0;
+                 })
+               }, 2000)
+          }, 2000)
+        })
+       }
       },
       onchooseCategories : function(catName) {
           this.$store.dispatch('actions_get_product_onClickCategories', {val : catName}).then(() => {
@@ -469,51 +578,7 @@ export default {
           })
           .catch(_ => {});
       },
-      onchoosebundleofsix: function(qty){
-        this.bundleOrderTask.bundleQuantity = qty
-        if(!this.bundleOrderTask.bundleQuantity){
-
-        }else{ 
-         this.$vs.loading({
-                  type: 'sound'
-              })
-              setTimeout(() => {
-                const req = client.get(`/api/orders/bundle-validate-cart/${this.bundleOrderTask.bundleQuantity}/${this.bundleOrderTask.externalIDQTY}`)
-                return req.then(({data}) => {
-                  if(data === "invalid qty"){
-                     this.$vs.notify({title:'Nope',text:'Invalid Quantity',color:'danger',position:'top-right', icon:'highlight_off'})
-                      this.$vs.loading.close()
-                      return false
-                  }else{ 
-                    const data = new FormData()
-                    data.append("bundle_order_name", this.bundleOrderTask.bundleProdname)
-                    data.append("bundle_order_code", this.bundleOrderTask.bundleProdCode)
-                    data.append("bundle_order_price", this.bundleOrderTask.bundleProdprice)
-                    data.append("bundle_order_qty", this.bundleOrderTask.bundleQuantity)
-                    data.append("bundle_order_category", this.bundleOrderTask.bundleProdCategory)
-                    data.append("bundle_order_image", this.bundleOrderTask.bundleProdimage)
-                    const addreq = client.post(`/api/orders/order-bundle`, data)
-                    return addreq.then((response) => {
-                      if(response.data === "success order") { 
-                         
-                        const reduceQuantity = client.put(`/api/orders/order-decrease-qty-bundle/${this.bundleOrderTask.externalIDQTY}/${this.bundleOrderTask.bundleQuantity}`)
-                        reduceQuantity.then((resp) => {
-                          if(resp.data === "success decrease") { 
-                            this.isbundle = true
-                            this.$vs.notify({title:'Success',text:'Added to cart',color:'success',position:'top-right', icon:'highlight_off'})
-                            this.fetchAllCustomerOrders()
-                            this.fetchAllProduct()
-                            this.$vs.loading.close()
-                            this.popActiveBundle = false
-                          }
-                        })
-                      }
-                    })
-                  }
-                })
-              }, 3000)
-        }
-      },
+      
       onbundleOrder: function(qty, id, name, image, integrated, price, prodcode, category) {
         this.popActiveBundle = true
         this.bundleOrderTask.externalIDQTY = id;
@@ -524,7 +589,14 @@ export default {
         this.bundleOrderTask.bundleProdCode = prodcode
         this.bundleOrderTask.bundleProdCategory = category
       },
-      onconfirmpayment: function(paymentID){
+      onconfirmpayment: function(barcode,
+       ordername,
+        orderimage,
+         price,
+         qty,
+         category,
+         totalprice ){
+          //  alert(localStorage.getItem('paymentid'))
         this.$confirm('Are you sure you want to make this payment?', 'Warning', {
                 cancelButtonText: 'Cancel',
                 confirmButtonText: 'Yes',
@@ -537,35 +609,39 @@ export default {
                     background: 'rgba(0, 0, 0, 0.7)'
                   });
                   setTimeout(() => {
-                      for(var d = 0; d < this.paymentDetailsQTY.length; d++){
-             for(var a = 0; a < this.savedIngredients.length; a++){
-               client.put(`/api/payment/decrease-solo/${this.savedIngredients[a].prodID}/${this.paymentDetailsQTY[d].QTY}`)
-               .then((res) => {
-                 if(res.data == "success reduce") {
-                   
-
-                 }
-               })
-             }
-             
-           }
-           client.put(`/api/payment/approve-payment-update-to-receipt/${paymentID}/${this.isbundle}`)
-             .then((res) => {
-               if(res.data == "done payment") {
-                 this.$message({
-                    showClose: true,
-                    message: 'Successfully Transact!.',
-                    type: 'success'
-                    });
-                  loading.close()
-                   this.$htmlToPaper('printMe');
-                   this.fetchAllProduct()
-                  this.fetchAllCustomerOrders()
-                  this.countAllReady()
-                  this.listof_ready_payments()
-                  this.$store.state.customerTotalPrice = 0;
-               }
-             })
+                    let arr = []
+                    arr.push({
+                      code : barcode,
+                      ordername : ordername,
+                      image : orderimage,
+                      price : price,
+                      qty: qty,
+                      category : category,
+                      total : totalprice
+                    })
+                    let obj = {
+                      orderInfo : JSON.stringify(arr)
+                    }
+                  this.pushSalesEntry(
+                   { object : obj}
+                  )
+                    setTimeout(() => {
+                        if(this.get_sales_response === 'success sales entry')
+                        {
+                          // client.delete(`/api/orders/ready-payment-deletion?id=${id}`).then(res => {
+                          //   if(res.data === 'success'){
+                             
+                          //   }
+                          // })
+                           loading.close()
+                          this.$htmlToPaper('printMe');
+                          this.fetchAllProduct()
+                          this.fetchAllCustomerOrders()
+                          this.countAllReady()
+                          this.listof_ready_payments()
+                          this.$store.state.customerTotalPrice = 0;
+                        }
+                    }, 2000)
                   }, 2000)
                 })
            
@@ -806,7 +882,7 @@ export default {
               return addreq.then((response) => {
                 console.log("first request", response.data)
                 if(response.data === "success order") { 
-                  const reducer = client.put(`/api/orders/order-decrease-qty-bundle/${this.bundleOrderTask.externalIDQTY}/${6}/${this.bundleOrderTask.bundleQuantity}`)
+                  const reducer = client.put(`/api/orders/order-decrease-qty-bundle?orderID=${this.bundleOrderTask.externalIDQTY}&qty=${6}&origqty=${this.bundleOrderTask.bundleQuantity}`)
                   reducer.then((resp) => {
                     if(resp.data === "success decrease") { 
                       this.isbundle = true
@@ -851,10 +927,10 @@ export default {
               return addreq.then((response) => {
                 console.log("first request", response.data)
                 if(response.data === "success order") { 
-                  const reducer = client.put(`/api/orders/order-decrease-qty-prod/${this.soloOrderTask.externalIDQTY}/${this.soloOrderTask.soloQuantity}`)
+                  const reducer = client.put(`/api/orders/order-decrease-qty-prod?orderID=${this.soloOrderTask.externalIDQTY}&qty=${this.soloOrderTask.soloQuantity}&code=${this.soloOrderTask.soloProdCode}`)
                   reducer.then((resp) => {
                     console.log("second request",resp.data)
-                    if(resp.data === "success decrease") { 
+                    if(resp.data === "success_decrease") { 
                       this.isbundle = false
                       this.$vs.notify({title:'Success',text:'Added to cart',color:'success',position:'top-right', icon:'highlight_off'})
                       this.fetchAllCustomerOrders()
@@ -877,58 +953,39 @@ export default {
          this.$vs.loading({
                   type: 'sound'
               })
+              this.onaddb1t1(
+            {
+              object : this.buyOneTakeOneTask
+            }
+          )
         setTimeout(() => {
-          const req = client.get(`/api/orders/solo-validate-cart/${this.buyOneTakeOneTask.buy1take1Quantity}/${this.buyOneTakeOneTask.buy1take1externalIDQTY}`)
-          return req.then(({data}) => {
-            if(data === "invalid qty") { 
-              this.$vs.notify({title:'Nope',text:'Invalid Quantity',color:'danger',position:'top-right', icon:'highlight_off'})
-              this.$vs.loading.close() 
-              return false
-            }else {   
-              const data = new FormData()
-              data.append("solo_order_name", this.buyOneTakeOneTask.buy1take1Prodname)
-              data.append("solo_order_code", this.buyOneTakeOneTask.buy1take1ProdCode)
-              data.append("solo_order_price", this.buyOneTakeOneTask.buy1take1Prodprice)
-              data.append("solo_order_qty", this.buyOneTakeOneTask.buy1take1Quantity)
-              data.append("solo_order_category", this.buyOneTakeOneTask.buy1take1ProdCategory)
-              data.append("solo_order_image", this.buyOneTakeOneTask.buy1take1Prodimage)
-              data.append("isstatus", "buy1take1")
-              const addreq = client.post(`/api/orders/order-solo`, data)
-              return addreq.then((response) => {
-                console.log("first request", response.data)
-                if(response.data === "success order") { 
-                  const reducer = client.put(`/api/orders/order-decrease-qty-buy1take1/${this.buyOneTakeOneTask.buy1take1externalIDQTY}/${2}/${this.buyOneTakeOneTask.buy1take1Quantity}`)
-                  reducer.then((resp) => {
-                    console.log("second request",resp.data)
-                    if(resp.data === "success decrease") { 
-                      this.isbundle = false
-                      this.$vs.notify({title:'Success',text:'Added to cart',color:'success',position:'top-right', icon:'highlight_off'})
-                      this.fetchAllCustomerOrders()
-                      this.fetchAllProduct()
-                      this.$vs.loading.close()
-                      this.popupActivoSolo = false
-                    }
-                  })
-                }
-              })
-            } 
-          })
+          
+           this.isbundle = false
+                    this.$vs.loading.close()
+                    this.popupActivoSolo = false
+                    client.get(`/api/orders/order-list`)
+                     .then(({data}) => {
+                                      console.log("response from client get" , data)
+                                        this.customerOrderArray = data
+                                    })
+                
         }, 2000)
         }
       },
       onqtyOk: function(){
         switch(true) {
-          case JSON.parse(localStorage.getItem('orderinfo')).status === "boxof6":
+          case this.modalIdentifier == 1:
             return this.BOXOF6();
-          case JSON.parse(localStorage.getItem('orderinfo')).status === "solo" :
+          case this.modalIdentifier == 3 :
            return this.SOLO_ORDER();
-          case JSON.parse(localStorage.getItem('orderinfo')).status === "buy1take1" :
+          case this.modalIdentifier == 2 :
            return this.BUY1TAKE1_ORDER();
         }
       },
       onaddsolocard: function(qty, id, name, image, integrated, price, prodcode, category){
         if(category === "Box Of 6" || category === "box of 6" || category === "Box of 6" || category === "BOX OF 6" || category === "boxof6") { 
           this.popupActivoSolo = true
+          localStorage.setItem('key_boxof6_externalID', id)
         this.bundleOrderTask.externalIDQTY = id;
         this.bundleOrderTask.bundleProdname = name;
         this.bundleOrderTask.bundleProdimage = image;
@@ -940,6 +997,7 @@ export default {
         localStorage.setItem('orderinfo', JSON.stringify(data))
         this.modalIdentifier = 1
         } else if(category === "Buy 1 Take 1" || category === "buy 1 take 1") {
+          localStorage.setItem('key_b1t1_externalID', id)
         this.popupActivoSolo = true
         this.buyOneTakeOneTask.buy1take1externalIDQTY = id;
         this.buyOneTakeOneTask.buy1take1Prodname = name;
@@ -955,6 +1013,7 @@ export default {
         else {
          
         this.popupActivoSolo = true
+        localStorage.setItem('key_solo_externalID', id)
         this.soloOrderTask.externalIDQTY = id;
         this.soloOrderTask.soloProdname = name;
         this.soloOrderTask.soloProdimage = image;
@@ -1053,21 +1112,34 @@ export default {
                this.select1 = null
           })
       },
-      fetchAllCustomerOrders: async function(){
-          await client
-          .get(`/api/orders/order-list`)
-          .then(({ data }) => {
-              this.customerOrderArray = data
-              console.log("customer cart",data)
-              this.totalPriceComputed()
-              this.listLoading = false
-          })
+      fetchAllCustomerOrders:  function(){
+        this.pushCustomersOrders()
+        setTimeout(() => {
+          this.customerOrderArray = this.getCustomersOrders
+          this.totalPriceComputed()
+          this.listLoading = false
+        }, 2000)
+          //  client
+          // .get(`/api/orders/order-list`)
+          // .then((res) => {
+          //     this.customerOrderArray = res.data
+          //     console.log("customer cart",res.data)
+          //     this.totalPriceComputed()
+          //     this.listLoading = false
+          // })
+
       },
       totalPriceComputed: function(){
          client
           .get(`/api/orders/order-total-price`)
           .then((response) => {
-            this.$store.state.customerTotalPrice = response.data
+            console.log("get total pricing",response.data)
+            if(response.data === null || response.data === '') {
+              this.$store.state.customerTotalPrice = 0
+            }else {
+              this.$store.state.customerTotalPrice = response.data
+              
+            }
           })
       },
       getBundleCategory: async function(){

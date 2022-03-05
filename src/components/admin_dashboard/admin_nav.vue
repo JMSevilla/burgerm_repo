@@ -21,7 +21,7 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" >
                         <li><router-link class="dropdown-item" :to="{name: 'More Settings'}"><font size="3px;">Settings</font></router-link></li>
                         <li><router-link class="dropdown-item" :to="{name: 'Product History'}"><font size="3px;">Activity Log</font></router-link></li>
-                         <!-- <li><router-link class="dropdown-item" :to="{name: 'Profile', query: {email: getemail}}"><font size="3px;">Profile</font></router-link></li> -->
+                         <li><router-link class="dropdown-item" :to="{name: 'Profile', query: {email: getemail}}"><font size="3px;">Profile</font></router-link></li>
                         <li><hr class="dropdown-divider" /></li>
                         <li>
                             <center>
@@ -49,6 +49,42 @@
                     show-icon>
                 </el-alert>
                 <center>
+                    <el-card shadow="always">
+                        <div style="display : flex;">
+                            <el-input type="text" v-model="searchable" clearable style="margin-right : 10px;" placeholder="Search"></el-input>
+                            <el-date-picker
+                                            style="  margin-bottom: 5px;"
+                                            v-model="dateFiltering"
+                                            format="yyyy/MM/dd"
+                                            value-format="yyyy/MM/dd"
+                                            type="datetime"
+                                            placeholder="Select date and time"
+                                            @change="onchangeDate">
+                                            </el-date-picker> <br>
+                        </div>
+                    <table class="table table-outline table-hover">
+                        <thead>
+                            <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Product Name</th>
+                            <th scope="col">BEG</th>
+                            <th scope="col">Available</th>
+                            <th scope="col">END</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in pagedTableData" :key="item.invID">
+                            <th scope="row">{{item.invID}}</th>
+                            <td>{{item.productName}}</td>
+                            <td>{{item.beg_qty}}</td>
+                            <td>{{item.available}}</td>
+                            <td>{{item.end_qty}}</td>
+                            </tr>
+                        </tbody>
+                        </table>
+                        <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.inventoryReports.length" @current-change="setPage">
+                                    </el-pagination>
+                    </el-card>
                     <el-button @click="goPullProducts" style="width: 100%" type="info" size="medium" plain>Pull Products</el-button>
                 </center>
                 </div>
@@ -94,6 +130,8 @@
 
             <span slot="footer" class="dialog-footer">
                 <div v-if="openStoremodeIdentifier != true">
+                      <el-button @click="dialogVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="onSendInv()">Send to Inventory Reports</el-button>
                 </div>
                 <div v-else>
                     <el-button @click="dialogVisible = false">Cancel</el-button>

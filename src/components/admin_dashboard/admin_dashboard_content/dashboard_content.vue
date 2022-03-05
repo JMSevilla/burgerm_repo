@@ -55,15 +55,15 @@
                             </div>
                         </el-card>
                     </div>
-                    <div class="col-sm">
+                   <div class="col-sm">
                         <el-card shadow="always" style="height: 100%;">
                             <div class="row">
                                 <div class="col-sm-4">
-                                    <img src="https://cdn4.iconfinder.com/data/icons/fintech-solutions-filled-outline/24/pending_time_clock_watch_timer-256.png"
+                                    <img src="https://cdn0.iconfinder.com/data/icons/scenarium-vol-11/128/040_startup_products_rocket_compare-256.png"
                             style="width: 90%; margin-top: 10px; height: auto;" class="img-fluid" alt="no image">
                                 </div>
                                 <div class="col-sm-8">
-                                    <h2>Warning Products</h2>
+                                    <h3>Warning Product Stocks</h3>
                                     <hr>
                                     <h3>{{ summary.WarningProduct }}</h3>
                                 </div>

@@ -2,7 +2,7 @@
     <div>
         <div class="mt-3">
             <h3>Return Orders</h3>
-        <p>Here you can check your return orders</p>
+        <p>Here you can check your return orders.</p>
         <el-alert
             title="Return Orders."
             type="success" :closable="false">

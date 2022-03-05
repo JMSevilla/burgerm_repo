@@ -138,13 +138,13 @@
                                         <el-menu-item index="6-2" @click="onsales()">
                                         <img src="https://cdn3.iconfinder.com/data/icons/leto-finance-money-1/64/financsial_audit_business_report_sales_money-256.png"
                                      alt="no image" style="width: 15%; height:auto;">&nbsp;
-                                        Sales
+                                        Sales Report
                                         </el-menu-item>
 
                                         <el-menu-item index="6-3" @click="oninventoryreports()">
                                         <img src="https://cdn3.iconfinder.com/data/icons/leto-finance-money-1/64/financsial_audit_business_report_sales_money-256.png"
                                      alt="no image" style="width: 15%; height:auto;">&nbsp;
-                                        Inventory Reports
+                                        Inventory Report
                                         </el-menu-item><hr>
 
                                         <!-- <el-menu-item index="10-2" @click="onmoresettings()">

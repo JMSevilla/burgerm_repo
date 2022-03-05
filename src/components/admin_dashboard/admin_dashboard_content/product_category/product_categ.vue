@@ -42,10 +42,10 @@
                                         </el-card>
                                     </template>
                                     </el-table-column>
-                                    <el-table-column label="Details">
-                                        <p>Please select the arrow in the left corner of this table</p>
+                                    <el-table-column style= font-size:24px; label="Details">
+                                        <p >Please select the arrow in the left corner of this table</p>
                                     </el-table-column>
-                                    <el-table-column label="Status">
+                                    <el-table-column style= "font-size:24px" label="Status">
                                         <el-tag type="success" effect="dark">New</el-tag>
                                     </el-table-column>
                                       

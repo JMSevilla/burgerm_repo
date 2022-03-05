@@ -21,7 +21,7 @@
           type="info"
           effect="dark"
           :closable="false"
-          description="If you want to add new product stock you need to navigate on invetory and stocks page.."
+          description="If you want to add new product stock you need to navigate on inventory and stocks page.."
           show-icon
         >
         </el-alert>
@@ -173,18 +173,21 @@
             </template>
           </el-table-column>
 
-          <div v-if="product_status_indicator == '1'">
+         
+            <div v-if="product_status_indicator == '1'">
             <el-table-column label="Product Status" class-name="status-col">
               <template>
                 <div v-if="product_status_indicator == '1'">
-                  <el-tag type="danger" size="medium" effect="dark"
+                  <center ><el-tag type="danger" size="medium" effect="dark"
                     >Expired</el-tag
                   >
+                  </center>
                 </div>
                 <div v-else></div>
               </template>
             </el-table-column>
           </div>
+          
           <div v-else></div>
 
           <el-table-column label="More actions" align="center">
@@ -410,14 +413,14 @@
 
         <!-- dialog for modification -->
           <el-dialog
-          title="Tips"
+          title=""
           :visible.sync="dialogVisibleModify"
           width="70%"
           :before-close="handleCloseModify">
           
         <div style="margin-top: 30px" class="container">
             <el-card shadow="always">
-              <h3>Stocks nn hand modification</h3>
+              <h3>Stocks on hand modification</h3>
               <div class="row">
                 <div class="col-sm">
                   <label>Enter product name</label>
@@ -485,6 +488,7 @@ import exportingInit from "highcharts/modules/exporting";
 import offlineExporting from "highcharts/modules/offline-exporting";
 import { mapGetters } from "vuex";
 import TextField from "@/components/TextField/TextField"
+import client from "@/store/0AuthRequest"
 //import moment from "moment";
 
 exportingInit(Highcharts);
@@ -724,7 +728,7 @@ export default {
     },
     onremovestock(id) {
       this.$confirm(
-        "Are you sure you want to remove this product?",
+        "This product will be on your archive list, would you like to proceed ?",
         "Warning",
         {
           cancelButtonText: "No",
@@ -739,19 +743,30 @@ export default {
           background: "rgba(0, 0, 0, 0.7)",
         });
         setTimeout(() => {
-          removezerostock(id).then((resp) => {
-            if (resp.data === "success remove") {
-              this.stocksquantityupdaterTask.value = "";
-              this.stocksquantityupdaterTask.custominput = "";
-              loading.close();
-              this.$notify.success({
-                title: "Nicely done!",
-                message: "Successfully remove.",
-                offset: 100,
-              });
-              this.allstocks();
+          client.put(`/api/pull-request-product/stock-to-archive?stockid=${id}`).then((r) => {
+            if(r.data === 'success'){
+              loading.close()
+                  this.$notify.success({
+                    title: "Nicely done!",
+                    message: "Successfully moved to archive.",
+                    offset: 100,
+                  });
+                  this.allstocks();
             }
-          });
+          })
+          // removezerostock(id).then((resp) => {
+          //   if (resp.data === "success remove") {
+          //     this.stocksquantityupdaterTask.value = "";
+          //     this.stocksquantityupdaterTask.custominput = "";
+          //     loading.close();
+          //     this.$notify.success({
+          //       title: "Nicely done!",
+          //       message: "Successfully remove.",
+          //       offset: 100,
+          //     });
+          //     this.allstocks();
+          //   }
+          // });
         }, 1000);
       });
     },
