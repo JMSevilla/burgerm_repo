@@ -10,7 +10,7 @@
                 
             </form>
             <div class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-                <div style="color: white; font-size: 16px">
+                <div style="color: white; font-siz`e: 16px">
                    <el-button @click="onOpenStoreMode()" type="primary" size="small" plain style="margin-right : 30px;">Open Store Mode</el-button> {{fullnameSetter}}
                 </div>
             </div>
