@@ -14,8 +14,28 @@
               name="filename.xls"
               style="width: 100%;"
           >
-                                     <el-button style="float: right; margin-bottom: 5px; margin-top: 5px;" type="warning" plain>Print excel</el-button>
+                                     <el-button @click="onPrint" style="float: right; margin-bottom: 5px; margin-top: 5px;" type="danger">Print PDF</el-button>
           </download-excel>
+                <div style="display: inline; float: right; margin-top: 10px; margin-bottom: 20px">
+                    <label style="margin-right: 10px;">From : </label>
+                        <el-date-picker
+                        v-model="filterable.fromdate"
+                        format="yyyy/MM/dd"
+                        value-format="yyyy/MM/dd"
+                        type="date"
+                        placeholder="Select date from">
+                        </el-date-picker> &nbsp; -->
+                         <label style="margin-right: 10px;">To : </label>
+                        <el-date-picker
+                        style="margin-right: 10px;"
+                        v-model="filterable.todate"
+                        format="yyyy/MM/dd"
+                        value-format="yyyy/MM/dd"
+                        type="date"
+                        placeholder="Select date to">
+                        </el-date-picker>
+                        <el-button @click="onfilter()" type="primary" size="small" plain>Search</el-button>
+                </div>
             <el-table
                                     :key="0"
                                     v-loading="listLoading"
@@ -52,8 +72,13 @@
                                         <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
                                         </template>
                                     </el-table-column>
-
-                                    
+ <el-table-column label="Product Category" align="center">
+                                        <template slot-scope="{row}">
+                                        <span class="link-type" >{{ row.salesCategory }}</span>
+                                        <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
+                                        </template>
+                                    </el-table-column>
+<!--                                     
 
                                     
 
@@ -76,12 +101,12 @@
                                         </el-tag>
                                         </div>
                                         </template>
-                                    </el-table-column>
+                                    </el-table-column> -->
 
                                     
                                     <el-table-column label="Created"  align="center">
                                         <template slot-scope="{row}">
-                                        <span>{{ row.salesCreatedAt | moment("calendar") }}</span>
+                                        <span>{{ row.salesCreatedAt | moment("dddd, MMMM Do YYYY") }}</span>
                                         </template>
                                     </el-table-column>
 
@@ -95,7 +120,9 @@
                                     </el-table>
                                     <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.productArray.length" @current-change="setPage">
                                     </el-pagination>
-
+    <el-card style="float: right; margin-top: 10px; margin-bottom: 30px;">
+       <h3>Total Sales :  {{salesTodayComputation}}</h3>
+    </el-card>
                                     <el-dialog
                                     title="More Sales Information"
                                     :visible.sync="dialogVisible"
@@ -114,23 +141,65 @@
                                             </div>
                                         </div>
                                     </el-card>
-                                    <el-card shadow="always">
-                                        <h3>Customer Information</h3>
-                                        <div class="row">
-                                            <div class="col-sm">
-                                                <span style="margin-bottom: 10px">Customer Name : {{this.customerInformation.customerName}}</span><br>
-                                                <span style="margin-bottom: 10px">Customer Number : {{this.customerInformation.customerNumber}}</span>
-                                            </div>
-                                            <div class="col-sm">
-                                                <span style="margin-bottom: 10px">Amount Paid : {{this.customerInformation.amount}}</span><br>
-                                                <span style="margin-bottom: 10px">Total Price : {{this.customerInformation.totalPrice}}</span>
-                                            </div>
-                                        </div>
-                                    </el-card>
                                     <span slot="footer" class="dialog-footer">
                                         <el-button @click="dialogVisible = false">Close</el-button>
                                     </span>
                                     </el-dialog>
+                                    <!-- PDF SHT -->
+    <vue-html2pdf
+        :show-layout="false"
+        :float-layout="true"
+        :enable-download="true"
+        :preview-modal="true"
+        :paginate-elements-by-height="1400"
+        filename="hee hee"
+        :pdf-quality="2"
+        :manual-pagination="false"
+        pdf-format="a4"
+        pdf-orientation="landscape"
+        pdf-content-width="800px"
+ 
+        @progress="onProgress($event)"
+        @hasStartedGeneration="hasStartedGeneration()"
+        @hasGenerated="hasGenerated($event)"
+        ref="html2Pdf"
+    >
+        <section slot="pdf-content">
+            <!-- PDF Content Here -->
+            <center>Generated Product Sales</center>
+            <div style="margin-top: 50px;" class="container">
+                <el-card shadow="always">
+                    <h3>Product Sales</h3>
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                            <th scope="col">Sales ID</th>
+                            <th scope="col">Product Name</th>
+                            <th scope="col">Product Quantity</th>
+                            <th scope="col">Product Price</th>
+                            <th scope="col">Product Category</th>
+                            <th scope="col">Created</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in productArray" :key="item.salesID">
+                            <th scope="row">{{item.salesID}}</th>
+                            <td>{{item.salesName}}</td>
+                            <td>{{item.salesQuantity}}</td>
+                             <td>{{item.salesPrice}}</td>
+                            <td>{{item.salesCategory}}</td>
+                            <td>{{item.salesCreatedAt | moment("dddd, MMMM Do YYYY")}}</td>
+                            </tr>
+                        </tbody>
+                        </table>
+                        <el-card style="float: right; margin-top: 10px; margin-bottom: 20px;">
+                            <h3>Total Sales : {{salesTodayComputation}}</h3>
+                        </el-card>
+                </el-card>
+            </div>
+        </section>
+    </vue-html2pdf>
+                                    <!-- PDF END SHT -->
         </div>
     </div>
 </template>
@@ -139,9 +208,11 @@
 import client from '@/store/0AuthRequest'
 import moment from 'moment'
 import JsonExcel from "vue-json-excel";
+import {mapGetters} from 'vuex'
+import VueHtml2pdf from 'vue-html2pdf'
 export default {
   components:{
-    'download-excel':JsonExcel
+    'download-excel':JsonExcel, 'vue-html2pdf':VueHtml2pdf
   },
     data() {
         return{
@@ -164,6 +235,9 @@ export default {
                   customerNumber: '',
                   totalPrice: ''
               },
+              filterable : {
+                  fromdate : '', todate: ''
+              },
           json_meta: [
             [
               {
@@ -185,30 +259,64 @@ export default {
       }
        
      },
+     ...mapGetters({
+         getsalesreport : 'get_sales_report'
+        }),
+        salesTodayComputation(){
+            return this.productArray.reduce((acc, item) => acc + item.salesTotal, 0)
+        }
     },
     created(){
         this.getAllSales();
         this.exportSales();
     },
     methods:{
+        onPrint: function() {
+this.$refs.html2Pdf.generatePdf()
+        },
+        onfilter(){
+            client.get(`/api/product-sales/filter-sales?datefrom=${this.filterable.fromdate}&dateto=${this.filterable.todate}`)
+            .then((r) => {
+                
+                    this.productArray = []
+                for(var x = 0; x => r.data.length; x++){
+                    let salesArray = []
+                    salesArray = JSON.parse(r.data[x].salesInfo)
+                    this.productArray.push({
+                        salesCreatedAt: salesArray.createdAt,
+                        salesBarcode: salesArray.orderBarcode,
+                        salesCategory: salesArray.orderCategory,
+                        salesCode : salesArray.orderCode,
+                        salesID : salesArray.orderID,
+                        salesImage: salesArray.orderImage,
+                        salesName : salesArray.orderName,
+                        salesPrice : salesArray.orderPrice,
+                        salesQuantity : salesArray.orderQuantity,
+                        salesTotal : salesArray.orderTotalPrice,
+                    })
+                }
+            })
+        },
+        setPage(val){
+            this.page = val
+        },
         getAllSales: function(){
             this.$store.dispatch(`actions_get_sales`).then(() => {
-                for(var x = 0; x < this.$store.state.productSales.salesArray.length; x++){
-                    let salesHandler = []
-                    salesHandler = JSON.parse(this.$store.state.productSales.salesArray[x].orderInfo)
+                
+                for(var x = 0; x => this.getsalesreport.length; x++){
+                    let salesArray = []
+                    salesArray = JSON.parse(this.getsalesreport[x].salesInfo)
                     this.productArray.push({
-                        salesCreatedAt: salesHandler[0].createdAt,
-                        salesBarcode: salesHandler[0].orderBarcode,
-                        salesCategory: salesHandler[0].orderCategory,
-                        salesCode : salesHandler[0].orderCode,
-                        salesID : salesHandler[0].orderID,
-                        salesImage: salesHandler[0].orderImage,
-                        salesName : salesHandler[0].orderName,
-                        salesPrice : salesHandler[0].orderPrice,
-                        salesQuantity : salesHandler[0].orderQuantity,
-                        salesTotal : salesHandler[0].orderTotalPrice,
-                        salesStatus : this.$store.state.productSales.salesArray[x].paymentStatus,
-                        salesPaymentID: this.$store.state.productSales.salesArray[x].paymentID
+                        salesCreatedAt: this.getsalesreport[x].createdAt,
+                        salesBarcode: salesArray.orderBarcode,
+                        salesCategory: salesArray.orderCategory,
+                        salesCode : salesArray.orderCode,
+                        salesID : salesArray.orderID,
+                        salesImage: salesArray.orderImage,
+                        salesName : salesArray.orderName,
+                        salesPrice : salesArray.orderPrice,
+                        salesQuantity : salesArray.orderQuantity,
+                        salesTotal : salesArray.orderTotalPrice,
                     })
                 }
             })
@@ -233,9 +341,10 @@ export default {
         },
         exportSales: function(){
             this.$store.dispatch(`actions_get_sales`).then(() => {
-                for(var x = 0; x < this.$store.state.productSales.salesArray.length; x++){
+                console.log("SALES REPORT",this.getsalesreport)
+                for(var x = 0; x < this.getsalesreport.length; x++){
                     let salesHandler = []
-                    salesHandler = JSON.parse(this.$store.state.productSales.salesArray[x].orderInfo)
+                    salesHandler = JSON.parse(this.getsalesreport[x].salesInfo)
                     this.exportProductSales.push({
                         MENU : salesHandler[0].orderName,
                         PRICE : salesHandler[0].orderPrice,

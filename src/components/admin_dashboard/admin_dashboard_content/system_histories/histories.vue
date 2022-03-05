@@ -35,13 +35,36 @@
                             </div>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="Archives">
+                    <el-tab-pane label="User Archives">
                     <div class="container" style="margin-top: 20px;">
                       <div class="row">
                         <div class="col-md-12">
                           <el-card shadow="always">
                             <h4>User Management Archives</h4>
                             <tableuserarchives :recovery="onrecoveruser" :datalist="listofusersArray" />
+                          </el-card>
+                        </div>
+                        <div class="col-md-6">
+
+                        </div>
+                      </div>
+                    </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="Product Archives">
+                    <div class="container" style="margin-top: 20px;">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <el-card shadow="always">
+                            <h4>Product Stocks Archives</h4>
+                           <el-alert
+                                title="Automatic Deletion"
+                                closable="false"
+                                type="error"
+                                style="margin-top: 10px; margin-bottom: 10px;"
+                                description="Product Archives will be deleted after 1 week"
+                                show-icon>
+                            </el-alert>
+                           <ProductArchives :listofproductArchives="listofproductArchives" />
                           </el-card>
                         </div>
                         <div class="col-md-6">
@@ -62,20 +85,23 @@
 import listofhistories from "@/components/ListHistories/logintablehistory"
 import tableusermanage from
 "@/components/admin_dashboard/ActivityLogs/usermanagement_logs/usermanagementlogs"
+import ProductArchives from "@/components/admin_dashboard/ActivityLogs/product_archives/ProductArchives"
 import tableproductactivationlogs from 
 "@/components/admin_dashboard/ActivityLogs/product_activation_logs/prodactivationlogs"
 import tableuserarchives from "@/components/admin_dashboard/ActivityLogs/usermanagement_logs/usermanagementarchives"
 import {usermanagementlogs} from "@/store/request-common"
 import {mapGetters} from 'vuex'
+import client from "@/store/0AuthRequest"
 export default {
 components: {
-    listofhistories, tableusermanage, tableuserarchives, tableproductactivationlogs
+    listofhistories, tableusermanage, tableuserarchives, tableproductactivationlogs, ProductArchives
 },
 data(){
     return{
         listoflogsusermanagement: [],
         listofusersArray: [],
-        listofprodActivationArray: []
+        listofprodActivationArray: [],
+        listofproductArchives : []
     }
 },
 computed: {
@@ -89,8 +115,24 @@ created(){
     //dispatch from store
     this.$store.dispatch("MUTATE_GET_ARCHIVES_USERS", {self : this})
     this.load_all_prod_activation_logs()
+    this.listOfProductArchives()
+    this.deletionAfter1Week()
 },
 methods: {
+    deletionAfter1Week: function(){
+        client.delete(`/api/archive-users-management/auto-deletion-after-1-week`)
+        .then(r => {
+            if(r.data === 'success deletion') {
+                this.listOfProductArchives()
+            }
+        })
+    },
+    listOfProductArchives: function(){
+        client.get(`/api/archive-users-management/product-archive-list`)
+        .then((r) => {
+            this.listofproductArchives = r.data
+        })
+    },
     onremove_prod_activation_logs(id){
         this.$confirm('This will permanently delete the data. Continue?', 'Warning', {
           confirmButtonText: 'OK',

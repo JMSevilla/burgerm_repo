@@ -1,7 +1,7 @@
 <template>
   <div>
-    <b-navbar style="padding: 20px" toggleable="lg" type="dark" variant="dark">
-      <b-navbar-brand href="#">BURGER MANIA &nbsp; <el-tag type="warning" effect="dark" size="small">Cashier Area</el-tag></b-navbar-brand>
+    <b-navbar style="padding: 10px" toggleable="lg" type="dark" variant="dark">
+      <b-navbar-brand href="#" style="font-size:24px;">BURGER MANIA &nbsp; <el-tag type="warning" effect="dark" size="small">Cashier Area</el-tag></b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -11,16 +11,17 @@
         <b-navbar-nav class="ml-auto">
 
 
-<el-button type="danger" size="small" plain style="margin-right : 30px;" @click="drawer = true">Close Store Mode</el-button>
+    <el-button type="danger" size="mini" plain style="margin-right : 20px;" @click="drawer = true">Close Store Mode</el-button>
           <b-nav-item-dropdown right>
             <!-- Using 'button-content' slot -->
             
             <template #button-content>
+              <div style="color: white; font-size: 16px">
                <em>{{fullname()}}</em>
-            </template>
+            </div></template>
             <!-- <b-dropdown-item href="#">Profile</b-dropdown-item> -->
              <center>
-              <el-button style="width: 80%" type="danger" size="small" @click="onlogout()">Logout</el-button>     
+              <el-button style="width: 80%" type="danger" size="medium" @click="onlogout()">Logout</el-button>     
               </center>
           </b-nav-item-dropdown>
           
@@ -52,7 +53,6 @@
                             <th scope="col">BEG</th>
                             <th scope="col">Available</th>
                             <th scope="col">END</th>
-                            <th scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -62,21 +62,17 @@
                             <td style="font-size: 14px;">{{item.beg_qty}}</td>
                             <td style="font-size: 14px;">{{item.available}}</td>
                             <td style="font-size: 14px;">{{item.end_qty}}</td>
-                            <td style="font-size: 14px;">
-                              <div v-if="item.refstatus == '1'">
-                                <el-button
-                              type="danger"
-                              size="small"
-                              @click="onCloseStoreMode(item.refId)"
-                              >Confirm Close</el-button>
-                              </div>
-                              <div v-else>
-                                <el-tag size="small" type="success">Closed</el-tag>
-                              </div>
-                            </td>
+                            
                             </tr>
                         </tbody>
         </table>
+         <el-button
+                              type="danger"
+                              size="small"
+                              style="float: right; margin-top: 10px; margin-bottom: 10px;"
+                              @click="onCloseStoreMode()"
+                              :disabled="willDisableClosing"
+                              >Confirm Close</el-button>
         <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.inventoryReports.length" @current-change="setPage">
                                     </el-pagination>
       </el-card>
@@ -97,7 +93,7 @@ export default {
   },
   data(){ 
     return{
-      drawer : false, pageSize : 5, page: 1, inventoryReports: []
+      drawer : false, pageSize : 5, page: 1, inventoryReports: [], willDisableClosing : false
     }
   },
   computed: {
@@ -115,18 +111,22 @@ export default {
     this.getInventoryReports()
   },
   methods:{
-    onCloseStoreMode(refid){
-      client.put('/api/inventory-reports/get-quantity-current-inventory?refId=' + refid).then(res => {
-        console.log(res.data)
-        if(res.data === "success update end"){
-           this.$notify.success({
-                                title: 'Success!',
-                                message: 'This product successfully close and sent to END Reports',
-                                offset: 100
-                                });
-                                this.getInventoryReports()
-        }
-      })
+    onCloseStoreMode(){
+      for(var x = 0; x < this.inventoryReports.length; x++) {
+          client.put('/api/inventory-reports/get-quantity-current-inventory?refId=' + this.inventoryReports[x].refId).then(res => {
+          console.log(res.data)
+          if(res.data === "success update end"){
+            this.willDisableClosing = true
+            this.$notify.success({
+                                  title: 'Success!',
+                                  message: 'This product successfully close and sent to END Reports',
+                                  offset: 100
+                                  });
+                                  this.getInventoryReports()
+          }
+        })
+      }
+      
     },
      getInventoryReports: function() {
            client.get('/api/inventory-reports/get-inventory-reports').then(response => {

@@ -20,9 +20,6 @@
                                         </el-alert>
                                     <el-card shadow="always" style="margin-top: 20px;">
                                         <el-tabs type="card">
-                                        <el-tab-pane label="Warning to expired">
-                                            
-                                        </el-tab-pane>
                                         <el-tab-pane label="Expired">
                                               <el-input
                                     style="margin-bottom: 5px; width: 30%;"
@@ -256,19 +253,18 @@ export default {
             })
         },
         getafter10daysexpiration(){
-            productexpiredafter10days().then(response => {
-                
-                // if(response.data.respObj == null || response.data == null || response.data.respObj == ''){
-                //     this.dialogVisible = false;
-                //     console.log(this.after10days)
-                //     console.log(response.data);
-                // }else{  
-                //     this.dialogVisible = true;
-                //     this.after10days = response.data.respObj;
-                // console.log(this.after10days)
-                // console.log(response.data);
-                // }
-            })
+            // productexpiredafter10days().then(response => {
+            //     if(response.data.respObj == null || response.data == null || response.data.respObj == ''){
+            //         this.dialogVisible = false;
+            //         console.log(this.after10days)
+            //         console.log(response.data);
+            //     }else{  
+            //     this.dialogVisible = true;
+            //     this.after10days = response.data.respObj;
+            //     console.log(this.after10days)
+            //     console.log(response.data);
+            //     }
+            // })
         },
     }
 }

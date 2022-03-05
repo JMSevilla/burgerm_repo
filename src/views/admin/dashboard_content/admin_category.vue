@@ -2,7 +2,7 @@
     <div>
         <div class="mt-3">
             <h1>Product Category</h1>
-        <p style="font-size: 15px">Here you can add your product category</p>
+        <p style="font-size: 15px">Here you can add your product category.</p>
         <el-alert
             title="Product category management/ Category."
             type="success" :closable="false">

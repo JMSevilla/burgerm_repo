@@ -7,15 +7,28 @@
 
 <script>
 import {scanSession,loginhistory, getrequestListOfData} from "@/store/request-common";
+import client from "@/store/0AuthRequest"
 export default {
   created()
   {
+    this.checkIsLock()
     this.checker();
     getrequestListOfData().then((response) => {
       console.log("for initial testing" , response.data)
     })
   },
   methods: {
+    checkIsLock: function(){
+      client.get(`/api/csrf-login/get-attempts?useremail=${localStorage.getItem('usr')}`)
+      .then((r) => {
+        if(r.data === 5){
+          this.$router.push({name : 'LockAccount'}).catch(() => {})
+        }
+        else{
+          this.$router.push({name : 'Index'}).catch(() => {})
+        }
+      })
+    },
     checker(){
       scanSession().then((response) => {
         if(response.data === "scan admin"){

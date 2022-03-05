@@ -18,14 +18,14 @@
       <div v-if="activesteps == 0" style="margin-top: 20px">
         <el-card shadow="always">
           <el-form ref="productFinalizationField">
-          <h4>Add product finalization</h4>
+          <h4>Add Product Finalization</h4>
           <el-alert
             style="margin-top: 20px; margin-bottom: 30px"
             title="Product finalization"
             type="info"
             effect="dark"
             :closable="false"
-            description="You can finalize here your product and choose raw materials for it and this may appear on your POS system. After adding you must activate the product you've activated"
+            description="You can finalize here your product and choose raw materials for it and this may appear on your POS system."
             show-icon
           >
           </el-alert>
@@ -64,7 +64,7 @@
           <label>Enter product name</label>
           <el-input
             ref="productName"
-            style="margin-bottom: 20px"
+            style="margin-bottom: 20px" 
             placeholder="Please input"
             v-model="taskfinalization.prodname"
             clearable
@@ -83,7 +83,7 @@
           >
           </el-input>
 
-          <label>select product category</label>
+          <label>Select product category</label>
           <el-select
             ref="productCategory"
             style="width: 100%; margin-bottom: 20px"
@@ -301,8 +301,7 @@
               <hr />
               <el-card style="margin-top: 20px" shadow="always">
                 <p style="font-size: 20px">
-                  Good job! The product you've created can now activate on
-                  product activation and may appear on your Point of Sales
+                  Good job! The product you've created, may appear on your Point of Sales
                   System.
                 </p>
                 <el-button @click="onstartover()" type="primary"

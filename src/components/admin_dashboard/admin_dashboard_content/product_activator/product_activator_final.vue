@@ -21,13 +21,14 @@
       <high :options="chartOptions" :redraw="true" style="margin-top: 30px;"></high>
     </el-card> -->
       <el-card shadow="always">
-        <h3>List of Final Product</h3>
+        <h3>List of Final Product</h3><br>
         <el-input
           style="margin-bottom: 5px; width: 30%; margin-right: 10px"
           placeholder="Search"
           v-model="searchable"
           clearable
         >
+        <br>
         </el-input>
 
         <!-- <el-popover
@@ -69,7 +70,7 @@
           <el-table-column
             label="Product ID"
             prop="id"
-            sortable="custom"
+            
             align="center"
           >
             <template slot-scope="{ row }">
@@ -80,7 +81,7 @@
             width="120"
             label="Product Code"
             prop="id"
-            sortable="custom"
+            
             align="center"
           >
             <template slot-scope="{ row }">
@@ -90,7 +91,7 @@
           <el-table-column
             label="Product Image"
             prop="id"
-            sortable="custom"
+            
             align="center"
           >
             <template slot-scope="{ row }">
@@ -104,7 +105,7 @@
           </el-table-column>
           <el-table-column
             label="Product Name"
-            sortable="custom"
+            
             align="center"
           >
             <template slot-scope="{ row }">
@@ -112,8 +113,17 @@
             </template>
           </el-table-column>
           <el-table-column
+            label="Product Category"
+            
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.prodcategory }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
             label="Product Quantity"
-            sortable="custom"
+            
             align="center"
           >
             <template slot-scope="{ row }">
@@ -122,10 +132,10 @@
           </el-table-column>
 
           <el-table-column
-            width="350"
+            width="270"
             fixed="right"
             label="Operations"
-            sortable="custom"
+            
             align="center"
           >
             <template slot-scope="{ row }">
@@ -140,7 +150,7 @@
                         <thead>
                           <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Product Name</th>
+                            <th scope="col" align="center">Product Name</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -166,7 +176,7 @@
                 </el-popover>
 
                 <div class="col-md-6" style="width: 100%; margin-left: 80px">
-                  <el-popover placement="left" width="400" trigger="click">
+                  <!-- <el-popover placement="left" width="400" trigger="click">
                       <div style="display: inline">
                         <h4>Enter quantity to add</h4>
                         <el-input
@@ -193,15 +203,15 @@
                       plain
                       >Refill
                     </el-button>
-                  </el-popover>
+                  </el-popover> -->
                 </div>
 
-                <div class="col-md-6" style="width: 100%; margin-left: 80px">
+                <div class="col-md-6" style="width: 100%; margin-left: 65px">
                   <el-button
                     @click="onRemoveProduct(row.id)"
                     type="danger"
                     size="small"
-                    style="width: 65%; margin-top: 10%"
+                    style="width: 100%; margin-top: 10%"
                     plain
                     >Remove</el-button
                   >
@@ -774,6 +784,8 @@ export default {
   },
 };
 </script>
-
 <style scoped>
+.el-table el-table-column:nth-child(odd) {
+    background-color: #845353;
+}
 </style>

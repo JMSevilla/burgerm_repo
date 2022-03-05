@@ -50,7 +50,7 @@
         <div v-else>
 
         </div>
-<!--          <el-link type="primary" @click="onforgot()">Forgot password</el-link>-->
+         <el-link type="primary" @click="onforgot()">Forgot password</el-link>
           <el-button  v-on:keyup="validateconfirm" @click="onsignin()" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 10px;" type="primary" round>Login</el-button>
       </el-card>
    </div>
@@ -202,19 +202,20 @@ import client from "@/store/0AuthRequest"
                             console.log("BE response attempts", response.data)
                             this.jukeCount = response.data
                             console.log("get juke count", response.data)
-                            if(this.jukeCount != 3){
+                            if(this.jukeCount != 5){
                               this.jukeCount = this.jukeCount + 1
                                 attemptRequest(this.task, this.jukeCount).then((res) => {
                                   console.log(res.data)
                                 })
                             }else{
-                              updateAttemptStatus(this.task)
-                              .then((res) => {
-                                if(res.data === "attempt status update"){
-                                  this.countDownTimer()
-                                  this.countDown = 59;
+                              client.put(`/api/csrf-login/lock-account?email=${this.task.email}`)
+                              .then(r => {
+                                if(r.data === 'success attempt update'){
+                                  localStorage.setItem('usr', this.task.email)
+                              this.$router.push({name : 'LockAccount'}).catch(() => {})
                                 }
                               })
+                              
                             }
                           })
 

@@ -2,6 +2,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import httpauth from "./0AuthRequest"
+import * as TOTALPRICE from './modules/totalprice' 
+import * as ADDQTY from './modules/addqty'
+import * as BUY1TAKE1 from './modules/buy1take1'
+import * as CUSTOMERSORDERS from './modules/customerOrders'
+import * as SALESENTRY from './modules/salesEntry'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -123,6 +128,9 @@ export default new Vuex.Store({
     },
     get_full_details:(state) => {
       return state.emailObject.get_full_client_details
+    },
+    get_sales_report : (state) => {
+      return state.productSales.salesArray
     }
   },
   mutations: {
@@ -493,5 +501,9 @@ export default new Vuex.Store({
     }
   },
   modules: {
+    TOTALPRICE,
+    ADDQTY,
+    BUY1TAKE1,
+    CUSTOMERSORDERS, SALESENTRY
   }
 })

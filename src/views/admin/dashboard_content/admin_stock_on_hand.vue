@@ -2,7 +2,7 @@
     <div>
         <div class="mt-3">
             <h1>Stocks on Hand</h1>
-        <p style="font-size: 15px">Here you can do more actions with your product stocks</p>
+        <p style="font-size: 15px">Here you can do more actions with your product stocks.</p>
         <el-alert
             title="Stocks on Hand."
             type="success" :closable="false">

@@ -1006,7 +1006,7 @@ created at : 07/17/2021
 
 export function sendForgotEmail(email, code){
     try {
-        return httpauth.post(`/api/forgot-password/verification-email-send?email=${email}&vcode=${code}`)
+        return httpauth.post(`/api/forgot-password/send-email?email=${email}&vcode=${code}`)
     } catch (error) {
         alert("Error in sending code" + error)
     }

@@ -398,7 +398,7 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column label="Image">
+                <el-table-column label="Image" align="center">
                   <template slot-scope="{ row }">
                     <img
                       :src="row.supplierimgurl"
@@ -410,30 +410,30 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column label="First name">
+                <el-table-column label="First name" align="center">
                   <template slot-scope="{ row }">
                     <span class="link-type">{{ row.supplierfirstname }}</span>
                     <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
                   </template>
                 </el-table-column>
 
-                <el-table-column label="Last name">
+                <el-table-column label="Last name" align="center">
                   <template slot-scope="{ row }">
                     <span class="link-type">{{ row.supplierlastname }}</span>
                     <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
                   </template>
                 </el-table-column>
 
-                <el-table-column label="Mobile Number">
+                <el-table-column label="Mobile Number" align="center">
                   <template slot-scope="{ row }">
                     <span class="link-type"
-                      >&#8369;{{ row.suppliernumber }}</span
+                      >{{ row.suppliernumber }}</span
                     >
                     <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
                   </template>
                 </el-table-column>
 
-                <el-table-column label="Status" class-name="status-col">
+                <!-- <el-table-column label="Status" class-name="status-col">
                   <template slot-scope="{ row }">
                     <div v-if="row.isstatus == 1">
                       <el-tag type="success"> Active </el-tag>
@@ -442,7 +442,7 @@
                       <el-tag type="warning"> Inactive </el-tag>
                     </div>
                   </template>
-                </el-table-column>
+                </el-table-column> -->
 
                 <el-table-column label="Created" align="center">
                   <template slot-scope="{ row }">

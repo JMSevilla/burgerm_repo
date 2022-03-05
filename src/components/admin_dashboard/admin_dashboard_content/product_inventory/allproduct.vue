@@ -325,7 +325,7 @@
                                     </span>
                                     </el-dialog>
                             <!-- end el dialog view expiration -->
-                          <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.getallproductlist.length" @current-change="setPage">
+                         <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.getallproductlist.length" @current-change="setPage">
                                     </el-pagination>
                           </div>
                           <div v-else>

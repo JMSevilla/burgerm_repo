@@ -1,6 +1,6 @@
 <template>
     <div>
-                                    <vs-input icon="search" placeholder="Search" v-model="searchable"/>
+                                    <vs-input style="width: 45%;" icon="search" placeholder="Search" v-model="searchable"/><br>
                                     <el-table
                                     :key="0"
                                     v-loading="lazyload"
@@ -77,25 +77,15 @@
 
                                    
 
-                                     <el-table-column label="More actions"  width="300" align="center">
+                                     <el-table-column label="More actions"  width="200" align="center">
                                         <template slot-scope="{row}">
                                         <sequential-entrance fromRight delay="2000">
-                                            <div style="display: flex;">
-                                                <div v-if="row.discountIsApplied === '1'">
-                                                    <el-button @click="oncancelDiscount(row.orderID, row.orderBarcode)" type="danger" size="mini">Cancel Discount</el-button>
-                                        <el-button type="success" size="mini"
+                                            
+                                         <div style="display: flex;">
+                                             <el-button type="success" size="mini"
                                         @click="onaddqty(row.orderID)">+ Qty</el-button>
-                                                 <el-button type="danger" size="mini"
+                                                <el-button type="danger" size="mini"
                                         @click="voidItem(row.orderBarcode, row.orderQuantity, row.orderID)">Void</el-button>
-                                                </div>
-                                                <div v-else>
-                                                    <el-button type="warning" size="mini"
-                                        @click="addDiscountItem(row.orderPrice, row.orderID, row.orderBarcode)">+ Discount</el-button>
-                                        <el-button type="success" size="mini"
-                                        @click="onaddqty(row.orderID)">+ Qty</el-button>
-                                                 <el-button type="danger" size="mini"
-                                        @click="voidItem(row.orderBarcode, row.orderQuantity, row.orderID)">Void</el-button>
-                                                </div>
                                             </div>
                                         </sequential-entrance>
                                         <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
@@ -108,13 +98,13 @@
                                     <div style="margin-top: 10px; margin-bottom: 10px;" class="row">
                                         <div class="col-sm"></div>
                                         <div class="col-sm">
-                                        <el-card>
+                                        <!-- <el-card>
                                         <h3 style="margin-bottom : 20px;">Total Discount : &#8369; {{totalDiscount}}</h3>
-                                        </el-card>
+                                        </el-card> -->
                                         </div>
                                         <div class="col-sm">
                                         <el-card shadow="always">
-                                            <h3 style="margin-bottom : 20px;">Total Price : &#8369;{{getTotalPrice}}</h3>
+                                            <h3 style="margin-bottom : 20px;">Total Price : &#8369;{{cartTotalPrice}}</h3>
                                         </el-card>
                                         </div>
                                     </div>
@@ -130,13 +120,13 @@
                                                    <div class="row">
                                                        <div class="col-sm">
                                                            <el-button style="width: 100%;" @click="pay" size="small" type="primary" >
-                                                       <i class="el-icon-money"></i> Make payment [F1]
+                                                       <i class="el-icon-money"></i> Make payment 
                                                    </el-button>
                                                        </div>
                                                        <div class="col-sm">
                                                            <el-badge :value="countready" style="width: 100%;"  class="item">
                                                     <el-button size="small" @click="onready" style="width: 100%;" :disabled="onreadypay" type="success" >
-                                                       <i class="el-icon-check"></i> Ready [F2]
+                                                       <i class="el-icon-check"></i> Ready 
                                                    </el-button>
                                                     </el-badge>
                                                        </div>
@@ -190,7 +180,7 @@
                                                                 </div>
                                                                 <div class="col-sm">
                                                                     <el-card shadow="always">
-                                                                        <h2 style="margin-bottom: 10px;">Total Price : &#8369;{{getTotalPrice}}</h2>
+                                                                        <h2 style="margin-bottom: 10px;">Total Price : &#8369;{{cartTotalPrice}}</h2>
                                                                     <h2 style="margin-bottom: 10px;">Discount Applied : 0%</h2>
                                                                     <div v-if="paymentObj.amount == null || paymentObj.amount == ''">
                                                                         <h4 style="margin-bottom: 10px;">Amount : &#8369; 0</h4>
@@ -202,17 +192,18 @@
                                                                         <h4 style="margin-bottom: 10px;">Change : &#8369; 0</h4>
                                                                     </div>
                                                                     <div v-else>
-                                                                        <h4 style="margin-bottom: 10px;">Change : &#8369;{{paymentObj.amount - getTotalPrice}}</h4>
+                                                                        <h4 style="margin-bottom: 10px;">Change : &#8369;{{paymentObj.amount - cartTotalPrice}}</h4>
                                                                     </div>
                                                                     
                                                                     <div style="display: inline;">
-                                                                     <div v-if="getTotalPrice > paymentObj.amount">
+                                                                     <div v-if="cartTotalPrice > paymentObj.amount">
                                                                          <el-tag style="margin-bottom: 10px;" type="error" size="small">Payment Status: Fail</el-tag>
                                                                      </div>
                                                                      <div v-else>
                                                                          <el-tag style="margin-bottom: 10px;" type="success" size="small">Payment Status: No issue</el-tag>
                                                                      </div>
                                                                     </div>
+                                                                    <!-- <el-button @click="addDiscount()" :disabled="willDisableDiscount" type="success" size="small" style="margin-top: 10px; margin-bottom: 10px;">Add 20% Discount</el-button> -->
                                                                     </el-card>
                                                                 </div>
                                                             </div>
@@ -222,9 +213,9 @@
                                                                 <div class="col-sm">
                                                                     <h4>Customer Information</h4>
                                                                 </div>
-                                                                <div class="col-sm">
+                                                                <!-- <div class="col-sm">
                                                                     <el-link style="float: right;" type="primary">Hook existing customer</el-link>
-                                                                </div>
+                                                                </div> -->
                                                             </div>
                                                             <hr>
                                                             <div class="row" style="margin-bottom: 20px;">
@@ -252,7 +243,7 @@
                                                             <div class="row">
                                                                 <div class="col-sm">
                                                                     <el-input
-                                                                type="text"
+                                                                type="number"
                                                                 clearable
                                                                 placeholder="Enter amount"
                                                                 style="margin-top: 10px; margin-bottom: 10px;"
@@ -260,7 +251,7 @@
                                                                 @input.native="onamountchange"
                                                                 ></el-input>
                                                                 </div>
-                                                                <div class="col-sm">
+                                                                <!-- <div class="col-sm">
                                                                     <el-select style="margin-top: 10px; width: 100%; margin-bottom: 10px;"
                                                                      v-model="paymentObj.discount" filterable placeholder="Select discount">
                                                                         <el-option
@@ -270,7 +261,7 @@
                                                                         :value="item.value">
                                                                         </el-option>
                                                                     </el-select>
-                                                                </div>
+                                                                </div> -->
                                                             </div>
                                                             <el-button
                                                             type="primary"
@@ -296,95 +287,100 @@
                                                     <hr>
                                                     <el-card shadow="always">
                                                         <el-table
-                                                                :data="paymentapprvl"
+                                                                :data="OrderInformation"
                                                                 style="width: 100%">
-                                                                <el-table-column type="expand">
-                                                                <template>
-                                                                    
-                                                                   <div v-for="(item) in DataMappingOrderViewing" :key="item.orderviewing.orderID">
-                                                                        <el-card  style="margin-bottom: 20px;" shadow="always">
-                                                                        <div class="row">
-                                                                            <div class="col-sm">
-                                                                                <el-avatar shape="square" :size="100" fit="fill" :src="item.orderviewing.orderImage"></el-avatar>
-                                                                            </div>
-                                                                            <div class="col-sm">
-                                                                                <span>Product Name : {{item.orderviewing.orderName}}</span><br><br>
-                                                                                <span>QTY : {{item.orderviewing.orderQuantity}}</span>
-                                                                            </div>
-                                                                             <div class="col-sm">
-                                                                                <span>Price :  &#8369;{{item.orderviewing.orderPrice}}</span><br><br>
-                                                                                <span>Category : {{item.orderviewing.orderCategory}}</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </el-card>
-                                                                   </div>
-                                                                </template>
-                                                                </el-table-column>
                                                                 <el-table-column
-                                                                label="Payment ID">
-                                                                <template>
-                                                                    <div v-for="(t) in longRangeArraysOrders" :key="t.paymentapprvl.paymentID">
-                                                                        <span>{{t.paymentapprvl.paymentID}}</span>
+                                                                label="Order Image">
+                                                                <template slot-scope="{row}">
+                                                                    <div>
+                                                                        <img 
+                                                                        :src="row.orderImage"
+                                                                        alt="no image"
+                                                                        style="width: 30%; height : auto;"
+                                                                        class="img-fluid"
+                                                                        />
                                                                     </div>
                                                                 </template>
                                                                 </el-table-column>
                                                                 <el-table-column
-                                                                label="Customer Name">
-                                                                <template>
-                                                                    <div v-for="(t) in longRangeArraysOrders" :key="t.paymentinfo.orderID">
-                                                                        <span>{{t.paymentinfo.orderName}}</span>
+                                                                label="Order">
+                                                               <template slot-scope="{row}">
+                                                                    <div>
+                                                                        <span>{{row.orderName}}</span>
                                                                     </div>
                                                                 </template>
                                                                 </el-table-column>
-                                                                <el-table-column
-                                                                label="Payment Status">
-                                                                <template>
-                                                                    <div v-for="(t) in longRangeArraysOrders" :key="t.paymentapprvl.paymentID">
-                                                                        <div  v-if="t.paymentapprvl.paymentStatus == '1'">
-                                                                        <el-tag type="success" size="small" effect="dark">OK</el-tag>
-                                                                    </div>
-                                                                    <div v-else>
-                                                                        <el-tag type="danger" size="small" effect="dark">Fail</el-tag>
-                                                                    </div>
-                                                                    </div>
-                                                                </template>
-                                                                </el-table-column>
-                                                                 <el-table-column
+                                                                
+                                                                 <!-- <el-table-column
                                                                 label="More Actions">
-                                                                     <div v-for="(t) in longRangeArraysOrders" :key="t.paymentinfo.orderID">
-                                                                         <el-link type="primary" @click="onconfirmpayment(t.paymentapprvl.paymentID)">View receipt</el-link>
-                                                                      <!-- <el-link @click="onfail()" type="primary">Decline</el-link> -->
-                                                                     </div>
-                                                                </el-table-column>
+                                                                     <template slot-scope="{row}">
+                                                                        
+                                                                        <el-link type="primary" @click="onconfirmpayment(
+                                                                             row.orderBarcode,
+                                                                              row.orderName,
+                                                                              row.orderImage,
+                                                                              row.orderPrice,
+                                                                              row.orderQuantity,
+                                                                              row.orderCategory,
+                                                                              row.orderTotalPrice)">Approved</el-link>
+                                                                     </template>
+                                                                </el-table-column> -->
                                                             </el-table>
+                                                            <el-button type="primary" plain size="small" style="float: right; margin-top: 10px; margin-bottom: 10px;"
+                                                            @click="onconfirmTransaction()">Confirm Transaction</el-button>
                                                     </el-card>
+                                                    
                                                 </div>
                                             </el-dialog>
                                             <!-- adding qty -->
                                             <el-dialog
-                                                                            title="Tips"
                                                                             :visible.sync="addqtydialogvisible"
                                                                             width="30%"
                                                                             :before-close="handleCloseaddqty">
                                                                             <div class="container">
-                                                                                <span>Enter Quantity</span>
-                                                                                <el-input
-                                                                                type="text"
-                                                                                clearable
-                                                                                placeholder="Enter quantity"
-                                                                                v-model="updateQtyTask.addingQty"
-                                                                                style="margin-top: 10px; margin-bottom : 10px;"
-                                                                                ></el-input>
+                                                                                <div v-if="addQuantityIdentfier == 1">
+                                                                                    <span>Enter Quantity for Solo</span>
+                                                                                    <el-input
+                                                                                    type="number"
+                                                                                    clearable
+                                                                                    @input.native="qtyvalidation"
+                                                                                    placeholder="Enter quantity"
+                                                                                    v-model="updateQtyTask.addingQty"
+                                                                                    style="margin-top: 10px; margin-bottom : 10px;"
+                                                                                    ></el-input>
+                                                                                </div>
+                                                                                <div v-else-if="addQuantityIdentfier == 2">
+                                                                                    <span>Enter Quantity for Box of 6</span>
+                                                                                    <el-input
+                                                                                    type="number"
+                                                                                    @input.native="qtyvalidation"
+                                                                                    clearable
+                                                                                    placeholder="Enter quantity"
+                                                                                    v-model="bundleQtyTask.addingQty"
+                                                                                    style="margin-top: 10px; margin-bottom : 10px;"
+                                                                                    ></el-input>
+                                                                                </div>
+                                                                                <div v-else-if="addQuantityIdentfier == 3">
+                                                                                    <span>Enter Quantity for Buy 1 Take 1</span>
+                                                                                    <el-input
+                                                                                    type="number"
+                                                                                    @input.native="qtyvalidation"
+                                                                                    clearable
+                                                                                    placeholder="Enter quantity"
+                                                                                    v-model="b1t1QtyTask.addingQty"
+                                                                                    style="margin-top: 10px; margin-bottom : 10px;"
+                                                                                    ></el-input>
+                                                                                </div>
                                                                             </div>
                                                                             <span slot="footer" class="dialog-footer">
                                                                                 <el-button @click="addqtydialogvisible = false">Cancel</el-button>
-                                                                                <el-button type="primary" @click="onconfirmaddqty">Confirm</el-button>
+                                                                                <el-button type="primary" :disabled="confirmdisabling" v-loading.fullscreen.lock="screenUI" @click="onconfirmaddqty">Confirm</el-button>
                                                                             </span>
                                                                             </el-dialog> 
                                                     <!-- Receipt Printing -->
      <div style="display: none;" id="printMe">
                                                                
-                   <div v-for="(t) in longRangeArraysOrders" :key="t.paymentinfo.orderID">
+                   <div >
                        <div id="invoice-POSS">
     
     <div class="logo"></div>
@@ -396,8 +392,8 @@
       <div class="info">
         <h2>Contact Info</h2>
         <p> 
-            Customer Name   : {{t.paymentinfo.customerName}}<br>
-            Phone   : {{t.paymentinfo.customerNumber}}<br>
+            Customer Name   : {{paymentObj.customerName}}<br>
+            Phone   : {{paymentObj.customerNumber}}<br>
         </p>
       </div>
     </div><!--End Invoice Mid-->
@@ -412,21 +408,18 @@
 								<td class="Rate"><h2 style="margin-right: 30px;">SubTotal</h2></td>
 							</tr>
 
-							<tr v-for="(y) in DataMappingOrderViewing" :key="y.orderviewing.orderID" class="service">
-								<td class="tableitem"><p class="itemtext">{{y.orderviewing.orderName}}</p></td>
-								<td class="tableitem"><p class="itemtext">{{y.orderviewing.orderQuantity}}</p></td>
-								<td class="tableitem"><p class="itemtext"> &#8369;{{y.orderviewing.orderPrice}}</p></td>
+							<tr  v-for="(y) in OrderInformation" :key="y.orderID" class="service">
+								<td class="tableitem"><p class="itemtext">{{y.orderName}}</p></td>
+								<td class="tableitem"><p class="itemtext">{{y.orderQuantity}}</p></td>
+								<td class="tableitem"><p class="itemtext"> &#8369;{{y.orderPrice}}</p></td>
 							</tr>
 
-							<tr class="tabletitle">
-								<td></td>
-								<td class="Rate"><h2>Total</h2></td>
-								<td class="payment"><h2>&#8369;{{receiptTotalPrice}}</h2></td>
-							</tr>
-
+							
 						</table>
 					</div><!--End Table-->
-
+                        <h2>Total : &#8369;{{cartTotalPrice}} </h2> <br />
+                            <p> Amount : &#8369;{{paymentObj.amount}}</p> <br />
+                             <p> Change : &#8369;{{paymentObj.amount - cartTotalPrice}}</p> <br />
 					<div id="legalcopy">
 						<p class="legal"><strong>Thank you for Ordering!</strong>  Please keep this receipt thank you !. 
 						</p>
@@ -445,7 +438,14 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex"
+import {mapGetters, mapActions} from "vuex"
+import {PUSH_ADDQTY,
+ GET_ADDQTY,
+  GET_SCREEN,
+   PUSH_BOXOF6_TYPE,
+    PUSH_TOTAL,
+    PUSH_B1T1_TYPE,
+    } from "@/store/types"
 import client from "@/store/0AuthRequest"
 export default {
     props: {
@@ -467,11 +467,13 @@ export default {
         savedSubPayment: Array,
         OrderInformation: Array,
         totalDiscount: Number,
-        fetchingCustomers: Function
+        fetchAllCustomerOrders: Function, soloOrderTask : Object, bundleOrderTask: Object,
+        buyOneTakeOneTask: Object, cartTotalPrice: Number, onconfirmTransaction: Function, willDisableDiscount: Boolean
     },
     data(){
         return {
             discountIsHide : false,
+            confirmdisabling: false,
             readyDialogVisible: false,
               tableData: [],
              pageSize: 5,
@@ -485,10 +487,12 @@ export default {
           timestamp: '2018-04-13'
         }],
         onfailpayment: false,
-        receiptDrawer: false, addqtydialogvisible : false, updateQtyTask: { addingQty : '', addingID: ''}
+        receiptDrawer: false, addqtydialogvisible : false, updateQtyTask: { addingQty : '', addingID: ''}, 
+        bundleQtyTask: {addingQty : '', addingID: ''}, b1t1QtyTask : {addingQty: '', addingID: ''},
         }
     },
     computed: {
+        
         pagedTableData(){
             if(this.searchable){
       return this.passCustomerArray.filter((item)=>{
@@ -500,7 +504,10 @@ export default {
         },
         ...mapGetters({
             getTotalPrice: 'getTotalPrice',
-            getState_Drawer: 'getState_Drawer'
+            getState_Drawer: 'getState_Drawer',
+            getaddqty: GET_ADDQTY,
+            screenUI : GET_SCREEN,
+            
         }),
         longRangeArraysOrders (){
             return this.paymentapprvl.map((payment, i) => {
@@ -524,28 +531,89 @@ export default {
             })
         }
     },
+    created(){
+        console.log("payment approval list ", this.paymentapprvl)
+    },
     mounted(){
         console.log("on mount", this.getTotalPrice)
         this.onfailpayment = true
-        this.fetchingCustomers()
+        this.fetchAllCustomerOrders()
     },
     methods: {
+        qtyvalidation(event) {
+          event.target.value =event.target.value.replace(/^0+/, '')
+ if(!event.target.value){
+   
+                this.confirmdisabling = true
+            } else if(event.target.value < 0){
+                this.confirmdisabling = true
+            } 
+             else{
+                this.confirmdisabling = false
+            }
+        },
+        ...mapActions({
+            addqty: PUSH_ADDQTY,
+            addboxof6qty : PUSH_BOXOF6_TYPE,
+            getTotal : PUSH_TOTAL,
+            onpushAddb1t1Qty : PUSH_B1T1_TYPE
+        }),
+        addDiscount : function() {
+             const discount = 0.20;
+                        const decimal = Number(null);
+                        const newValue = decimal + (this.cartTotalPrice - (this.cartTotalPrice * discount));
+                        this.cartTotalPrice = newValue
+                        this.willDisableDiscount = true
+        },
         onconfirmaddqty: function(){
-            client.put('/api/orders/update-qty-cart?id=' + this.updateQtyTask.addingID + '&qty=' + this.updateQtyTask.addingQty).then(response => {
-                console.log(response.data)
-                if(response.data === "success update qty"){
-                    this.$notify.success({
-                            title : 'Success',
-                            message : 'Successfully Added Quantity',
-                            offset: 100
-                        })
-                        this.fetchingCustomers()
-                }
-            })
+            let status = JSON.parse(localStorage.getItem('orderinfo')).status
+            if(status === 'solo'){
+                this.addqty(
+                    {
+                    objectQTYUpdater : this.updateQtyTask,
+                    objectQTYReducer: this.soloOrderTask
+                    }
+                )
+                this.fetchAllCustomerOrders()
+                this.getTotal()
+            } 
+            else if(status === 'boxof6')
+            {
+                this.addboxof6qty(
+                    {
+                    objectQTYUpdater : this.bundleQtyTask,
+                    objectQTYReducer: this.bundleOrderTask
+                    }
+                )
+                this.fetchAllCustomerOrders()
+                this.getTotal()
+            } else if (status === 'buy1take1'){
+                this.onpushAddb1t1Qty(
+                    {
+                         objectQTYUpdater : this.b1t1QtyTask,
+                        objectQTYReducer: this.buyOneTakeOneTask
+                    }
+                )
+                 this.fetchAllCustomerOrders()
+                this.getTotal()
+            }
         },
         onaddqty(id){
-            this.addqtydialogvisible = true
+            let status = JSON.parse(localStorage.getItem('orderinfo')).status
+            if(status === 'solo'){
+                this.addqtydialogvisible = true
             this.updateQtyTask.addingID = id
+            this.addQuantityIdentfier = 1
+            } else if(status === 'boxof6'){
+                this.addqtydialogvisible = true
+            this.bundleQtyTask.addingID = id
+            this.addQuantityIdentfier = 2
+            } else if(status === 'buy1take1'){
+                this.addqtydialogvisible = true
+            this.b1t1QtyTask.addingID = id
+            this.addQuantityIdentfier = 3
+            }
+            
         },
         handleCloseaddqty(done) {
         this.$confirm('Are you sure to close this dialog?')
@@ -568,7 +636,7 @@ export default {
                             message : 'Discount Successfully Applied',
                             offset: 100
                         })
-                        this.fetchingCustomers()
+                        this.fetchAllCustomerOrders()
                 }
             })
         })
@@ -601,7 +669,7 @@ export default {
                             message : 'Discount Successfully Applied',
                             offset: 100
                         })
-                        this.fetchingCustomers()
+                        this.fetchAllCustomerOrders()
 
                     } else {
                         this.$notify.warning({
@@ -625,9 +693,10 @@ export default {
             this.readyDialogVisible = true
         },
         onamountchange(event){
+            event.target.value =event.target.value.replace(/^0+/, '')
             if(!event.target.value){
                 this.onfailpayment = true
-            } else if(this.getTotalPrice > event.target.value){
+            } else if(this.cartTotalPrice > event.target.value){
                 this.onfailpayment = true
             }else{
                 this.onfailpayment = false

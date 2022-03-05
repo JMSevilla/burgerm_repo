@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-sm" v-show="inventoryform">
                     <el-card shadow="always" style="margin-bottom: 20px;">
-                        <h5>Add product form</h5>
+                        <h5>Add Product Form</h5>
                         <!-- <el-switch
                             style="display: block"
                             v-model="productTask.decisionval"
@@ -110,6 +110,7 @@
                                     <div class="col-sm">
                                     <label>Product Expiration</label> <el-tag type="success" effect="dark" size="mini" style="margin-bottom: 10px; margin-top: 10px;">Enabled from settings</el-tag>
                                        <el-date-picker
+                                            :picker-options="pickerOptions"
                                             style=" width: 100%; margin-bottom: 5px;"
                                             v-model="productTask.productExpiration"
                                             format="yyyy/MM/dd hh:mm:ss A"
@@ -182,15 +183,15 @@
                             </div>
                         </div>
 
-                        <label style="margin-right: 10px;">From : </label>
+                        <!-- <label style="margin-right: 10px;">From : </label>
                         <el-date-picker
                         v-model="filterable.fromdate"
                         format="yyyy/MM/dd"
                         value-format="yyyy/MM/dd"
                         type="date"
                         placeholder="Select date from">
-                        </el-date-picker> &nbsp;
-                        <label style="margin-right: 10px;">To : </label>
+                        </el-date-picker> &nbsp; -->
+                        <!-- <label style="margin-right: 10px;">To : </label>
                         <el-date-picker
                         style="margin-right: 10px;"
                         v-model="filterable.todate"
@@ -198,10 +199,10 @@
                         value-format="yyyy/MM/dd"
                         type="date"
                         placeholder="Select date to">
-                        </el-date-picker>
+                        </el-date-picker> -->
                         <div style="display: inline;">
                             <!-- <el-button type="warning" plain size="mini" @click="dialogVisible = true">More filters</el-button> -->
-                        <el-button type="primary" plain size="mini" @click="onsearchbydate()">Search</el-button>
+                        <!-- <el-button type="primary" plain size="mini" @click="onsearchbydate()">Search</el-button> -->
                         
                         </div>
                        
@@ -385,7 +386,7 @@
                                 </el-card>
                                 </el-timeline-item>
                             </el-timeline>
-                                    <el-pagination layout="prev, pager, next" :page-size="timelinePageSize" :total="this.getallproductlist.length" @current-change="setPage">
+                                   <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.getallproductlist.length" @current-change="setPage">
                                     </el-pagination>
                                 </div>
                             <!-- el dialog view expiration -->
@@ -424,12 +425,12 @@
                                         </template>
                                     </el-table-column>
                                     
-                                    <el-table-column label="Product Image" >
+                                    <el-table-column label="Product Image" > 
                                         <template slot-scope="{row}">
                                         <img :src="row.productimgurl" style="width: 100%; height: auto;" class="img-fluid" alt="No image">
                                         <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
                                         </template>
-                                    </el-table-column>
+                                    </el-table-column> 
 
                                     <el-table-column label="Product Name" >
                                         <template slot-scope="{row}">
@@ -595,7 +596,12 @@ export default {
               page: 1,
               dynamicTitle: '',
               getexpirydatearry: [],
-              tagalertshow: false
+              tagalertshow: false,
+              pickerOptions: {
+                  disabledDate(time) {
+                        return time.getTime() < Date.now();
+                    }
+              }
         }
     },
     computed: {
@@ -615,10 +621,11 @@ export default {
         return this.searchable.toLowerCase().split(' ').every(v => item.productName.toLowerCase().includes(v))
       })
       }else{
-        return this.getallproductlist.slice(this.timelinePageSize * this.timelinePage - this.timelinePageSize, this.timelinePageSize * this.timelinePage)
+        return this.getallproductlist.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
       }
        
-     }
+     },
+     
     },
     created(){
         this.fetchAllSizes()
