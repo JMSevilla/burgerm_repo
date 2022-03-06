@@ -175,8 +175,8 @@
                   >
                 </el-popover>
 
-                <div class="col-md-6" style="width: 100%; margin-left: 80px">
-                  <!-- <el-popover placement="left" width="400" trigger="click">
+                <div class="col-md-6" style="width: 100%; margin-left: 65px">
+                  <el-popover placement="left" width="400" trigger="click">
                       <div style="display: inline">
                         <h4>Enter quantity to add</h4>
                         <el-input
@@ -194,7 +194,7 @@
                           style="float: right; margin-bottom: 10px"
                           >Add</el-button>
                       </div>
-                    
+                   
                     <el-button
                       slot="reference"
                       type="warning"
@@ -203,7 +203,8 @@
                       plain
                       >Refill
                     </el-button>
-                  </el-popover> -->
+                    
+                  </el-popover>
                 </div>
 
                 <div class="col-md-6" style="width: 100%; margin-left: 65px">
