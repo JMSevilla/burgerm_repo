@@ -183,7 +183,16 @@ export default {
             //    console.log(this.inventoryReports[x].end_qty)
             //    console.log(this.inventoryReports[x].refId)
                client.post('/api/inventory-reports/send-product-to-beg?prodname=' + this.inventoryReports[x].productName + '&beg=' + this.inventoryReports[x].end_qty + '&refid=' + this.inventoryReports[x].refId).then(response => {
-                   console.log(response.data)
+                   if(response.data === 'success send') {
+                       this.$notify.success({
+                            title: 'Success',
+                            message: 'Successfully Sent to Inventory Reports',
+                            offset: 100
+                            });
+                            this.dialogVisible = false
+                            this.checkOnOpenStore()
+       this.getInventoryReports();
+                   }
                })
            }
        },

@@ -383,7 +383,7 @@
                                        
                                                 </div>
                                                 <div class="col-md-6">
- <el-button type="warning" size="small">Change Password</el-button>
+ <el-button @click="onChangePassword(row.id)" type="warning" size="small">Change Password</el-button>
                                                 </div>
                                             </div>
                                         </template>
@@ -393,6 +393,44 @@
                                     <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.oopusers.length" @current-change="setPage">
                                     </el-pagination>
                         </div>
+                        <!-- Change password -->
+    <el-dialog
+  title="UAM Change Password"
+  :visible.sync="dialogVisible"
+  width="50%"
+  :before-close="handleClose">
+  <div style="margin-top: 30px;" class="container">
+      <div class="row">
+          <div class="col-sm">
+              <span>Enter new password</span>
+              <el-input
+              type="password"
+              clearable
+              show-password
+              style="margin-top: 10px; margin-bottom: 20px;"
+              placeholder="Enter new password"
+              v-model="ChangingPasswordObj.newpassword"
+              ></el-input>
+          </div>
+          <div class="col-sm">
+               <span>Confirm Password</span>
+              <el-input
+              type="password"
+              clearable
+              show-password
+              placeholder="Confirm your password"
+              style="margin-top: 10px; margin-bottom: 20px;"
+              v-model="ChangingPasswordObj.confirmpassword"
+              ></el-input>
+          </div>
+      </div>
+  </div>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">Cancel</el-button>
+    <el-button type="primary" @click="onConfirmChangePassword">Confirm</el-button>
+  </span>
+</el-dialog>
+                        <!-- End of change password -->
         </div>
     </div>
 </template>
@@ -408,6 +446,7 @@ fetch_archive_list, add_admin,add_cashier, activitylog_usermanagement, activityl
 archive_users
 } from "@/store/request-common";
 //import dialogusermanagement from "@/components/admin_dashboard/admin_dashboard_content/usrmngmnt_modal/dialog_usermanagement";
+import client from "@/store/0AuthRequest"
 export default {
     components: {
         //dialogusermanagement
@@ -415,6 +454,10 @@ export default {
       data(){
           return{
               //add admin registered data
+              dialogVisible: false,
+              ChangingPasswordObj : {
+                  newpassword : '', confirmpassword : '', id : ''
+              },
                 add_admin_task: {
                     isadmin: true,
                 isactivate: true,
@@ -483,6 +526,66 @@ export default {
         this.makearchiveid(5)
     },
     methods: {
+        onConfirmChangePassword: function() {
+            if(!this.ChangingPasswordObj.newpassword || !this.ChangingPasswordObj.confirmpassword){
+                 this.$notify.error({
+                            title: 'Oops!',
+                            message: 'Something is empty',
+                            offset: 100
+                            });
+            } else if(this.ChangingPasswordObj.newpassword != this.ChangingPasswordObj.confirmpassword){
+                 this.$notify.error({
+                            title: 'Oops!',
+                            message: 'Password Mismatch',
+                            offset: 100
+                            });
+            } else if(this.ChangingPasswordObj.newpassword < 8){
+                 this.$notify.error({
+                            title: 'Oops!',
+                            message: 'Password must be 8 characters above',
+                            offset: 100
+                            });
+            }else{
+                this.$confirm('Are you sure you want to change password on this account?', 'Warning', {
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Cancel',
+            type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+                });
+                setTimeout(() => {
+                    const request = client.put(`/api/user-management/change-password?userid=${this.ChangingPasswordObj.id}&password=${this.ChangingPasswordObj.newpassword}`)
+                    request.then((resp) => {
+                        if(resp.data === 'success change password') {
+                            this.$notify.success({
+                            title: 'Success',
+                            message: 'Successfully Changed password',
+                            offset: 100
+                            });
+                             this.fetchAllUsersdata();
+                             loading.close()
+                        }else {
+                            this.$notify.error({
+                            title: 'Oops!',
+                            message: 'Changing password invalid',
+                            offset: 100
+                            });
+                             loading.close()
+                             return false
+                        }
+                    })
+                }, 2000)
+            })
+            }
+        },
+        onChangePassword: function(id){
+            this.dialogVisible = true
+            this.ChangingPasswordObj.id = id
+        },
         onremoveuser(uid, firstname, lastname, type){
             this.$confirm('Are you sure you want to remove this user?', 'Warning', {
                 confirmButtonText: 'OK',

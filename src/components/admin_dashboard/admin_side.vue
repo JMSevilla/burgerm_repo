@@ -172,6 +172,11 @@
                                      alt="no image" style="width: 15%; height:auto;">&nbsp;
                                         More settings
                                         </el-menu-item>
+                                        <!-- <el-menu-item index="7-3" @click="ondiscount()">
+                                        <img src="https://cdn2.iconfinder.com/data/icons/business-filled-outline-style-1-set-1/256/21-256.png"
+                                     alt="no image" style="width: 15%; height:auto;">&nbsp;
+                                        Discount Management
+                                        </el-menu-item> -->
                                     
                                 </el-submenu>
                                 
@@ -242,6 +247,19 @@ export default {
         setTimeout(() => {
           loading.close()
           this.$router.push({name: 'InventoryReports'}).catch(() => {})
+
+        }, 2000)
+        },
+        ondiscount: function() {
+const loading = this.$loading({
+          lock: true,
+          text: 'please wait..',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        setTimeout(() => {
+          loading.close()
+          this.$router.push({name: 'Discount'}).catch(() => {})
 
         }, 2000)
         },
