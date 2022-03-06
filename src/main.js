@@ -7,6 +7,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import locale from 'element-ui/lib/locale/lang/en'
 import Invoice from "vue-invoice";
+import VueQRCodeComponent from 'vue-qr-generator'
+Vue.component('qr-code', VueQRCodeComponent)
 //material icon
 import 'material-icons/iconfont/material-icons.css';
 //material end icon

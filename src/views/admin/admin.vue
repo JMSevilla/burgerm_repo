@@ -251,6 +251,7 @@ export default {
     created(){
         this.getBeforeExpiration()
         this.getExpiredProduct()
+        // Reload niyo yung site if gusto niyo makita ulit yung notification ng expired product and warning to expired
         this.checker()
         setInterval(() => {
 

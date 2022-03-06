@@ -69,6 +69,11 @@ const routes = [
         component: () => import("@/views/admin/dashboard_content/adminIndex")
       },
       {
+        path: '/discountmanagement' + makeid(200),
+        name: 'Discount',
+        component: () => import("@/views/admin/dashboard_content/admin_discount")
+      },
+      {
         path: '/admindashboard/usermanagement' + makeid(200),
         name: 'User Management',
         component: () => import("@/views/admin/dashboard_content/admin_user_management")
