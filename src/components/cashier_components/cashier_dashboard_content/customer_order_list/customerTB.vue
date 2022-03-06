@@ -124,11 +124,9 @@
                                                    </el-button>
                                                        </div>
                                                        <div class="col-sm">
-                                                           <el-badge :value="countready" style="width: 100%;"  class="item">
-                                                    <el-button size="small" @click="onready" style="width: 100%;" :disabled="onreadypay" type="success" >
+                                                           <el-button size="small" @click="onready" style="width: 100%;" :disabled="onreadypay" type="success" >
                                                        <i class="el-icon-check"></i> Ready 
                                                    </el-button>
-                                                    </el-badge>
                                                        </div>
                                                    </div>
                                                      

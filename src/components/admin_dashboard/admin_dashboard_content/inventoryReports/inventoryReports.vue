@@ -26,13 +26,14 @@
                         <el-button @click="onfilter()" type="primary" size="small" plain>Search</el-button>
                                              
                         </div>
+                          <el-button @click="onPrint" style="float: right; margin-bottom: 5px; margin-top: 10px;" type="danger">Print PDF</el-button>
                         <download-excel
               class="btn btn-default"
               :data="invReportsExcel"
               worksheet="My Worksheet"
               name="filename.xls"
           >
-                        <el-button @click="onPrintExcel" style="margin-top: 10px; margin-bottom: 20px;" type="primary" size="small" plain>Print Excel</el-button>
+                        <el-button style="margin-top: 10px; margin-bottom: 20px;" type="primary" size="small" plain>Print Excel</el-button>
                         </download-excel>
                     <table class="table table-outline table-hover">
                         <thead>
@@ -58,15 +59,62 @@
                                     </el-pagination>
             <!-- end table -->
         </el-card>
+        <vue-html2pdf
+        :show-layout="false"
+        :float-layout="true"
+        :enable-download="true"
+        :preview-modal="true"
+        :paginate-elements-by-height="1400"
+        filename="InventoryReports"
+        :pdf-quality="2"
+        :manual-pagination="false"
+        pdf-format="a4"
+        pdf-orientation="landscape"
+        pdf-content-width="800px"
+ 
+        @progress="onProgress($event)"
+        @hasStartedGeneration="hasStartedGeneration()"
+        @hasGenerated="hasGenerated($event)"
+        ref="html2Pdf"
+    >
+        <section slot="pdf-content">
+            <!-- PDF Content Here -->
+            <center>Generated Product Inventory Reports</center>
+            <div style="margin-top: 50px;" class="container">
+                <el-card shadow="always">
+                    <h3>Product Sales</h3>
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                            <th scope="col">Product Name</th>
+                            <th scope="col">BEG Quantity</th>
+                            <th scope="col">Available</th>
+                            <th scope="col">END Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in inventoryReports" :key="item.productName">
+                            <td>{{item.productName}}</td>
+                            <td>{{item.beg_qty}}</td>
+                            <td>{{item.available}}</td>
+                            <td>{{item.end_qty}}</td>
+                            </tr>
+                        </tbody>
+                        </table>
+                </el-card>
+            </div>
+        </section>
+    </vue-html2pdf>
     </div>
 </template>
 
 <script>
 import client from "@/store/0AuthRequest"
 import JsonExcel from "vue-json-excel";
+import VueHtml2pdf from 'vue-html2pdf'
 export default {
     components:{
-    'download-excel':JsonExcel
+    'download-excel':JsonExcel, 'vue-html2pdf':VueHtml2pdf
   },
     computed : {
         pagedTableData(){
@@ -97,8 +145,12 @@ export default {
     },
     created(){
         this.getInventoryReports()
+        this.onPrintExcel()
     },
     methods : {
+        onPrint: function() {
+this.$refs.html2Pdf.generatePdf()
+        },
         onfilter: function() {
             client.get(`/api/inventory-reports/filter-inventory-reports?datefrom=${this.filterable.fromdate}&dateto=${this.filterable.todate}`)
             .then((response) => {
