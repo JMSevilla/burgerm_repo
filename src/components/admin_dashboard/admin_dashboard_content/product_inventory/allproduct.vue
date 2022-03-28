@@ -157,6 +157,7 @@
                                                 <el-button type="warning" style="float: right;" @click="onviewexpiration(item.productCode, item.productName)">View expiration</el-button>
                                             </div>
                                         </div>
+                                        
                                                     <h4>Product Name : {{item.productName}}</h4>
                                                     <p>Product Category : {{item.product_category}}</p>
                                                     <p>Product Quantity : {{item.product_quantity}}</p>

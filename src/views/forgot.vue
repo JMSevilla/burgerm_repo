@@ -1,6 +1,6 @@
 <template>
     <div>
-        <navigation />
+        <Nav title="Forgot Password" />
     <div style="margin-top: 50px; margin-bottom: 50px;" class="container">
         <div class="row">
             <div class="col-md-6">
@@ -11,7 +11,7 @@
             <div class="col-md-6">
                 <el-steps :active="activeSteps" align-center>
                 <el-step title="Email Finder" description="We need to sure that your email is registered with our system."></el-step>
-                <el-step title="Account Verification" description="Enter verification code sent to your email"></el-step>
+                <el-step title="Account Verification" description="Enter verification code sent to your email."></el-step>
                 <el-step title="Change Credentials" description="Enter your new password here."></el-step>
                 <el-step title="Finish" description="You've successfully changed your password."></el-step>
                 </el-steps>
@@ -38,7 +38,7 @@
                     </el-card>
                 </div>
                 <div v-else-if="activeSteps == 4">
-                 <el-card style="margin-top: 50px;" shadow="always">
+                 <el-card style="margin-top: 30px; margin-bottom: 20px;" shadow="always">
 <forgotcontent :activeSteps="activeSteps" :onpreviousverification="onpreviousverification"
  :onnextverification="onnextverification" :onfinishresetpassword="onfinishresetpassword" :onnext="onnext" :taskForgot="taskForgot" />
                  </el-card>
@@ -50,12 +50,13 @@
 </template>
 
 <script>
+import Nav from "@/components/lockAccount/nav"
 import navigation from "@/components/nav";
 import forgotcontent from "@/components/forgot_content"
 import {email_finder, sendForgotEmail, forgotpassword_add_history, identify_code_entry, forgot_change_password} from "@/store/request-common"
 export default {
     components: {
-        navigation, forgotcontent
+        navigation, forgotcontent, Nav
     },
     data(){
         return {
@@ -73,14 +74,14 @@ export default {
         onfinishresetpassword(){
             if(!this.taskForgot.newpassword || !this.taskForgot.confirmpass){
                 this.$notify.warning({
-                            title: 'Oops!',
+                            title: 'Warning!',
                             message: 'Empty password or confirm password.',
                             offset: 100
                             });
                             return false;
             }else if(this.taskForgot.newpassword != this.taskForgot.confirmpass){
                 this.$notify.warning({
-                            title: 'Oops!',
+                            title: 'warning!',
                             message: 'Password mismatch.',
                             offset: 100
                             });
@@ -89,8 +90,8 @@ export default {
                 forgot_change_password(this.taskForgot.newpassword, this.taskForgot.email).then(response => {
                     if(response.data === "success change"){
                         this.$notify.success({
-                            title: 'Noice!',
-                            message: 'Successfully change password!.',
+                            title: 'Updated!',
+                            message: 'Successfully change password.',
                             offset: 100
                             });
                             this.activeSteps = 4;
@@ -113,8 +114,8 @@ export default {
                 if(response.data === "exist"){
                     this.activeSteps++;
                      this.$notify.success({
-                            title: 'Noice!',
-                            message: 'Email exist! please enter verification code.',
+                            title: 'Alert!',
+                            message: 'Email exist! Please enter verification code.',
                             offset: 100
                             });
                             sendForgotEmail(this.taskForgot.email, this.codehelper).then(resp=> {
@@ -125,7 +126,7 @@ export default {
                 } else if(response.data === "not exist"){
                     this.$notify.error({
                             title: 'Oops!',
-                            message: 'This email doesnt exist.',
+                            message: 'This email does not exist.',
                             offset: 100
                             });
                             return false;
@@ -136,15 +137,15 @@ export default {
             identify_code_entry(this.taskForgot.verificationcode).then(resp => {
                 if(resp.data === "success isdone"){
                     this.$notify.success({
-                            title: 'Noice!',
+                            title: 'Alert!',
                             message: 'Verification complete!.',
                             offset: 100
                             });
                             this.activeSteps = 2;
                 } else if(resp.data === "invalid code"){
                     this.$notify.error({
-                            title: 'Oops!',
-                            message: 'Invalid code, please try again..',
+                            title: 'Warning!',
+                            message: 'Invalid code, please try again.',
                             offset: 100
                             });
                             return false;

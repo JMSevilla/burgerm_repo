@@ -140,8 +140,15 @@ export default {
                             if(response.data === "success"){
                                 loading.close()
                                 this.$notify.success({
-                                title: 'Yey',
+                                title: 'Success',
                                 message: 'Successfully updated',
+                                offset: 100
+                                });
+                            } else if(response.data === 'email exist'){
+                                loading.close()
+                                this.$notify.error({
+                                title: 'Error',
+                                message: 'This email already exist',
                                 offset: 100
                                 });
                             }

@@ -58,13 +58,13 @@
                             <h4>Product Stocks Archives</h4>
                            <el-alert
                                 title="Automatic Deletion"
-                                closable="false"
+                                :closable="false"
                                 type="error"
                                 style="margin-top: 10px; margin-bottom: 10px;"
-                                description="Product Archives will be deleted after 1 week"
+                                description="Product Archives will be deleted after 1 month"
                                 show-icon>
                             </el-alert>
-                           <ProductArchives :listofproductArchives="listofproductArchives" />
+                           <ProductArchives :fullscreenLoadingDelete="fullscreenLoadingDelete" :fullscreenLoading="fullscreenLoading" :onRemove="onRemove" :onRecover="onRecover" :listofproductArchives="listofproductArchives" />
                           </el-card>
                         </div>
                         <div class="col-md-6">
@@ -101,7 +101,9 @@ data(){
         listoflogsusermanagement: [],
         listofusersArray: [],
         listofprodActivationArray: [],
-        listofproductArchives : []
+        listofproductArchives : [],
+        fullscreenLoading: false,
+        fullscreenLoadingDelete: false
     }
 },
 computed: {
@@ -119,6 +121,52 @@ created(){
     this.deletionAfter1Week()
 },
 methods: {
+    onRecover : function(stockid) {
+        this.$confirm('Are you sure you want to recover this product ? ', 'Warning', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+            this.fullscreenLoading = true
+            setTimeout(() => {
+                const request = client.put(`/api/activity-log-management/recover-product-archive?stockID=${stockid}`)
+                return request.then(({data}) => {
+                    if(data === 'success recover'){
+                         this.$notify.success({
+                            title: 'Success',
+                            message: 'Successfully recover',
+                            offset: 100
+                            });
+                            this.fullscreenLoading = false
+                         this.listOfProductArchives()
+                    }
+                })
+            }, 2000)
+        })
+      },
+      onRemove: function(stockid){
+          this.$confirm('This will permanently delete the product. Continue?', 'Warning', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+             this.fullscreenLoadingDelete = true
+             setTimeout(() => {
+                 const request = client.delete(`/api/activity-log-management/remove-product-archive?stockID=${stockid}`)
+                 return request.then(({data}) => {
+                      if(data === 'success deleted'){
+                         this.$notify.success({
+                            title: 'Success',
+                            message: 'Successfully Removed',
+                            offset: 100
+                            });
+                            this.fullscreenLoadingDelete = false
+                         this.listOfProductArchives()
+                    }
+                 })
+             }, 2000)
+        })
+      },
     deletionAfter1Week: function(){
         client.delete(`/api/archive-users-management/auto-deletion-after-1-week`)
         .then(r => {

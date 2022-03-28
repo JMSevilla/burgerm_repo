@@ -9,16 +9,14 @@
         <table class="table table-hover table-bordered">
   <thead>
     <tr>
-      <th scope="col">#</th>
       <th scope="col">Activity Message</th>
       <th scope="col">Status</th>
       <th scope="col">Created At</th>
-      <th scope="col">Handle</th>
+      <th scope="col">Action</th>
     </tr>
   </thead>
   <tbody>
     <tr v-for="item in pagedTableData" :key="item.id">
-      <th scope="row">{{item.activityCode}}</th>
       <td>{{item.activitymessage}}</td>
       <td><el-tag type="success" size="small" effect="dark">{{item.activtystatus}}</el-tag></td>
       <td>{{item.createdAt | moment("calendar")}}</td>

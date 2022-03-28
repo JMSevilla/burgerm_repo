@@ -3,17 +3,17 @@
         <el-card shadow="always" style="margin-top: 20px;">
                         <div class="row">
                         <div class="col-sm">
-                            <label>Firstname (required)</label>
+                            <label>First name (required)</label>
                             <el-input
-                            placeholder="Please input firstname"
+                            placeholder="Please input first name"
                             v-model="personal_task.firstname"
                             clearable>
                             </el-input>
                         </div>
                         <div class="col-sm">
-                            <label>Lastname (required)</label>
+                            <label>Last name (required)</label>
                             <el-input
-                            placeholder="Please input lastname"
+                            placeholder="Please input last name"
                             v-model="personal_task.lastname"
                             clearable>
                             </el-input>

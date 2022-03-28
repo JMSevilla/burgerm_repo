@@ -39,7 +39,7 @@
 
       <div class="d-flex align-items-center">
         <el-button type="text" round size="medium" class="bhome" @click="onhome()">Home</el-button>
-        <el-button type="text" round size="medium" class="blog" @click="onlogin()">Login</el-button>
+        <el-button type="text" round size="medium" class="blog" @click="onlogin()">Log in</el-button>
         <el-button type="text" round size="medium" class="babout" @click="onaboutus()">About us</el-button>
       </div>
     </div>

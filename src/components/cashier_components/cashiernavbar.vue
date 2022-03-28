@@ -117,16 +117,16 @@ export default {
           console.log(res.data)
           if(res.data === "success update end"){
             this.willDisableClosing = true
-            this.$notify.success({
-                                  title: 'Success!',
-                                  message: 'This product successfully close and sent to END Reports',
-                                  offset: 100
-                                  });
+            
                                   this.getInventoryReports()
           }
         })
       }
-      
+      this.$notify.success({
+                                  title: 'Success!',
+                                  message: 'This product successfully close and sent to END Reports',
+                                  offset: 100
+                                  });
     },
      getInventoryReports: function() {
            client.get('/api/inventory-reports/get-inventory-reports').then(response => {

@@ -39,8 +39,8 @@
 
       <div class="d-flex align-items-center">
         
-        <el-button type="text" round size="medium" class="blog" @click="onlogin()">Login</el-button>
         
+        <!-- <el-button  v-on:keyup="validateconfirm" @click="onlogin()" style="width: 10t0%; padding: 15px; margin-top: 10px; margin-bottom: 10px;" type="primary" round>Log in</el-button> -->
       </div>
     </div>
     <!-- Collapsible wrapper -->
@@ -70,16 +70,16 @@
   clearable show-password>
 </el-input>
 
-<el-link @click="onforgot()" type="primary">Forgot password?</el-link>
+<!-- <el-link @click="onforgot()" type="primary">Forgot password?</el-link> -->
 <!-- <div >
   <span>Don't have an account ? </span>
 <el-link style="margin-bottom: 10px; margin-top: 5px;" @click="onnavigateRegister()" type="primary">Register</el-link>
 </div> -->
 <!-- Google Button -->
 <center><br>
-  <div>
+  <!-- <div>
   <GoogleLogin :params="params" :renderParams="renderParams" :onSuccess="onSuccess"></GoogleLogin>
-</div>
+</div> -->
 </center>
   <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">Cancel</el-button>
@@ -156,7 +156,7 @@ export default {
     onsignin(){
       if(!this.task.email || !this.task.password){
         this.$notify.error({
-                            title: 'Uh oh!',
+                            title: 'Warning!',
                             message: 'empty fields.',
                             offset: 100
                             });
@@ -174,7 +174,7 @@ export default {
                         if(rs.data.message === "empty"){
                           loading.close()
                           this.$notify.error({
-                            title: 'Uh oh!',
+                            title: 'Warning!',
                             message: 'empty fields.',
                             offset: 100
                             });
@@ -182,7 +182,7 @@ export default {
                         }else if(rs.data === "disabled"){
                           loading.close()
                           this.$notify.error({
-                            title: 'Uh oh!',
+                            title: 'Warning!',
                             message: 'Unfortunately your account is disable.',
                             offset: 100
                             });
@@ -191,7 +191,7 @@ export default {
                         else if(rs.data === "invalid"){
                           loading.close()
                           this.$notify.error({
-                            title: 'Uh oh!',
+                            title: 'Warning!',
                             message: 'Invalid password.',
                             offset: 100
                             });
@@ -200,7 +200,7 @@ export default {
                         else if(rs.data === "not found"){
                           loading.close()
                           this.$notify.error({
-                            title: 'Uh oh!',
+                            title: 'Warning!!',
                             message: 'This account was not found.',
                             offset: 100
                             });
@@ -278,14 +278,14 @@ export default {
               }
               else if(response.data === "disable"){
                 this.$notify.warning({
-                            title: 'Uh oh!',
+                            title: 'Warning!',
                             message: 'Your account is disabled.',
                             offset: 100
                             });
                             return false;
               }else if(response.data === "not verified") {
                 this.$notify.warning({
-                            title: 'Uh oh!',
+                            title: 'Warning!',
                             message: 'Your account is not yet verified.',
                             offset: 100
                             });
@@ -294,7 +294,7 @@ export default {
               }
               else if(response.data === "email not exists") {
                 this.$notify.error({
-                            title: 'Uh oh!',
+                            title: 'Warning!',
                             message: 'We cant find this account. Please register.',
                             offset: 100
                             });

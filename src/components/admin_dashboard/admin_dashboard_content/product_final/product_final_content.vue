@@ -76,9 +76,9 @@
             ref="productPrice"
             style="margin-bottom: 20px"
             placeholder="Please input"
-            type="number"
-            :min="1"
+            type="text"
             v-model="taskfinalization.prodprice"
+            @input.native="validateqty"
             clearable
           >
           </el-input>
@@ -104,12 +104,22 @@
           <el-input
             ref="productQuantity"
             placeholder="Please input quantity"
-            type="number"
-            :min="1"
+            type="text"
+            @input.native="validateqty"
             v-model="taskfinalization.prodquantity"
             clearable
           >
           </el-input>
+
+          <label>Product Indicator</label>
+           <el-select style="width: 100%; margin-bottom: 20px; margin-top: 10px;" v-model="taskfinalization.prodIsSolo" filterable placeholder="Select Indicator">
+              <el-option
+                v-for="item in optionsIndicator"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
 
           <el-button
             @click="onstartover()"
@@ -125,6 +135,7 @@
           >
           <el-button
             @click="onnextfinalization()"
+            :disabled="nextDisabling"
             type="primary"
             plain
             style="float: right; margin-bottom: 20px; margin-top: 20px"
@@ -195,31 +206,7 @@
                     {{ scope.row.product_quantity }}
                   </template>
                 </el-table-column>
-                <!-- 
-                  <el-table-column
-                      label="More Actions"
-                      style="width: 100%;">
-                    <template slot-scope="scope">
-                      <el-popover
-                        placement="right"
-                        width="400"
-                        trigger="click">
-                            <div class="container">
-                              <h3>Custom Quantity</h3>
-                              <el-input type="text" clearable v-model="taskfinalization.prodcustomquantity" placeholder="Enter customer quantity"
-                              style="margin-top: 10px; margin-bottom : 10px;"></el-input>
-                              <div style="float: right; margin-top: 10px; margin-bottom: 10px; display: inline;">
-                                <el-button type="warning" plain round size="small">Cancel</el-button>
-                                <el-button type="primary" @click="onsavecustom(
-                                  scope.row.productID, scope.row.productName
-                                )" plain round size="small">Save</el-button>
-                              </div>
-                            </div>
-                        <el-button slot="reference" type="primary" size="small">Custom</el-button>
-                      </el-popover>
-                        
-                    </template>
-                  </el-table-column> -->
+                
               </el-table>
               <el-pagination
                 layout="prev, pager, next"
@@ -229,30 +216,7 @@
               >
               </el-pagination>
             </el-card>
-            <!-- <div class="col-md-6">
-                    <el-card shadow="always">
-                      <center>
-                        <h2>Preview : from your product finalization form</h2>
-                      <el-avatar shape="square" :size="100" fit="fill" style="margin-bottom: 3px;" :src="taskfinalization.productImageUrl"></el-avatar>
-                      </center>
-                      <div class="row" style="margin-top: 20px;">
-                        <div class="col-md-6">
-                          <h3>Product name : {{taskfinalization.prodname}}</h3>
-                        </div>
-                        <div class="col-md-6">
-                         
-                        </div>
-                      </div>
-                      <div class="row" style="margin-top: 20px;">
-                        <div class="col-md-6">
-                          <h3>Product category : {{taskfinalization.prodcategory}}</h3>
-                        </div>
-                        <div class="col-md-6">
-                          <h3>Product Code : {{taskfinalization.prodcode}}</h3>
-                        </div>
-                      </div>
-                    </el-card>
-                  </div> -->
+           
           </div>
         </div>
         <div style="display: inline">
@@ -353,6 +317,7 @@ export default {
         productImageUrl: "",
         prodcode: "",
         prodcustomquantity: "",
+        prodIsSolo: ''
       },
       allstockslist: [],
       pageSize: 5,
@@ -362,6 +327,18 @@ export default {
       listofrawmats: [],
       selectionshit: "selection",
       customQuantityArray: [],
+      nextDisabling: false,
+       optionsIndicator: [{
+          value: '1',
+          label: 'Solo'
+        }, {
+          value: '2',
+          label: 'Buy 1 Take 1'
+        }, {
+          value: '3',
+          label: 'Box of 6'
+        }],
+        
     };
   },
   computed: {
@@ -389,6 +366,24 @@ export default {
     this.allrawmats();
   },
   methods: {
+    validateqty(event){
+      const number = parseInt(event.target.value)
+      event.target.value = number ? number : 0
+      if(isNaN(number)){
+         this.nextDisabling = true
+        return
+      }else{
+        if(!number){
+   
+                this.nextDisabling = true
+            } else if(number < 0){
+                this.nextDisabling = true
+            } 
+             else{
+                this.nextDisabling = false
+            }
+      }
+    },
     onsavecustom: function (id, name) {
       const json = this.customQuantityArray;
       json.push({
@@ -675,7 +670,7 @@ export default {
                 loading.close();
                 this.$notify.success({
                   title: "Yey",
-                  message: "Successfully added to Product Activation",
+                  message: "Successfully added to Product Finalized",
                   offset: 100,
                 });
                 this.getallcategories();

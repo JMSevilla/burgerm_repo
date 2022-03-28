@@ -74,8 +74,8 @@
               @click="onredirecttoadding()"
               type="success"
               style="float: right; margin-bottom: 10px"
-              ><i class="el-icon-circle-plus-outline"></i> Go to stocks and
-              inventory</el-button
+              ><i class="el-icon-circle-plus-outline"></i> Go to 
+              Inventory Stocks</el-button
             >
           </div>
         </div>
@@ -88,7 +88,7 @@
           highlight-current-row
           style="width: 100%"
         >
-          <el-table-column
+          <!-- <el-table-column
             label="Stock Number"
             prop="id"
             sortable="custom"
@@ -97,7 +97,7 @@
             <template slot-scope="{ row }">
               <span>{{ row.stockNumber }}</span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
 
           <el-table-column label="Product Image" align="center">
             <template slot-scope="{ row }">
@@ -202,7 +202,16 @@
               >
                 <div class="row">
                   <div class="col-md-6">
-                    <el-popover placement="left" width="400" trigger="click">
+                    <el-button
+                        slot="reference"
+                        type="warning"
+                        size="small"
+                        style="margin-left: 75%"
+                        plain
+                         @click="onAddMore(row.stockID)"
+                        >Refill
+                      </el-button>
+                    <!-- <el-popover placement="left" width="400" trigger="click">
                       <el-card shadow="hover">
                         <div v-show="picker">
                           <center>
@@ -235,8 +244,10 @@
                             <el-input
                               style="width: 100%; margin-bottom: 10px"
                               placeholder="Please input quantity"
+                              @input.native="qtyvalidation"
                               v-model="stocksquantityupdaterTask.custominput"
                               clearable
+                              type="text"
                             >
                             </el-input>
                           </center>
@@ -245,6 +256,7 @@
                               @click="onsavecustom(row.stockID)"
                               type="primary"
                               style="float: right; margin-bottom: 10px"
+                              :disabled="confirmdisabling"
                               >Save</el-button
                             >
                             <el-button
@@ -260,15 +272,8 @@
                           </div>
                         </div>
                       </el-card>
-                      <el-button
-                        slot="reference"
-                        type="warning"
-                        size="small"
-                        style="margin-left: 75%"
-                        plain
-                        >Refill
-                      </el-button>
-                    </el-popover>
+                      
+                    </el-popover> -->
                   </div>
                   <div class="col-md-6" style="width: 100%; margin-left: 20%">
                     <br />
@@ -277,6 +282,7 @@
                       type="info"
                       size="small"
                       plain
+                      :disabled="confirmdisabling"
                       >Modify</el-button
                     >
                   </div>
@@ -295,74 +301,15 @@
               <div v-else-if="row.productquantity >= 50">
                 <div class="row">
                   <div class="col-md-6">
-                    <el-popover placement="left" width="400" trigger="click">
-                      <el-card shadow="hover">
-                        <div v-show="picker">
-                          <center>
-                            <h4>Choose loadout</h4>
-                            <el-select
-                              @change="pickloadout"
-                              style="width: 100%; margin-bottom: 10px"
-                              v-model="stocksquantityupdaterTask.value"
-                              placeholder="Select quantity"
-                            >
-                              <el-option
-                                v-for="item in options"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value"
-                              >
-                              </el-option>
-                            </el-select>
-                          </center>
-                          <el-button
-                            @click="onsaveselection(row.stockID)"
-                            type="primary"
-                            style="float: right; margin-bottom: 10px"
-                            >Save</el-button
-                          >
-                        </div>
-                        <div v-show="picker1">
-                          <center>
-                            <h4>Choose loadout</h4>
-                            <el-input
-                              style="width: 100%; margin-bottom: 10px"
-                              placeholder="Please input quantity"
-                              v-model="stocksquantityupdaterTask.custominput"
-                              clearable
-                            >
-                            </el-input>
-                          </center>
-                          <div style="display: inline">
-                            <el-button
-                              @click="onsavecustom(row.stockID)"
-                              type="primary"
-                              style="float: right; margin-bottom: 10px"
-                              >Save</el-button
-                            >
-                            <el-button
-                              type="warning"
-                              style="
-                                float: right;
-                                margin-bottom: 10px;
-                                margin-right: 10px;
-                              "
-                              @click="oncancel()"
-                              >Cancel</el-button
-                            >
-                          </div>
-                        </div>
-                      </el-card>
-
-                      <el-button
+                    <el-button
                         slot="reference"
                         type="success"
                         size="small"
                         style="margin-left: 50%"
                         plain
-                        >Add more</el-button
-                      >
-                    </el-popover>
+                        @click="onAddMore(row.stockID)"
+                        >Add more</el-button>
+                   
                   </div>
                   <div class="col-md-6" style="width: 100%; margin-left: 20%">
                     <br />
@@ -410,7 +357,64 @@
           </span>
         </el-dialog>
         <!-- el dialog end if custom -->
-
+<el-dialog
+  title="Stock On Hand Refill"
+  :visible.sync="AddMoredialogVisible"
+  width="70%"
+  :before-close="handleClose">
+  <div style="margin-top: 30px;" class="container">
+    <el-card shadow="always">
+      <h3>Available Refillable Products</h3>
+       <el-input
+                                style="margin-bottom: 5px; width: 30%; margin-right: 10px"
+                                placeholder="Search"
+                                v-model="stock_viewsearchable"
+                                clearable
+                            >
+                            </el-input>
+                            <el-table
+                :data="stock_viewpagedTableData"
+                style="width: 100%"
+                            >
+                                <el-table-column label="Stock Dump Product Name">
+                                <template slot-scope="scope">
+                                    {{ scope.row.stockDumpName }}
+                                </template>
+                                </el-table-column>
+                                <el-table-column label="Dump Product Quantity" style="width: 100%">
+                                <template slot-scope="scope">
+                                    {{ scope.row.dumpQuantity }}
+                                </template>
+                                </el-table-column>
+                                <el-table-column label="Expiration">
+                                <template slot-scope="scope">
+                                    {{ scope.row.dumpExpiration | moment('dddd, MMMM Do YYYY') }}
+                                </template>
+                                </el-table-column>
+                                <el-table-column label="Product Received">
+                                <template slot-scope="scope">
+                                    {{ scope.row.dumpReceived | moment('dddd, MMMM Do YYYY') }}
+                                </template>
+                                </el-table-column>
+                                <el-table-column label="Actions">
+                                <template slot-scope="scope">
+                                    <el-button type="warning" size="medium" v-loading.fullscreen.lock="refillfullscreenLoading" @click="onSelectRefill(scope.row.stockDumpId, scope.row.dumpExpiration, scope.row.dumpQuantity, scope.row.dumpId)">SELECT</el-button>
+                                </template>
+                                </el-table-column>
+                            </el-table>
+                            <el-pagination
+                                layout="prev, pager, next"
+                                :page-size="stock_viewpageSize"
+                                :total="this.stock_viewproductArray.length"
+                                @current-change="stock_viewsetPage"
+                            >
+                            </el-pagination>
+    </el-card>
+  </div>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="AddMoredialogVisible = false">CLOSE</el-button>
+  </span>
+</el-dialog>
         <!-- dialog for modification -->
           <el-dialog
           title=""
@@ -452,6 +456,7 @@
                         format="yyyy/MM/dd"
                         value-format="yyyy/MM/dd"
                         type="date"
+                        :picker-options="pickerOptions"
                         placeholder="Select date expiration">
                         </el-date-picker>
                 </div>
@@ -502,6 +507,9 @@ export default {
       stockModification : {
         prodName : '', prodCategory : '', prodExpiration : '', id : ''
       },
+      refillfullscreenLoading: false,
+      AddMoredialogVisible: false,
+      stock_viewsearchable: '', stock_viewpageSize : 5, stock_viewproductArray: [], stock_viewpage: 1,
       optionsModifyCategory: [],
       optionscategory: [],
       optionsfilterval: "",
@@ -572,9 +580,15 @@ export default {
         value: "",
         custominput: "",
       },
-      picker: true,
+      picker: true, 
       picker1: false,
       product_status_indicator: "",
+      confirmdisabling: false,
+      pickerOptions: {
+         disabledDate(time) {
+                        return time.getTime() < Date.now();
+                    }
+      }
     };
   },
   created() {
@@ -583,6 +597,25 @@ export default {
     this.getallcategorylist();
   },
   computed: {
+    stock_viewpagedTableData(){
+      if (this.stock_viewsearchable) {
+        return this.stock_viewproductArray.filter((item) => {
+          return this.stock_viewsearchable
+            .toLowerCase()
+            .split(" ")
+            .every(
+              (v) =>
+                item.stockDumpName.toLowerCase().includes(v) ||
+                item.stockDumpNumber.toString().toLowerCase().includes(v)
+            );
+        });
+      } else {
+        return this.stock_viewproductArray.slice(
+          this.stock_viewpageSize * this.stock_viewpage - this.stock_viewpageSize,
+          this.stock_viewpageSize * this.stock_viewpage
+        );
+      }
+    },
     pagedTableData() {
       if (this.searchable) {
         return this.productArray.filter((item) => {
@@ -609,6 +642,42 @@ export default {
     }),
   },
   methods: {
+    onSelectRefill(id, exp, qty, genid) {
+      this.refillfullscreenLoading = true
+      setTimeout(() => {
+        const req = client.put(`/api/pull-request-product/stocks-refill?dumpid=${id}&currExp=${exp}&qty=${qty}&genid=${genid}`)
+        return req.then(({data}) => {
+          if(data === 'invalid pull'){
+            this.$notify.error({
+                title: "Error",
+                message: "The product expiration you've selected was behind from the stocks on hand product expiration",
+                offset: 100,
+              });
+              this.refillfullscreenLoading = false
+              return false
+          } else{
+            this.$notify.success({
+                title: "Success",
+                message: "Successfully refill.",
+                offset: 100,
+              });
+              this.getnotifforcritical();
+              this.allstocks();
+              this.getallcategorylist();
+              this.AddMoredialogVisible = false
+              this.refillfullscreenLoading = false
+          }
+        })
+      }, 3000)
+    },
+    onAddMore: function(id){
+      
+       client.get(`/api/pull-request-product/refill-list?stockDumpId=${id}`)
+        .then(r => {
+          this.AddMoredialogVisible = true
+          this.stock_viewproductArray = r.data
+        })
+    },
     handleCloseModify(done) {
         this.$confirm('Are you sure to close this dialog?')
           .then(_ => {
@@ -623,6 +692,24 @@ export default {
             listcategory().then(response => {
                 this.optionsModifyCategory = response.data
             })
+        },
+        qtyvalidation(event) {
+          const number = parseInt(event.target.value)
+      event.target.value = number ? number : 0
+      if(isNaN(number)){
+        this.confirmdisabling = true
+        return
+      }else{
+        if(!number){
+   
+                this.confirmdisabling = true
+            } else if(number < 0){
+                this.confirmdisabling = true
+            } 
+             else{
+                this.confirmdisabling = false
+            }
+      }
         },
     onsaveUpdate: function() {
  this.$confirm(
@@ -778,7 +865,15 @@ export default {
           offset: 100,
         });
         return false;
-      } else {
+      } else if(this.stocksquantityupdaterTask.custominput < 0) {
+        this.$notify.error({
+          title: "Error",
+          message: "Negative value is invalid",
+          offset: 100,
+        });
+        return false;
+      }
+       else {
         this.$confirm(
           "Are you sure you want to refill this product?",
           "Warning",
@@ -822,7 +917,15 @@ export default {
           offset: 100,
         });
         return false;
-      } else {
+      } else if(this.stocksquantityupdaterTask.value < 0) {
+         this.$notify.error({
+          title: "Error",
+          message: "Negative Value is invalid.",
+          offset: 100,
+        });
+        return false;
+      }
+       else {
         this.$confirm(
           "Are you sure you want to refill this product?",
           "Warning",
@@ -938,6 +1041,9 @@ export default {
     setPage(val) {
       this.page = val;
     },
+    stock_viewsetPage(val) {
+      this.stock_viewpage = val
+    }
   },
 };
 </script>

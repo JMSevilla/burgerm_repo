@@ -9,17 +9,15 @@
         <table class="table table-hover table-bordered">
   <thead>
     <tr>
-      <th scope="col">#</th>
       <th scope="col" style="width: 20%;">Image</th>
       <th scope="col">Product Name</th>
       <th scope="col">Product Quantity</th>
       <th scope="col">Product Status</th>
-      <th scope="col">Handle</th>
+      <th scope="col">Action</th>
     </tr>
   </thead>
   <tbody>
     <tr v-for="item in pagedTableData" :key="item.stockID">
-      <th scope="row">{{item.stockNumber}}</th>
       <td >
           <center><img 
           :src="item.productimgurl"
@@ -35,12 +33,13 @@
       </td>
       <td>
           <el-tag type="danger" size="small" effect="dark">
-              Will be deleted after 1 week
+              Will be deleted after 1 month
           </el-tag>
           </td>
       <td>
           <div style="display: flex;">
-              <el-button type="danger" size="small" plain style="width: 100%;">Remove</el-button>
+              <el-button type="danger" v-loading.fullscreen.lock="fullscreenLoadingDelete" @click="onRemove(item.stockID)" size="small" plain style="width: 100%;">Remove</el-button>
+              <el-button type="warning" v-loading.fullscreen.lock="fullscreenLoading" @click="onRecover(item.stockID)" size="small" plain style="width: 100%;">Recover</el-button>
           </div>
       </td>
     </tr>
@@ -52,15 +51,17 @@
 </template>
 
 <script>
+
 export default {
     props: {
-        listofproductArchives: Array,
+        listofproductArchives: Array, onRecover: Function, onRemove: Function, fullscreenLoading: Boolean, fullscreenLoadingDelete: Boolean
     },
     data(){
       return{
         pageSize: 5,
               page: 1,
-              searchable:''
+              searchable:'',
+              
       }
     },
     computed:{
@@ -79,6 +80,7 @@ methods: {
    setPage(val){
         this.page = val
       },
+      
 }
 }
 </script>

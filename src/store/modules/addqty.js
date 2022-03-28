@@ -43,9 +43,6 @@ export const getters = {
 
 export const actions = { 
     [PUSH_ADDQTY]({commit, state, dispatch} , {objectQTYUpdater, objectQTYReducer}) {
-        console.log(objectQTYReducer)
-        state.screenLoading = true
-       setTimeout(() => {
         const request = client.put(`/api/orders/update-qty-cart?id=${objectQTYUpdater.addingID}&qty=${objectQTYUpdater.addingQty}`)
         return request.then((resp) => {
             if(resp.data === 'success update qty'){
@@ -64,12 +61,9 @@ export const actions = {
                 }) 
             }
         })
-       }, 2000)
     },
     [PUSH_BOXOF6_TYPE]({state}, {objectQTYUpdater, objectQTYReducer}){
-        state.screenLoading = true
-        setTimeout(() => {
-            const request = client.put(`/api/orders/update-qty-cart-boxof6?id=${objectQTYUpdater.addingID}&qty=${objectQTYUpdater.addingQty}`)
+        const request = client.put(`/api/orders/update-qty-cart-boxof6?id=${objectQTYUpdater.addingID}&qty=${objectQTYUpdater.addingQty}`)
             return request.then((resp) => {
                 if(resp.data === 'success update qty'){
                     const req = client.put(`/api/orders/order-decrease-qty-bundle?orderID=${localStorage.getItem('key_boxof6_externalID')}&qty=${6}&origqty=${objectQTYUpdater.addingQty}`)
@@ -86,28 +80,24 @@ export const actions = {
                     })
                 }
             })
-        }, 2000)
     },
     [PUSH_B1T1_TYPE]({commit, state}, {objectQTYUpdater, objectQTYReducer}){
-        state.screenLoading = true
-        setTimeout(() => {
-            const request = client.put(`/api/orders/update-qty-cart-b1t1?id=${objectQTYUpdater.addingID}&qty=${objectQTYUpdater.addingQty}`)
-            return request.then((resp) => {
-                if(resp.data === 'success update qty'){
-                    const req = client.put(`/api/orders/order-decrease-qty-buy1take1?orderID=${localStorage.getItem('key_b1t1_externalID')}&qty=${2}&origqty=${objectQTYUpdater.addingQty}`)
-                    return req.then(({data}) => {
-                        if(data === 'success_decrease'){
-                            state.screenLoading = false
-                            state.boxof6Response = true
-                            Element.Notification.success({
-                                title : 'Success',
-                                message : 'Successfully Added Quantity',
-                                offset: 100
-                            })
-                        }
-                    })
-                }
-            })
-        }, 2000)
+        const request = client.put(`/api/orders/update-qty-cart-b1t1?id=${objectQTYUpdater.addingID}&qty=${objectQTYUpdater.addingQty}`)
+        return request.then((resp) => {
+            if(resp.data === 'success update qty'){
+                const req = client.put(`/api/orders/order-decrease-qty-buy1take1?orderID=${localStorage.getItem('key_b1t1_externalID')}&qty=${2}&origqty=${objectQTYUpdater.addingQty}`)
+                return req.then(({data}) => {
+                    if(data === 'success_decrease'){
+                        state.screenLoading = false
+                        state.boxof6Response = true
+                        Element.Notification.success({
+                            title : 'Success',
+                            message : 'Successfully Added Quantity',
+                            offset: 100
+                        })
+                    }
+                })
+            }
+        })
     }
 }

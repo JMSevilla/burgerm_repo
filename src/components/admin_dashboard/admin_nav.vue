@@ -11,7 +11,8 @@
             </form>
             <div class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
                 <div style="color: white; font-siz`e: 16px">
-                   <el-button @click="onOpenStoreMode()" type="primary" size="small" plain style="margin-right : 30px;">Open Store Mode</el-button> {{fullnameSetter}}
+                   <!-- <el-button @click="onOpenStoreMode()" type="primary" size="small" plain style="margin-right : 30px;">Open Store Mode</el-button> {{fullnameSetter}} -->
+                   {{fullnameSetter}}
                 </div>
             </div>
             <!-- Navbar-->
@@ -32,114 +33,7 @@
                 </li>
             </ul>
         </nav>
-        <el-dialog
-            title="Product Inventory Reports Data Check"
-            :visible.sync="dialogVisible"
-            width="30%"
-            :before-close="handleClose">
-            
-            <div class="container">
-                <div v-if="openStoremodeIdentifier != true">
-                    <el-alert
-                    title="Opening Store Mode"
-                    type="error"
-                    description="The system detected that you haven't have BEG products, kindly pull products from the stocks on hand"
-                    closable="false"
-                    style="margin-bottom : 20px;"
-                    show-icon>
-                </el-alert>
-                <center>
-                    <el-card shadow="always">
-                        <div style="display : flex;">
-                            <el-input type="text" v-model="searchable" clearable style="margin-right : 10px;" placeholder="Search"></el-input>
-                            <el-date-picker
-                                            style="  margin-bottom: 5px;"
-                                            v-model="dateFiltering"
-                                            format="yyyy/MM/dd"
-                                            value-format="yyyy/MM/dd"
-                                            type="datetime"
-                                            placeholder="Select date and time"
-                                            @change="onchangeDate">
-                                            </el-date-picker> <br>
-                        </div>
-                    <table class="table table-outline table-hover">
-                        <thead>
-                            <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Product Name</th>
-                            <th scope="col">BEG</th>
-                            <th scope="col">Available</th>
-                            <th scope="col">END</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="item in pagedTableData" :key="item.invID">
-                            <th scope="row">{{item.invID}}</th>
-                            <td>{{item.productName}}</td>
-                            <td>{{item.beg_qty}}</td>
-                            <td>{{item.available}}</td>
-                            <td>{{item.end_qty}}</td>
-                            </tr>
-                        </tbody>
-                        </table>
-                        <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.inventoryReports.length" @current-change="setPage">
-                                    </el-pagination>
-                    </el-card>
-                    <el-button @click="goPullProducts" style="width: 100%" type="info" size="medium" plain>Pull Products</el-button>
-                </center>
-                </div>
-                <div v-else>
-                    <el-card shadow="always">
-                        <div style="display : flex;">
-                            <el-input type="text" v-model="searchable" clearable style="margin-right : 10px;" placeholder="Search"></el-input>
-                            <el-date-picker
-                                            style="  margin-bottom: 5px;"
-                                            v-model="dateFiltering"
-                                            format="yyyy/MM/dd"
-                                            value-format="yyyy/MM/dd"
-                                            type="datetime"
-                                            placeholder="Select date and time"
-                                            @change="onchangeDate">
-                                            </el-date-picker> <br>
-                        </div>
-                    <table class="table table-outline table-hover">
-                        <thead>
-                            <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Product Name</th>
-                            <th scope="col">BEG</th>
-                            <th scope="col">Available</th>
-                            <th scope="col">END</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="item in pagedTableData" :key="item.invID">
-                            <th scope="row">{{item.invID}}</th>
-                            <td>{{item.productName}}</td>
-                            <td>{{item.beg_qty}}</td>
-                            <td>{{item.available}}</td>
-                            <td>{{item.end_qty}}</td>
-                            </tr>
-                        </tbody>
-                        </table>
-                        <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.inventoryReports.length" @current-change="setPage">
-                                    </el-pagination>
-                    </el-card>
-                </div>
-            </div>
-
-            <span slot="footer" class="dialog-footer">
-                <div v-if="openStoremodeIdentifier != true">
-                      <el-button @click="dialogVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="onSendInv()">Send to Inventory Reports</el-button>
-                </div>
-                <div v-else>
-                    <el-button @click="dialogVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="onSendInv()">Send to Inventory Reports</el-button>
-                </div>
-                
-            </span>
-            </el-dialog>
+       
     </div>
 </template>
 

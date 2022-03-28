@@ -15,10 +15,12 @@
               worksheet="My Worksheet"
               name="filename.xls"
               style="float: right; margin-bottom: 5px; margin-top: 5px; margin-right: 5px;"
+              :footer="footerHeader"
           >
                                     
-                                     <el-button  type="success">Print Excel</el-button>
+                                        <el-button @click="exportSales" type="success">Print Excel</el-button>
           </download-excel>
+          
                 <div style="display: inline; float: right; margin-top: 10px; margin-bottom: 20px">
                     <label style="margin-right: 10px;">From : </label>
                         <el-date-picker
@@ -49,11 +51,11 @@
                                     style="width: 100%;"
                                     
                                     >
-                                    <el-table-column label="Sales ID" prop="id" sortable="custom" align="center"  >
+                                    <!-- <el-table-column label="Sales ID" prop="id" sortable="custom" align="center"  >
                                         <template slot-scope="{row}">
                                         <span>{{ row.salesID }}</span>
                                         </template>
-                                    </el-table-column>
+                                    </el-table-column> -->
                                     
                                     <el-table-column label="Product Image" align="center">
                                         <template slot-scope="{row}">
@@ -249,6 +251,8 @@ export default {
               },
             ],
           ],
+          getTotalSales : '',
+          footerHeader: ''
         }
     },
     computed: {
@@ -286,7 +290,7 @@ this.$refs.html2Pdf.generatePdf()
                     let salesArray = []
                     salesArray = JSON.parse(r.data[x].salesInfo)
                     this.productArray.push({
-                        salesCreatedAt: salesArray.createdAt,
+                        salesCreatedAt: r.data[x].createdAt,
                         salesBarcode: salesArray.orderBarcode,
                         salesCategory: salesArray.orderCategory,
                         salesCode : salesArray.orderCode,
@@ -342,56 +346,20 @@ this.$refs.html2Pdf.generatePdf()
                 }
             })
         },
+        onTesting: function() {
+            console.log("prod array", this.exportProductSales)
+           
+        },
         exportSales: function(){
-            this.$store.dispatch(`actions_get_sales`).then(() => {
-                console.log("SALES REPORT",this.getsalesreport)
-                for(var x = 0; x < this.getsalesreport.length; x++){
-                    let salesHandler = []
-                    salesHandler = JSON.parse(this.getsalesreport[x].salesInfo)
+            for(var x = 0; x < this.productArray.length; x++){
                     this.exportProductSales.push({
-                        MENU : salesHandler.orderName,
-                        PRICE : salesHandler.orderPrice,
-                        SALES : salesHandler.orderQuantity,
-                        SALES_AMOUNT : ( salesHandler.orderPrice * salesHandler.orderQuantity)
+                        MENU : this.productArray[x].salesName,
+                        PRICE : this.productArray[x].salesPrice,
+                        SALES : this.productArray[x].salesQuantity,
+                        SALES_AMOUNT : ( this.productArray[x].salesPrice * this.productArray[x].salesQuantity)
                     })
                 }
-                this.exportProductSales.push({
-                    MENU : "TOTAL SALES"
-                }),
-                this.exportProductSales.push({
-                    MENU : "TOTAL SALES PER ORDER"
-                }),
-                this.exportProductSales.push({
-                    MENU : "ACTUAL CASH TURN IN"
-                }),
-                this.exportProductSales.push({
-                    MENU : "ACTUAL SALES"
-                }),
-                this.exportProductSales.push({
-                    MENU : "VARIANCE"
-                }),
-                this.exportProductSales.push({
-                    MENU : "EMPLOYEE CHARGED ORDERS"
-                }),
-                this.exportProductSales.push({
-                    MENU : "CASH ADVANCES"
-                }),
-                this.exportProductSales.push({
-                    MENU : "ICE/OTHER EXPENSES"
-                }),
-                this.exportProductSales.push({
-                    MENU : "SENIOR DISCOUNT"
-                }),
-                this.exportProductSales.push({
-                    MENU : "SHORT/OVER"
-                }),
-                this.exportProductSales.push({
-                    MENU : "FOOD PANDA DELIVER"
-                }),
-                this.exportProductSales.push({
-                    MENU : "FOOD PANDA PICK UP"
-                })
-            })
+                this.footerHeader = "TOTAL SALES : " + " " + this.salesTodayComputation
         },
     }
 }

@@ -178,7 +178,12 @@ export function adding_product_inventory(obj){
     productdata.append("productCode", obj.productCode)
     productdata.append("productQuantity", obj.productQuantity)
     productdata.append("productPrice", obj.productPrice)
-    productdata.append("productSupplier", obj.productSupplier)
+    if(obj.productSupplier == null || !obj.productSupplier) {
+        productdata.append("productSupplier", 'None')
+    }
+    else{
+        productdata.append("productSupplier", obj.productSupplier)
+    }
     productdata.append("productImageUrl", obj.productImageUrl)
     productdata.append("productcategory", obj.productcategory)
     productdata.append("productexpiration", obj.productExpiration)
@@ -733,7 +738,7 @@ export function addproductfinal(obj, obj2){
         data.append("prodimg", obj.productImageUrl)
         data.append("ingredientsID", JSON.stringify(obj2))
         
-        return httpauth.post(`/api/product-finalization/product-add?prodname=${obj.prodname}&prodquantity=${obj.prodquantity}&prodcategory=${obj.prodcategory}&prodprice=${obj.prodprice}&prodcode=${obj.prodcode}`, data)
+        return httpauth.post(`/api/product-finalization/product-add?prodname=${obj.prodname}&prodquantity=${obj.prodquantity}&prodcategory=${obj.prodcategory}&prodprice=${obj.prodprice}&prodcode=${obj.prodcode}&indicator=${obj.prodIsSolo}`, data)
     } catch (error) {
         console.log(error)
     }

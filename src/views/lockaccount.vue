@@ -1,6 +1,6 @@
 <template>
    <div>
-        <Nav />
+        <Nav title="Account has been locked!" />
         <div style="margin-top: 100px" class="container">
             <center>
                  <img 
@@ -10,12 +10,12 @@
                     class="img-fluid">
             </center>
             <el-card style="margin-top: 50px;" shadow="always">
-                        <h3>Account has been locked</h3>
+                        <h3>Account has been locked.</h3>
                         <el-steps style="margin-top: 50px; margin-bottom: 30px;" :active="active" align-center>
-                        <el-step title="Request Access" description="You can request an access here"></el-step>
-                        <el-step title="Verification" description="Please input verification code provided by your administrator"></el-step>
-                        <el-step title="Credentials Renewal" description="Create your new credentials here"></el-step>
-                        <el-step title="Finish" description="Congratulations you've already completed all steps"></el-step>
+                        <el-step title="Request Access" description="You can request an access here."></el-step>
+                        <el-step title="Verification" description="Please input verification code provided by your administrator."></el-step>
+                        <el-step title="Credentials Renewal" description="Create your new credentials here."></el-step>
+                        <el-step title="Finish" description="Congratulations you've already completed all steps!"></el-step>
                         </el-steps>
                         <hr />
                         <div v-if="active == 1">
@@ -120,7 +120,7 @@
                                    <div class="col-sm"></div>
                                    <div class="col-sm">
                                         <center>
-                                    <h3>Congratulations ! You're all caught up</h3>
+                                    <h3>Congratulations ! You're all caught up.</h3>
                                     <img 
                                     src="https://cdn.dribbble.com/users/997338/screenshots/14118567/media/fd193848744e851927a2f7e8ae6c2961.png?compress=1&resize=1200x900&vertical=top" 
                                     alt="No image"
