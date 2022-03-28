@@ -141,8 +141,9 @@
                 </el-popover>
 
                 <div class="col-md-6" style="width: 100%; margin-left: 65px">
-                  
+
                   <el-button
+
                       slot="reference"
                       type="warning"
                       size="small"
@@ -151,6 +152,7 @@
                      @click="onRefill(row.id, row.prodquantity)"
                       >Refill
                     </el-button>
+
                 </div>
 
                 <div class="col-md-6" style="width: 100%; margin-left: 65px">
