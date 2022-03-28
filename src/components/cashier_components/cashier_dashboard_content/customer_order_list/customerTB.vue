@@ -83,9 +83,9 @@
                                             
                                          <div style="display: flex;">
                                              <el-button type="success" size="mini"
-                                        @click="onaddqty(row.orderID)">+ Qty</el-button>
+                                        @click="onaddqty(row.orderID, row.indicator, row.orderBarcode)">+ Qty</el-button>
                                                 <el-button type="danger" size="mini"
-                                        @click="voidItem(row.orderBarcode, row.orderQuantity, row.orderID)">Void</el-button>
+                                        @click="voidItem(row.orderBarcode, row.orderQuantity, row.orderID, row.indicator)">Void</el-button>
                                             </div>
                                         </sequential-entrance>
                                         <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
@@ -125,7 +125,7 @@
                                                        </div>
                                                        <div class="col-sm">
                                                            <el-button size="small" @click="onready" style="width: 100%;" :disabled="onreadypay" type="success" >
-                                                       <i class="el-icon-check"></i> Ready 
+                                                       <i class="el-icon-check"></i> Ready to Serve
                                                    </el-button>
                                                        </div>
                                                    </div>
@@ -179,7 +179,7 @@
                                                                 <div class="col-sm">
                                                                     <el-card shadow="always">
                                                                         <h2 style="margin-bottom: 10px;">Total Price : &#8369;{{cartTotalPrice}}</h2>
-                                                                    <h2 style="margin-bottom: 10px;">Discount Applied : 0%</h2>
+                                                                    <!-- <h2 style="margin-bottom: 10px;">Discount Applied : 0%</h2> -->
                                                                     <div v-if="paymentObj.amount == null || paymentObj.amount == ''">
                                                                         <h4 style="margin-bottom: 10px;">Amount : &#8369; 0</h4>
                                                                     </div>
@@ -276,9 +276,7 @@
                                     </div>
                                     <el-dialog title="All ready transactions" :visible.sync="readyDialogVisible">
                                                 <div style="margin-top: 30px;" class="container">
-                                                    <el-badge :value="countready" style="width: 20%;"  class="item">
                                                     <h3>Payment Transactions</h3>
-                                                    </el-badge>
                                                     <!-- <div v-for="t in longRangeArraysOrders" :key="t.orderID">
                                                         {{t.paymentinfo.orderBarcode}} {{t.orderName}} {{t.paymentapprvl.paymentID}}
                                                     </div> -->
@@ -333,13 +331,12 @@
                                             <!-- adding qty -->
                                             <el-dialog
                                                                             :visible.sync="addqtydialogvisible"
-                                                                            width="30%"
-                                                                            :before-close="handleCloseaddqty">
+                                                                            width="30%">
                                                                             <div class="container">
                                                                                 <div v-if="addQuantityIdentfier == 1">
                                                                                     <span>Enter Quantity for Solo</span>
                                                                                     <el-input
-                                                                                    type="number"
+                                                                                    type="text"
                                                                                     clearable
                                                                                     @input.native="qtyvalidation"
                                                                                     placeholder="Enter quantity"
@@ -350,7 +347,7 @@
                                                                                 <div v-else-if="addQuantityIdentfier == 2">
                                                                                     <span>Enter Quantity for Box of 6</span>
                                                                                     <el-input
-                                                                                    type="number"
+                                                                                    type="text"
                                                                                     @input.native="qtyvalidation"
                                                                                     clearable
                                                                                     placeholder="Enter quantity"
@@ -361,7 +358,7 @@
                                                                                 <div v-else-if="addQuantityIdentfier == 3">
                                                                                     <span>Enter Quantity for Buy 1 Take 1</span>
                                                                                     <el-input
-                                                                                    type="number"
+                                                                                    type="text"
                                                                                     @input.native="qtyvalidation"
                                                                                     clearable
                                                                                     placeholder="Enter quantity"
@@ -372,7 +369,7 @@
                                                                             </div>
                                                                             <span slot="footer" class="dialog-footer">
                                                                                 <el-button @click="addqtydialogvisible = false">Cancel</el-button>
-                                                                                <el-button type="primary" :disabled="confirmdisabling" v-loading.fullscreen.lock="screenUI" @click="onconfirmaddqty">Confirm</el-button>
+                                                                                <el-button type="primary" :disabled="confirmdisabling"  @click="onconfirmaddqty()">Confirm</el-button>
                                                                             </span>
                                                                             </el-dialog> 
                                                     <!-- Receipt Printing -->
@@ -487,6 +484,7 @@ export default {
         onfailpayment: false,
         receiptDrawer: false, addqtydialogvisible : false, updateQtyTask: { addingQty : '', addingID: ''}, 
         bundleQtyTask: {addingQty : '', addingID: ''}, b1t1QtyTask : {addingQty: '', addingID: ''},
+        IndicatorHelper : '', barcodeHelper : ''
         }
     },
     computed: {
@@ -504,7 +502,6 @@ export default {
             getTotalPrice: 'getTotalPrice',
             getState_Drawer: 'getState_Drawer',
             getaddqty: GET_ADDQTY,
-            screenUI : GET_SCREEN,
             
         }),
         longRangeArraysOrders (){
@@ -539,16 +536,22 @@ export default {
     },
     methods: {
         qtyvalidation(event) {
-          event.target.value =event.target.value.replace(/^0+/, '')
- if(!event.target.value){
+           const number = parseInt(event.target.value)
+      event.target.value = number ? number : 0
+      if(isNaN(number)){
+          this.confirmdisabling = true
+        return
+      }else{
+        if(!number){
    
                 this.confirmdisabling = true
-            } else if(event.target.value < 0){
+            } else if(number < 0){
                 this.confirmdisabling = true
             } 
              else{
                 this.confirmdisabling = false
             }
+      }
         },
         ...mapActions({
             addqty: PUSH_ADDQTY,
@@ -564,54 +567,171 @@ export default {
                         this.willDisableDiscount = true
         },
         onconfirmaddqty: function(){
-            let status = JSON.parse(localStorage.getItem('orderinfo')).status
-            if(status === 'solo'){
-                this.addqty(
-                    {
-                    objectQTYUpdater : this.updateQtyTask,
-                    objectQTYReducer: this.soloOrderTask
+            this.addqtydialogvisible = false
+            const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+            setTimeout(() => {
+                if(this.IndicatorHelper === '1'){
+                 const request = client.get(`/api/orders/get-product-final-integration?barcode=${this.barcodeHelper}`)
+                request.then((r) => {
+                    let integratedjson = []
+                    for(var x = 0; x < r.data.length; x++){
+                        integratedjson = JSON.parse(r.data[x].integratedRaws)
+                            for(var y = 0; y < integratedjson.length; y++){
+                                client.get(`/api/orders/check-detection-product-invetory-quantity?quantity=${this.updateQtyTask.addingQty}&indicator=${this.IndicatorHelper}&prodcode=${integratedjson[y].productCode}`)
+                                .then(r => {
+                                    if(r.data === 'exceed solo'){
+                                        
+                                    localStorage.setItem('detectionKey', '1')
+                                    return false
+                                    }
+                                })
+                                } 
                     }
-                )
-                this.fetchAllCustomerOrders()
-                this.getTotal()
+                })
+                setTimeout(() => {
+                    if(localStorage.getItem('detectionKey') === '1'){
+                        this.addqtydialogvisible = false
+                         localStorage.removeItem('detectionKey')
+                         this.$notify.error({
+                                      title: 'Error',
+                                      message: 'One or more ingredients was below quantity',
+                                      offset: 100
+                                      }); 
+                                      loading.close()
+                                      return false;
+                    }else{
+                         this.fetchAllCustomerOrders()
+                        this.getTotal()
+                        this.addqtydialogvisible = false
+                        loading.close()
+                        localStorage.removeItem('detectionKey')
+                       this.addqty(
+                            {
+                            objectQTYUpdater : this.updateQtyTask,
+                            objectQTYReducer: this.soloOrderTask
+                            }
+                        )
+                       
+                    }
+                }, 1000)
+                
             } 
-            else if(status === 'boxof6')
+            else if(this.IndicatorHelper === '3')
             {
-                this.addboxof6qty(
-                    {
-                    objectQTYUpdater : this.bundleQtyTask,
-                    objectQTYReducer: this.bundleOrderTask
+                const request = client.get(`/api/orders/get-product-final-integration?barcode=${this.barcodeHelper}`)
+                request.then((r) => {
+                    let integratedjson = []
+                    for(var x = 0; x < r.data.length; x++){
+                        integratedjson = JSON.parse(r.data[x].integratedRaws)
+                            for(var y = 0; y < integratedjson.length; y++){
+                                client.get(`/api/orders/check-detection-product-invetory-quantity?quantity=${this.bundleQtyTask.addingQty}&indicator=${this.IndicatorHelper}&prodcode=${integratedjson[y].productCode}`)
+                                .then(r => {
+                                    if(r.data === 'exceed box of 6'){
+                                    localStorage.setItem('detectionKey', '3')
+                                    return false
+                                    }
+                                })
+                                } 
                     }
-                )
-                this.fetchAllCustomerOrders()
-                this.getTotal()
-            } else if (status === 'buy1take1'){
-                this.onpushAddb1t1Qty(
-                    {
-                         objectQTYUpdater : this.b1t1QtyTask,
-                        objectQTYReducer: this.buyOneTakeOneTask
+                })
+                setTimeout(() => {
+                    if(localStorage.getItem('detectionKey') === '3'){
+                        this.addqtydialogvisible = false
+                         localStorage.removeItem('detectionKey')
+                         loading.close()
+                         this.$notify.error({
+                                      title: 'Error',
+                                      message: 'One or more ingredients was below quantity',
+                                      offset: 100
+                                      }); 
+                                      return false;
+                    }else{
+                        this.addqtydialogvisible = false
+                        localStorage.removeItem('detectionKey')
+                        loading.close()
+                         this.fetchAllCustomerOrders()
+                         
+                    this.getTotal()
+                       this.addboxof6qty(
+                        {
+                        objectQTYUpdater : this.bundleQtyTask,
+                        objectQTYReducer: this.bundleOrderTask
+                        }
+                    )
+                   
+                    
                     }
-                )
-                 this.fetchAllCustomerOrders()
-                this.getTotal()
+                }, 1000)
+                
+            } else if (this.IndicatorHelper === '2'){
+                const request = client.get(`/api/orders/get-product-final-integration?barcode=${this.barcodeHelper}`)
+                request.then((r) => {
+                    let integratedjson = []
+                    for(var x = 0; x < r.data.length; x++){
+                        integratedjson = JSON.parse(r.data[x].integratedRaws)
+                            for(var y = 0; y < integratedjson.length; y++){
+                                client.get(`/api/orders/check-detection-product-invetory-quantity?quantity=${this.b1t1QtyTask.addingQty}&indicator=${this.IndicatorHelper}&prodcode=${integratedjson[y].productCode}`)
+                                .then(r => {
+                                    if(r.data === 'exceed b1t1'){
+                                    localStorage.setItem('detectionKey', '2')
+                                    return false
+                                    }
+                                })
+                                } 
+                    }
+                })
+                setTimeout(() => {
+                    if(localStorage.getItem('detectionKey') === '2'){
+                        this.addqtydialogvisible = false
+                         localStorage.removeItem('detectionKey')
+                         loading.close()
+                         this.$notify.error({
+                                      title: 'Error',
+                                      message: 'One or more ingredients was below quantity',
+                                      offset: 100
+                                      }); 
+                                      return false;
+                    }else{
+                        localStorage.removeItem('detectionKey')
+                        loading.close()
+                         this.fetchAllCustomerOrders()
+                        this.getTotal()
+                         this.addqtydialogvisible = false
+                       this.onpushAddb1t1Qty(
+                        {
+                            objectQTYUpdater : this.b1t1QtyTask,
+                            objectQTYReducer: this.buyOneTakeOneTask
+                        }
+                        )
+                       
+                    }
+                }, 1000)
             }
+            }, 2000)
+            
         },
-        onaddqty(id){
-            let status = JSON.parse(localStorage.getItem('orderinfo')).status
-            if(status === 'solo'){
+        onaddqty(id, indicator, barcode){
+            this.barcodeHelper = barcode
+            this.IndicatorHelper = indicator
+            if(indicator === "1"){
                 this.addqtydialogvisible = true
             this.updateQtyTask.addingID = id
             this.addQuantityIdentfier = 1
-            } else if(status === 'boxof6'){
-                this.addqtydialogvisible = true
-            this.bundleQtyTask.addingID = id
-            this.addQuantityIdentfier = 2
-            } else if(status === 'buy1take1'){
+            } else if(indicator === "3"){
+                 this.addqtydialogvisible = true
+                        this.bundleQtyTask.addingID = id
+                        this.addQuantityIdentfier = 2
+            } else if(indicator === "2"){
+                
                 this.addqtydialogvisible = true
             this.b1t1QtyTask.addingID = id
             this.addQuantityIdentfier = 3
             }
-            
         },
         handleCloseaddqty(done) {
         this.$confirm('Are you sure to close this dialog?')

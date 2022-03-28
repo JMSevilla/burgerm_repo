@@ -44,7 +44,7 @@
                                             show-icon>
                                         </el-alert>
                             </div> -->
-                    <div style="margin-top: 20px;"><label>Product Code :</label> <el-tag type="danger" effect="dark">{{productTask.productCode}}</el-tag></div>
+                    <!-- <div style="margin-top: 20px;"><label>Product Code :</label> <el-tag type="danger" effect="dark">{{productTask.productCode}}</el-tag></div> -->
                     <center>
                         <el-avatar shape="square" :size="100" fit="fill" style="margin-bottom: 3px;" :src="img1"></el-avatar>
                             <p style="color: gray;">Preview of image will appear after the uploading.</p>
@@ -67,6 +67,7 @@
                                         placeholder="Please input product quantity"
                                         v-model="productTask.productQuantity"
                                         type="text"
+                                        @input.native="validateqty"
                                         clearable>
                                         </el-input>
                                 </div>
@@ -109,15 +110,17 @@
                                 <div v-show="inventoryexpiration">
                                     <div class="col-sm">
                                     <label>Product Expiration</label> <el-tag type="success" effect="dark" size="mini" style="margin-bottom: 10px; margin-top: 10px;">Enabled from settings</el-tag>
-                                       <el-date-picker
-                                            :picker-options="pickerOptions"
+                                       
+                                            <el-date-picker
+                                               v-model="productTask.productExpiration"
+                                               :picker-options="pickerOptions"
                                             style=" width: 100%; margin-bottom: 5px;"
-                                            v-model="productTask.productExpiration"
+                                            
                                             format="yyyy/MM/dd"
                                             value-format="yyyy/MM/dd"
-                                            type="datetime"
-                                            placeholder="Select date and time">
-                                            </el-date-picker>
+                                                type="date"
+                                                placeholder="Select Expiration Date">
+                                                </el-date-picker>
                                 </div>
                                 </div>
                             </div>
@@ -136,7 +139,7 @@
                                                    style="width: 100%; height: auto;" alt="NO image">
                                                </div>
                                                <div class="col-md-9">
-                                                   <p>Product Code : <el-tag effect="dark">{{productTask.productCode}}</el-tag></p>
+                                                   <!-- <p>Product Code : <el-tag effect="dark">{{productTask.productCode}}</el-tag></p> -->
                                                     <h4>Product Name : {{productTask.productName}}</h4>
                                                     <p>Product Category : {{productTask.productcategory}}</p>
                                                     <p>Product Quantity : {{productTask.productQuantity}}</p>
@@ -158,7 +161,7 @@
                                      plain
                                      @click="onstartover()"
                                     >Clear</el-button>
-                                    <el-button type="primary" plain style="float: right; margin-bottom: 20px; margin-top: 20px;"
+                                    <el-button :disabled="saveDisabling" type="primary" plain style="float: right; margin-bottom: 20px; margin-top: 20px;"
                             @click="onsaveproduct()">Save</el-button>
                             </el-card>
                            
@@ -166,7 +169,7 @@
                 </div>
                 <div class="col-sm">
                     <el-card shadow="always" id="mycustomscroll" >
-                        <h5>All Added Products</h5>
+                        <h5>All Pulled Products from Stock on Hand</h5>
                         
                         <div class="row">
                             <div class="col-md-6">
@@ -228,7 +231,7 @@
                                     <div class="col-md-9">
                                         <div class="row">
                                             <div class="col-md-5">
-                                                <p>Product Code : <el-tag effect="dark">{{item.productCode}}</el-tag></p>
+                                                <!-- <p>Product Code : <el-tag effect="dark">{{item.productCode}}</el-tag></p> -->
                                             </div>
                                             <div class="col-md-7">
                                                 <!-- <el-button type="warning" style="float: right;" @click="onviewexpiration(item.productCode, item.productName)">View expiration</el-button> -->
@@ -247,9 +250,13 @@
                                                     </div>
                                                     <el-card shadow="always" style="background-color: #2D2D30; width:100%; color: white; border-radius: 10px;">
                                                         <h5><center>More Actions</center></h5>
-                                                        <div class="row">
-                                                            <div class="col-md">
-                                                                <el-button type="primary" style="width:100%; margin-right:90%"
+                                                        
+                                                           <div style="padding: 10px;" class="container">
+                                                                <el-button type="danger" style="width: 100%;" size="medium" @click="onremoveproduct(item.productID,
+                                                                item.product_quantity,
+                                                                item.productCode)">Remove</el-button>
+                                                           </div>
+                                                                <!-- <el-button type="primary" style="width:100%; margin-right:90%"
                                                                 @click="onmodifyproduct(
                                                                     item.productCode,
                                                                     item.productID,
@@ -261,13 +268,11 @@
                                                                     item.product_category,
                                                                     item.expirationprod
                                                                 )"
-                                                                >Modify</el-button>
+                                                                >Modify</el-button> -->
                                                             
-                                                            </div>
-                                                            <div class="col-md">
-                                                                <el-button type="danger" style="width: 100%;" @click="onremoveproduct(item.productID, item.product_quantity, item.productCode)">Remove</el-button>
-                                                            </div>
-                                                        </div>
+                                                            
+                                                            
+                                                       
                                                         <!-- Modify dialog -->
                                                         <el-dialog
                                                             title="Product Inventory Modify"
@@ -593,6 +598,7 @@ export default {
             
             //preview area
             pageSize: 5,
+            saveDisabling: false,
               page: 1,
               dynamicTitle: '',
               getexpirydatearry: [],
@@ -641,6 +647,24 @@ export default {
         this.listLoading = false;
     },
     methods:{
+        validateqty(event){
+            const number = parseInt(event.target.value)
+                event.target.value = number ? number : 0
+                if(isNaN(number)){
+                    this.saveDisabling = true
+                    return
+                }else{
+                    if(!number){
+            
+                            this.saveDisabling = true
+                        } else if(number < 0){
+                            this.saveDisabling = true
+                        } 
+                        else{
+                            this.saveDisabling = false
+                        }
+                }
+        },
         fetchAllSizes: function(){
             client.get(`/api/size/fetchAll-size`).then(({ data }) => {
                 this.productSizesOptions = data

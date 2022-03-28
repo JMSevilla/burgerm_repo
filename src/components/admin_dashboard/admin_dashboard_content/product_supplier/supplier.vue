@@ -243,7 +243,7 @@
               >Find duplicates</el-button
             >
             <el-button type="primary" plain @click="ongetall()"
-              >Get All</el-button
+              >Fetch All</el-button
             >
             <el-button
               style="float: right; margin-bottom: 10px"
@@ -568,8 +568,8 @@
                       <div class="col-sm">
                         <label>Edit email</label>
                         <el-input
-                          placeholder="Please input lastname"
-                          v-model="modifySupplier.modifylname"
+                          placeholder="Please input email"
+                          v-model="modifySupplier.modifyemail"
                           clearable
                         >
                         </el-input>

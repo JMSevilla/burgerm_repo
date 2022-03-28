@@ -49,39 +49,6 @@
                                
                                 </div>
                                 <div v-else>
-                                  
-                                     <!-- <div class="wrapper">
-                                        <vs-card v-for="item in bundlePagedTableData" :key="item.bundleID" style="justify-content: center" class="card" >
-                                    <div slot="header">
-                                        <h3>
-                                        {{item.bundleTitle}}
-                                        </h3>
-                                    </div>
-                                    <div>
-                                        <center>
-                                             <el-image
-                                                style="width: 100px; height: 100px"
-                                                :src="item.prodImg"
-                                                :fit="fit"></el-image>
-                                            
-                                        </center>
-                                    </div>
-                                    <div>
-                                        
-                                       
-                                    </div>
-                                     <div slot="footer">
-                                            <vs-row vs-justify="flex-end">
-                                            <vs-button type="gradient" color="danger" @click="onaddcartbundle(
-                                              item.bundleTitle, item.prodPrice, item.prodImg
-                                            )" icon="favorite"></vs-button>
-                                            <vs-button color="primary" icon="turned_in_not"></vs-button>
-                                            </vs-row>
-                                        </div>
-                                    </vs-card>
-                                  </div> -->
-                                  <!-- end product bundle -->
-                               
                                  <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.posprodBundle.length" @current-change="setPage">
                                     </el-pagination>
                                 </div>
@@ -132,8 +99,10 @@
                                                 <vs-button color="primary" icon="turned_in_not"></vs-button>
                                               </div>
                                             <div v-else>
+                                              
                                                <vs-button type="gradient" color="danger" @click="onaddsolocard(
-                                              item.prodquantity, item.id, item.prodname, item.prodimg, item.integratedRaws, item.prodprice, item.productCode, item.prodcategory
+                                              item.prodquantity, item.id, item.prodname, item.prodimg, item.integratedRaws, item.prodprice, item.productCode, item.prodcategory,
+                                              item.issolo
                                               )" icon="favorite"></vs-button>
                                              <!-- <vs-button color="primary" @click="onbundleOrder(
                                                item.prodquantity, item.id, item.prodname, item.prodimg, item.integratedRaws, item.prodprice, item.productCode, item.prodcategory
@@ -145,46 +114,7 @@
                                          </sequential-entrance>
                                       </div>
                                    </div>
-                                     <!-- <div class="wrapper">
-                                            <vs-card v-for="item in pagedTableData" :key="item.id" style="justify-content: center;" class="card" >
-                                    <div slot="header">
-                                        <h3>
-                                        {{item.prodname}}
-                                        </h3>
-                                    </div>
-                                    <div>
-                                        <center>
-                                             <el-image
-                                                style="width: 100px; height: 100px"
-                                                :src="item.prodimg"
-                                                :fit="fit"></el-image>
-                                            
-                                        </center>
-                                    </div>
-                                    <div>
-                                        
-                                        <div v-if="item.prodquantity == 0">
-                                            <el-tag  type="danger" size="small">Unavailable</el-tag>
-                                          </div>
-                                          <div v-else>
-                                             <el-tag  type="success" size="small">Available</el-tag>
-                                          </div>
-                                    </div>
-                                     <div slot="footer">
-                                            <vs-row vs-justify="flex-end">
-                                              <div v-if="item.prodquantity == 0">
-                                                <vs-button color="primary" icon="turned_in_not"></vs-button>
-                                              </div>
-                                            <div v-else>
-                                               <vs-button type="gradient" color="danger" @click="onaddsolocard(
-                                              item.prodquantity, item.id, item.prodname, item.prodimg, item.integratedRaws, item.prodprice, item.productCode, item.prodcategory
-                                              )" icon="favorite"></vs-button>
-                                             <vs-button color="primary" icon="turned_in_not"></vs-button>
-                                            </div>
-                                            </vs-row>
-                                        </div>
-                                    </vs-card>
-                                         </div> -->
+                                   
                                    <el-pagination layout="prev, pager, next" :page-size="pageSize" :total="this.AllProduct.length" @current-change="setPage">
                                     </el-pagination>
                                 </div>
@@ -194,7 +124,9 @@
                 </div>
                 <div class="col-md-4">
                     <el-card shadow="always">
-                        <h4 style="font-size:20px" >Customer Cart</h4><br>
+                        <h4 style="font-size:20px" >Customer Cart</h4>
+                          <el-button @click="onRefresh()" style="float: right;" type="primary" size="small" plain>Refresh</el-button>
+                        <br>
                         <CustomerOrders
                         :paymentapprvl="paymentapprvl" 
                         :paymentinf="paymentinf" 
@@ -255,7 +187,7 @@
                       <el-input
                        @input.native="onquantitychange"
                        
-                       type="number"
+                       type="text"
                                     placeholder="Please input quantity"
                                     v-model="bundleOrderTask.bundleQuantity"
                                     clearable
@@ -266,7 +198,7 @@
                        <el-input
                        @input.native="onquantitychange"
                         
-                       type="number"
+                       type="text"
                                     placeholder="Please input quantity"
                                     v-model="buyOneTakeOneTask.buy1take1Quantity"
                                     clearable
@@ -277,7 +209,7 @@
                       <el-input
                       @input.native="onquantitychange"
                        
-                       type="number"
+                       type="text"
                                     placeholder="Please input quantity"
                                     v-model="soloOrderTask.soloQuantity"
                                     clearable
@@ -308,7 +240,24 @@
                                     </vs-popup>
                                     <!-- end bundle order modal -->
         </div>
-                                
+                   <el-dialog
+                    title="Product Inventory Modified"
+                    :visible.sync="emergencyAlert"
+                    width="70%">
+                    <div style="margin-top: 20px;" class="container">
+                      <el-alert
+                        title="Ingredient/s has been deleted"
+                        type="error"
+                        :closable="false"
+                        description="One or more product ingredients under this product has been deleted from the administrator area, to continue we need to remove the ingredients under this product, kindly click Confirm"
+                        show-icon>
+                      </el-alert>
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                      <el-button @click="emergencyAlert = false">Cancel</el-button>
+                      <el-button type="primary" @click="onConfirmDeletion">Confirm</el-button>
+                    </span>
+                  </el-dialog>             
     </div>
 </template>
 
@@ -330,6 +279,7 @@ export default {
     },
     data(){
         return{
+          emergencyAlert: false,
           onfailqty: true,
             popupSettings: {
                 title: 'Search via barcode',
@@ -348,7 +298,7 @@ export default {
               soloProdimage : '',
               soloProdIntegrated: '',
               soloProdprice: '',
-              soloProdCode: '', soloProdCategory: ''
+              soloProdCode: '', soloProdCategory: '', soloIndicator : ''
             },
             bundleOrderTask: {
               bundleQuantity: '',
@@ -357,7 +307,7 @@ export default {
               bundleProdimage: '',
               bundleProdIntegrated: '',
               bundleProdprice: '',
-              bundleProdCode: '', bundleProdCategory: ''
+              bundleProdCode: '', bundleProdCategory: '', bundleIndicator : ''
             },
             buyOneTakeOneTask : {
               buy1take1Quantity : '',
@@ -366,7 +316,7 @@ export default {
               buy1take1Prodimage : '',
               buy1take1ProdIntegrated: '',
               buy1take1Prodprice: '',
-              buy1take1ProdCode: '', buy1take1ProdCategory: '', isstatus : 'buy1take1'
+              buy1take1ProdCode: '', buy1take1ProdCategory: '', isstatus : 'buy1take1', buy1take1Indicator : ''
             },
             btnPageSize : 10,
             btnPage : 1,
@@ -429,7 +379,10 @@ export default {
               responsePOSCategories : [],
               btnSearchable : '',
               modalIdentifier : false,
-              willDisableDiscount: false
+              willDisableDiscount: false,
+              dataIndicator : null,
+              idIndicator : '',
+              IntegratedRawsArray : []
         }
     },
      computed:{
@@ -471,6 +424,8 @@ export default {
      })
     },
     created(){
+      localStorage.removeItem('key_connectivity')
+       localStorage.removeItem('detectionKey')
         this.fetchAllProduct()
         this.fetchAllCustomerOrders()
         this.countAllReady()
@@ -488,18 +443,66 @@ export default {
         pushCustomersOrders : PUSH_CO,
         pushSalesEntry : PUSH_SALES_ENTRY
         }),
-        
+        async onConfirmDeletion(){
+          
+           console.log("pf ID", this.idIndicator)
+           console.log(this.IntegratedRawsArray)
+           let arr = []
+           arr = JSON.parse(this.IntegratedRawsArray)
+           for(var x = 0; x < arr.length; x++){
+             var data = new FormData()
+             data.append("productID", arr[x].productID)
+            data.append("productCode", arr[x].productCode)
+            data.append("productName", arr[x].productName)
+            data.append("product_quantity", arr[x].product_quantity)
+            data.append("product_price", arr[x].product_price)
+            data.append("product_total", arr[x].product_total)
+            data.append("product_status", arr[x].product_status)
+            data.append("product_creator", arr[x].product_creator)
+            data.append("product_supplier", arr[x].product_supplier)
+            data.append("product_image", arr[x].productimgurl)
+            data.append("product_category", arr[x].product_category)
+            await client.post(`/api/product-inventory/deletion-json?prodid=${this.idIndicator}&created=${arr[x].createdAt}&exp=${arr[x].expirationprod}&pcode=${arr[x].productCode}`, data)
+            .then(r => { 
+              if(r.data === 'done'){
+                localStorage.removeItem('key_connectivity')
+                this.emergencyAlert = false
+              }
+            })
+           }
+        },
+        onRefresh(){
+          localStorage.removeItem('detectionKey')
+        this.fetchAllProduct()
+        this.fetchAllCustomerOrders()
+        this.countAllReady()
+        this.listof_ready_payments()
+        this.getBundleCategory()
+        this.getAllPOSCategories();
+        this.checkTotalPrice()
+         this.$message({
+          message: 'Data Refresh Successfully.',
+          type: 'success'
+        });
+        },
         onquantitychange(event) {
-          event.target.value =event.target.value.replace(/^0+/, '')
- if(!event.target.value){
+             const number = parseInt(event.target.value)
+      event.target.value = number ? number : 0
+      if(isNaN(number)){
+          this.onfailqty = true
+        return
+      }else{
+        if(!number){
    
                 this.onfailqty = true
-            } else if(event.target.value < 0){
+            } else if(number < 0){
                 this.onfailqty = true
             } 
              else{
                 this.onfailqty = false
             }
+      }
+        
         },
       FetchAllProduct : function() {
         this.fetchAllProduct()
@@ -789,10 +792,10 @@ export default {
                 })
         }
       },
-      voidItem: function(code, qty, id){
+      voidItem: function(code, qty, id, indicator){
         // need to fix 
          switch(true) {
-          case JSON.parse(localStorage.getItem('orderinfo')).status === "boxof6":
+          case indicator === "3":
               this.$vs.loading({
                     type: 'sound'
                 })
@@ -808,7 +811,7 @@ export default {
                 })
                 }, 1000)
                 return true;
-          case JSON.parse(localStorage.getItem('orderinfo')).status === "solo" :
+          case indicator === "1" :
            this.$vs.loading({
                     type: 'sound'
                 })
@@ -824,7 +827,7 @@ export default {
                 })
                 }, 1000)
                 return true
-          case JSON.parse(localStorage.getItem('orderinfo')).status === "buy1take1":
+          case indicator === "2":
             this.$vs.loading({
                     type: 'sound'
                 })
@@ -878,6 +881,7 @@ export default {
               data.append("bundle_order_qty", this.bundleOrderTask.bundleQuantity)
               data.append("bundle_order_category", this.bundleOrderTask.bundleProdCategory)
               data.append("bundle_order_image", this.bundleOrderTask.bundleProdimage)
+              data.append("bundle_indicator", this.bundleOrderTask.bundleIndicator)
               const addreq = client.post(`/api/orders/order-bundle`, data)
               return addreq.then((response) => {
                 console.log("first request", response.data)
@@ -922,6 +926,7 @@ export default {
               data.append("solo_order_qty", this.soloOrderTask.soloQuantity)
               data.append("solo_order_category", this.soloOrderTask.soloProdCategory)
               data.append("solo_order_image", this.soloOrderTask.soloProdimage)
+              data.append("solo_order_indicator", this.soloOrderTask.soloIndicator)
               data.append("isstatus", "solo")
               const addreq = client.post(`/api/orders/order-solo`, data)
               return addreq.then((response) => {
@@ -948,86 +953,214 @@ export default {
       },
       BUY1TAKE1_ORDER: function(){
         if(!this.buyOneTakeOneTask.buy1take1Quantity){
-          alert("hello world")
+          
         }else{ 
          this.$vs.loading({
                   type: 'sound'
               })
-              this.onaddb1t1(
-            {
-              object : this.buyOneTakeOneTask
-            }
-          )
         setTimeout(() => {
-          
-           this.isbundle = false
-                    this.$vs.loading.close()
-                    this.popupActivoSolo = false
-                    client.get(`/api/orders/order-list`)
-                     .then(({data}) => {
-                                      console.log("response from client get" , data)
-                                        this.customerOrderArray = data
-                                    })
-                
+          const req = client.get(`/api/orders/solo-validate-cart/${this.buyOneTakeOneTask.buy1take1Quantity}/${this.buyOneTakeOneTask.buy1take1externalIDQTY}`)
+          return req.then(({data}) => {
+            if(data === "invalid qty") { 
+              this.$vs.notify({title:'Nope',text:'Invalid Quantity',color:'danger',position:'top-right', icon:'highlight_off'})
+              this.$vs.loading.close() 
+              return false
+            }else {   
+              const data = new FormData()
+              data.append("buy1take1Prodname", this.buyOneTakeOneTask.buy1take1Prodname)
+              data.append("buy1take1ProdCode", this.buyOneTakeOneTask.buy1take1ProdCode)
+              data.append("buy1take1Prodprice", this.buyOneTakeOneTask.buy1take1Prodprice)
+              data.append("buy1take1Quantity", this.buyOneTakeOneTask.buy1take1Quantity)
+              data.append("buy1take1ProdCategory", this.buyOneTakeOneTask.buy1take1ProdCategory)
+              data.append("buy1take1Prodimage", this.buyOneTakeOneTask.buy1take1Prodimage)
+              data.append("buy1take1Indicator", this.buyOneTakeOneTask.buy1take1Indicator)
+              data.append("isstatus", "buy1take1")
+              const addreq = client.post(`/api/orders/order-solo`, data)
+              return addreq.then((response) => {
+                console.log("first request", response.data)
+                if(response.data === "success order") { 
+                  const reducer = client.put(`/api/orders/order-decrease-qty-buy1take1?orderID=${this.buyOneTakeOneTask.buy1take1externalIDQTY}&qty=${2}&origqty=${this.buyOneTakeOneTask.buy1take1Quantity}`)
+                  reducer.then((resp) => {
+                    console.log("second request",resp.data)
+                    if(resp.data === "success_decrease") { 
+                      this.isbundle = false
+                      this.$vs.notify({title:'Success',text:'Added to cart',color:'success',position:'top-right', icon:'highlight_off'})
+                      this.fetchAllCustomerOrders()
+                      this.fetchAllProduct()
+                      this.$vs.loading.close()
+                      this.popupActivoSolo = false
+                    }
+                  })
+                }
+              })
+            } 
+          })
         }, 2000)
         }
       },
       onqtyOk: function(){
-        switch(true) {
-          case this.modalIdentifier == 1:
-            return this.BOXOF6();
-          case this.modalIdentifier == 3 :
-           return this.SOLO_ORDER();
-          case this.modalIdentifier == 2 :
-           return this.BUY1TAKE1_ORDER();
+        if(  this.dataIndicator === "3") {
+          let integratedjson = []
+          integratedjson =  JSON.parse(this.IntegratedRawsArray)
+          for(var x = 0; x < integratedjson.length; x++){
+            client.get(`/api/orders/check-detection-product-invetory-quantity?quantity=${this.bundleOrderTask.bundleQuantity}&indicator=${this.dataIndicator}&prodcode=${integratedjson[x].productCode}`)
+            .then(r => {
+              if(r.data === 'exceed box of 6'){
+                localStorage.setItem('detectionKey', '3')
+                return false
+              }
+            })
+          } 
+          setTimeout(() => {
+            if(localStorage.getItem('detectionKey') === '3') {
+              this.popupActivoSolo = false
+               localStorage.removeItem('detectionKey')
+                this.$notify.error({
+                                      title: 'Error',
+                                      message: 'One or more ingredients was below quantity',
+                                      offset: 100
+                                      }); 
+                                      return false;
+              } else { 
+                localStorage.removeItem('detectionKey')
+                this.BOXOF6();
+              }
+          }, 1000)
+        } else if (this.dataIndicator === "1"){
+          let integratedjson = []
+        integratedjson =  JSON.parse(this.IntegratedRawsArray)
+        for(var x = 0; x < integratedjson.length; x++){
+          client.get(`/api/orders/check-detection-product-invetory-quantity?quantity=${this.soloOrderTask.soloQuantity}&indicator=${this.dataIndicator}&prodcode=${integratedjson[x].productCode}`)
+          .then(r => {
+            if(r.data === 'exceed b1t1'){
+              localStorage.setItem('detectionKey', '1')
+              return false
+            }
+          })
+        } 
+          setTimeout(() => {
+            if(localStorage.getItem('detectionKey') === '1'){
+              this.popupActivoSolo = false
+               localStorage.removeItem('detectionKey')
+              this.$notify.error({
+                                      title: 'Error',
+                                      message: 'One or more ingredients was below quantity',
+                                      offset: 100
+                                      }); 
+                                      return false;
+            }else {
+        localStorage.removeItem('detectionKey')
+        this.SOLO_ORDER();
+            }
+          }, 1000)
+        } else if (this.dataIndicator === "2"){
+          let integratedjson = []
+        integratedjson =  JSON.parse(this.IntegratedRawsArray)
+        for(var x = 0; x < integratedjson.length; x++){
+          client.get(`/api/orders/check-detection-product-invetory-quantity?quantity=${this.buyOneTakeOneTask.buy1take1Quantity}&indicator=${this.dataIndicator}&prodcode=${integratedjson[x].productCode}`)
+          .then(r => {
+            if(r.data === 'exceed b1t1'){
+              localStorage.setItem('detectionKey', '2')
+              return false
+            }
+          })
+        } 
+          setTimeout(() => {
+            if(localStorage.getItem('detectionKey') === '2'){
+              this.popupActivoSolo = false
+               localStorage.removeItem('detectionKey')
+              this.$notify.error({
+                                      title: 'Error',
+                                      message: 'One or more ingredients was below quantity',
+                                      offset: 100
+                                      }); 
+                                      return false;
+            }else{
+            localStorage.removeItem('detectionKey')
+            this.BUY1TAKE1_ORDER();
+              }
+          }, 1000)
         }
       },
-      onaddsolocard: function(qty, id, name, image, integrated, price, prodcode, category){
-        if(category === "Box Of 6" || category === "box of 6" || category === "Box of 6" || category === "BOX OF 6" || category === "boxof6") { 
-          this.popupActivoSolo = true
-          localStorage.setItem('key_boxof6_externalID', id)
-        this.bundleOrderTask.externalIDQTY = id;
-        this.bundleOrderTask.bundleProdname = name;
-        this.bundleOrderTask.bundleProdimage = image;
-        this.bundleOrderTask.bundleProdIntegrated = integrated;
-        this.bundleOrderTask.bundleProdprice = price
-        this.bundleOrderTask.bundleProdCode = prodcode
-        this.bundleOrderTask.bundleProdCategory = category
-        let data = {status : 'boxof6'}
-        localStorage.setItem('orderinfo', JSON.stringify(data))
-        this.modalIdentifier = 1
-        } else if(category === "Buy 1 Take 1" || category === "buy 1 take 1") {
-          localStorage.setItem('key_b1t1_externalID', id)
-        this.popupActivoSolo = true
-        this.buyOneTakeOneTask.buy1take1externalIDQTY = id;
-        this.buyOneTakeOneTask.buy1take1Prodname = name;
-        this.buyOneTakeOneTask.buy1take1Prodimage = image;
-        this.buyOneTakeOneTask.buy1take1ProdIntegrated = integrated;
-        this.buyOneTakeOneTask.buy1take1Prodprice = price;
-        this.buyOneTakeOneTask.buy1take1ProdCode = prodcode
-        this.buyOneTakeOneTask.buy1take1ProdCategory = category
-        let data = {status : 'buy1take1'}
-        localStorage.setItem('orderinfo', JSON.stringify(data))
-        this.modalIdentifier = 2
-        }
-        else {
-         
-        this.popupActivoSolo = true
-        localStorage.setItem('key_solo_externalID', id)
-        this.soloOrderTask.externalIDQTY = id;
-        this.soloOrderTask.soloProdname = name;
-        this.soloOrderTask.soloProdimage = image;
-        this.soloOrderTask.soloProdIntegrated = integrated;
-        
-        this.soloOrderTask.soloProdprice = price;
-        this.soloOrderTask.soloProdCode = prodcode
-        this.soloOrderTask.soloProdCategory = category
-        let data = {status : 'solo'}
-        localStorage.setItem('orderinfo', JSON.stringify(data))
-        this.modalIdentifier = 3
-        } 
-        
+      onaddsolocard: function(qty, id, name, image, integrated, price, prodcode, category, solo){
+        localStorage.removeItem('key_connectivity')
+        const request = client.get(`/api/product-inventory/checking-json-product-inventory?pcode=${prodcode}`)
+        return request.then(({data}) => {
+          for(var x = 0; x < data.length; x++){
+            let validateJSON = []
+            validateJSON = JSON.parse(data[x].integratedRaws)
+            for(var y = 0; y < validateJSON.length; y++){
+              console.log(validateJSON[y].productID)
+              client.get(`/api/product-inventory/validate-product-inventory?prodcode=${validateJSON[y].productCode}`)
+              .then(r => {
+                if(r.data === 'exist'){
+                  console.log("modal qty out")
+                } else{
+                  console.log("modal alert out")
+                  localStorage.setItem('key_connectivity', 'not exist')
+                }
+              })
+            }
+          }
+          setTimeout(() => {
+            if(localStorage.getItem('key_connectivity') === 'not exist'){
+            this.emergencyAlert = true
+            this.IntegratedRawsArray = integrated
+            this.idIndicator = id
+            }
+            else{
+              this.dataIndicator = solo
+              this.emergencyAlert = false
+              this.IntegratedRawsArray = integrated
+                  if(solo === '3') { 
+                    this.popupActivoSolo = true
+                    localStorage.setItem('key_boxof6_externalID', id)
+                  this.bundleOrderTask.externalIDQTY = id;
+                  this.bundleOrderTask.bundleProdname = name;
+                  this.bundleOrderTask.bundleProdimage = image;
+                  this.bundleOrderTask.bundleProdIntegrated = integrated;
+                  this.bundleOrderTask.bundleProdprice = price
+                  this.bundleOrderTask.bundleProdCode = prodcode
+                  this.bundleOrderTask.bundleProdCategory = category
+                  this.bundleOrderTask.bundleIndicator = solo
+                  let data = {status : 'boxof6'}
+                  localStorage.setItem('orderinfo', JSON.stringify(data))
+                  this.modalIdentifier = 1
+                  } else if(solo === '2') {
+                    localStorage.setItem('key_b1t1_externalID', id)
+                  this.popupActivoSolo = true
+                  this.buyOneTakeOneTask.buy1take1externalIDQTY = id;
+                  this.buyOneTakeOneTask.buy1take1Prodname = name;
+                  this.buyOneTakeOneTask.buy1take1Prodimage = image;
+                  this.buyOneTakeOneTask.buy1take1ProdIntegrated = integrated;
+                  this.buyOneTakeOneTask.buy1take1Prodprice = price;
+                  this.buyOneTakeOneTask.buy1take1ProdCode = prodcode
+                  this.buyOneTakeOneTask.buy1take1ProdCategory = category
+                  this.buyOneTakeOneTask.buy1take1Indicator = solo
 
+                  let data = {status : 'buy1take1'}
+                  localStorage.setItem('orderinfo', JSON.stringify(data))
+                  this.modalIdentifier = 2
+                  }
+                  else {
+                  
+                  this.popupActivoSolo = true
+                  localStorage.setItem('key_solo_externalID', id)
+                  this.soloOrderTask.externalIDQTY = id;
+                  this.soloOrderTask.soloProdname = name;
+                  this.soloOrderTask.soloProdimage = image;
+                  this.soloOrderTask.soloProdIntegrated = integrated;
+                  this.soloOrderTask.soloIndicator = solo
+                  this.soloOrderTask.soloProdprice = price;
+                  this.soloOrderTask.soloProdCode = prodcode
+                  this.soloOrderTask.soloProdCategory = category
+                  let data = {status : 'solo'}
+                  localStorage.setItem('orderinfo', JSON.stringify(data))
+                  this.modalIdentifier = 3
+                  } 
+            }
+          }, 1000)
+        })
       },  
       onaddcartbundle: function(title, price, image){
         const data = new FormData()
@@ -1102,14 +1235,15 @@ export default {
               }, 2000)
           }
       },
-      fetchAllProduct: async function(){
-          await client
+      fetchAllProduct:  function(){
+           client
           .get(`/api/pos/products/get-all`)
           .then(({ data }) => {
             console.log("list of products" ,data)
                this.AllProduct = data
                this.posprodBundle = []
                this.select1 = null
+               
           })
       },
       fetchAllCustomerOrders:  function(){

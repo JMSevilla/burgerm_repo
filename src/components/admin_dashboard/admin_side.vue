@@ -40,10 +40,23 @@
                                         Inventory Stocks
                                     </el-menu-item>
 
-                                    <el-menu-item index="3-2" @click="onstockonhand()">
+                                    <el-submenu index="3-1-2" >
+                                        <template slot="title">
                                     <img src="../../assets/stockonhand.png"
                                      alt="no image" style="width: 15%; height:auto;">&nbsp;
-                                    <span>Stock on Hand</span></el-menu-item>
+                                    <span>SOH Management</span>
+                                    </template>
+                                    <el-menu-item index="3-2-3" @click="onstockonhand()">
+                                        <img src="../../assets/stockonhand.png"
+                                     alt="no image" style="width: 15%; height:auto;">&nbsp;
+                                    <span>Stock on Hand</span>
+                                    </el-menu-item>
+                                     <el-menu-item index="3-3-4" @click="onrefillmanagement()">
+                                        <img src="https://cdn2.iconfinder.com/data/icons/design-and-development-3-5/48/103-256.png"
+                                     alt="no image" style="width: 15%; height:auto;">&nbsp;
+                                    <span>Refill Management</span>
+                                    </el-menu-item>
+                                    </el-submenu>
 
                                     <!-- <el-menu-item index="3-3" @click="productinventory()">
                                         <img src="https://cdn1.iconfinder.com/data/icons/e-commerce-retro-pack-vol-1/115/inventory_management-256.png"
@@ -236,6 +249,19 @@ export default {
         
     },
     methods: {
+        onrefillmanagement(){
+            const loading = this.$loading({
+          lock: true,
+          text: 'please wait..',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        setTimeout(() => {
+          loading.close()
+          this.$router.push({name: 'Refill'}).catch(() => {})
+
+        }, 2000)
+        },
         oninventoryreports(){
             
              const loading = this.$loading({

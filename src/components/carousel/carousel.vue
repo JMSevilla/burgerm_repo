@@ -51,7 +51,7 @@
 
         </div>
          <el-link type="primary" @click="onforgot()">Forgot password</el-link>
-          <el-button  v-on:keyup="validateconfirm" @click="onsignin()" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 10px;" type="primary" round>Login</el-button>
+          <el-button  v-on:keyup="validateconfirm" @click="onsignin()" style="width: 100%; padding: 15px; margin-top: 10px; margin-bottom: 10px;" type="primary" round>Log in</el-button>
       </el-card>
    </div>
  </div>
@@ -157,7 +157,7 @@ import client from "@/store/0AuthRequest"
     onsignin(){
       if(!this.task.email || !this.task.password){
         this.$notify.error({
-                            title: 'Uh oh!',
+                            title: 'Warning!!',
                             message: 'empty fields.',
                             offset: 100
                             });
@@ -175,7 +175,7 @@ import client from "@/store/0AuthRequest"
                         if(rs.data.message === "empty"){
                           loading.close()
                           this.$notify.error({
-                            title: 'Uh oh!',
+                            title: 'Warning!',
                             message: 'empty fields.',
                             offset: 100
                             });
@@ -183,7 +183,7 @@ import client from "@/store/0AuthRequest"
                         }else if(rs.data === "disabled"){
                           loading.close()
                           this.$notify.error({
-                            title: 'Uh oh!',
+                            title: 'Warning!',
                             message: 'Unfortunately your account is disable.',
                             offset: 100
                             });
@@ -191,7 +191,7 @@ import client from "@/store/0AuthRequest"
                         }else if(rs.data === "attempt failed"){
                           loading.close()
                           this.$notify.error({
-                            title: 'Uh oh!',
+                            title: 'Warning!',
                             message: 'Please wait for your attempt to expire',
                             offset: 100
                           });
@@ -221,7 +221,7 @@ import client from "@/store/0AuthRequest"
 
                           loading.close()
                           this.$notify.error({
-                            title: 'Uh oh!',
+                            title: 'Warning!',
                             message: 'Invalid password.',
                             offset: 100
                             });
@@ -231,7 +231,7 @@ import client from "@/store/0AuthRequest"
                         else if(rs.data === "not found"){
                           loading.close()
                           this.$notify.error({
-                            title: 'Uh oh!',
+                            title: 'Warning!',
                             message: 'This account was not found.',
                             offset: 100
                             });

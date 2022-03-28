@@ -3,12 +3,18 @@
         <navadmin />
         <sidenavadmin />
         <!-- el dialog for list expired prod -->
-                                                    <el-dialog
-                                title="Expired products notification"
-                                :visible.sync="dialogVisible"
-                                width="60%"
-                                :before-close="handleClose">
-                                <div style="margin-top: 20px;" class="container">
+                                              
+                                <!-- end el dialog -->
+                                <!-- el drawer view 0 quantity product -->
+                                       
+                                <!-- end el drawer view 0 quantity product -->
+
+                                <b-modal  id="bv-modal-example" hide-footer>
+                                <template #modal-title>
+                                Product Expiration Notification
+                                </template>
+                                
+                            <div style="margin-top: 20px;" class="container">
                                      <el-alert
                                         style="margin-top: 20px; margin-bottom: 30px;"
                                             title="Product expired"
@@ -29,7 +35,6 @@
                                     </el-input>
                                               <el-table
                                     :key="0"
-                                    v-loading="listLoading"
                                     :data="pagedTableData"
                                     border
                                     fit
@@ -153,53 +158,11 @@
                                     </el-tabs>
                                     </el-card>
                                 </div>
-                                <span slot="footer" class="dialog-footer">
-                                    <el-button @click="dialogVisible = false">Close</el-button>
-                                </span>
-                                </el-dialog>
-                                <!-- end el dialog -->
-                                <!-- el drawer view 0 quantity product -->
-                                        <el-drawer
-                                    title="I am the title"
-                                    
-                                    :visible.sync="quantityviewerdrawer"
-                                    :with-header="false" :before-close="handleClose">
-                                    <div class="container" style="padding: 25px; margin-top: 30px;">
-                                        <el-card shadow="always">
-                                            
-                                            <div class="row">
-                                                <div class="col-md-5">
-                                                    <h3>Stock on hand alert</h3> 
-                                                </div>
-                                                <div class="col-md-7">
-                                                    <el-link @click="oncheckstocks()" style="float: right; margin-bottom: 10px;" type="primary">Check stocks</el-link>
-                                                </div>
-                                            </div>
-                                            <el-alert
-                                        style="margin-top: 20px; margin-bottom: 30px;"
-                                            title="Product on critical quantity"
-                                            type="error"
-                                            effect="dark"
-                                            :closable="false"
-                                            description="There is a product with 0 quantity. please check"
-                                            show-icon>
-                                        </el-alert>
-                                        
-                                            <el-timeline>
-                                                <el-timeline-item v-for="item in zeroquantity" :key="item.stockID" :timestamp="item.createdAt | moment('calendar')" placement="top">
-                                                <el-card shadow="hover">
-                                                    <span style="margin-bottom: 10px;">Product Code : <el-tag type="primary" effect="dark" size="mini">{{item.stockNumber}}</el-tag></span>
-                                                    <h4 style="margin-bottom: 10px;">Product Name : {{item.productname}}</h4>
-                                                    <p style="margin-bottom: 10px;">Product Quantity : <el-tag type="danger" effect="dark" size="mini">Zero</el-tag></p>
-                                                    <p style="margin-bottom: 10px;">Status : <el-tag type="danger" effect="dark" size="mini">Critical</el-tag></p>
-                                                    
-                                                </el-card>
-                                                </el-timeline-item>
-                                            </el-timeline>
-                                        </el-card>
-                                    </div>
-                                    </el-drawer>
-                                <!-- end el drawer view 0 quantity product -->
+
+                                <b-button class="mt-3" block @click="$bvModal.hide('bv-modal-example')">Close Me</b-button>
+                            </b-modal>
+
+
     </div>
 </template>
 
@@ -218,6 +181,7 @@ export default {
             quantityviewerdrawer: false,
             searchablewarning: '',
             dialogVisible: false,
+            dialogExpirationVisible: false,
               pageSize: 5,
               page: 1,
               listLoading: true,
@@ -265,11 +229,11 @@ export default {
                 console.log("expired product", r.data)
                 if(r.data === 'not exist expiry'){
                     this.listLoading = false;
-                    this.dialogVisible = true
+                    this.$bvModal.show('bv-modal-example')
                 }else{
                     this.productArray = r.data
                     this.listLoading = false;
-                    this.dialogVisible = true
+                    this.$bvModal.show('bv-modal-example')
                 }
             })
         },
@@ -278,7 +242,7 @@ export default {
             return request.then((response) => {
                this.productWarningArray = response.data
                this.listLoading = false
-               this.dialogVisible = true
+              this.$bvModal.show('bv-modal-example')
             })
         },
         oncheckstocks(){
@@ -315,8 +279,7 @@ export default {
                     type: 'error'
                     })
                     .then(() => {
-                        this.quantityviewerdrawer =true;
-                        this.takeallzeroquantity()
+                       this.$router.push({name : 'Stocks on hand'}).catch(() => {})
                     })
                }
            })

@@ -1,14 +1,7 @@
 <template>
     <div>
         <div class="container-fluid">
-            <el-tabs v-model="editableTabsValue" type="card" :closable="false">
-                <el-tab-pane
-                    v-for="(item) in editableTabs"
-                    :key="item.name"
-                    :label="item.title"
-                    :name="item.name"
-                >
-                <div class="container">
+            <div class="container">
                     <div class="row" style="margin-bottom: 20px;">
                     <div class="col-sm">
                         <el-card shadow="always" style="height: 100%;">
@@ -44,7 +37,7 @@
                         <el-card shadow="always" style="height: 100%;">
                             <div class="row">
                                 <div class="col-sm-4">
-                                    <img src="https://cdn0.iconfinder.com/data/icons/scenarium-vol-11/128/040_startup_products_rocket_compare-256.png"
+                                    <img src="https://cdn-icons-png.flaticon.com/512/5619/5619329.png"
                             style="width: 90%; margin-top: 10px; height: auto;" class="img-fluid" alt="no image">
                                 </div>
                                 <div class="col-sm-8">
@@ -59,7 +52,7 @@
                         <el-card shadow="always" style="height: 100%;">
                             <div class="row">
                                 <div class="col-sm-4">
-                                    <img src="https://cdn0.iconfinder.com/data/icons/scenarium-vol-11/128/040_startup_products_rocket_compare-256.png"
+                                    <img src="https://cdn2.iconfinder.com/data/icons/alert-message/64/exclamation-label-icon-256.png"
                             style="width: 90%; margin-top: 10px; height: auto;" class="img-fluid" alt="no image">
                                 </div>
                                 <div class="col-sm-8">
@@ -75,8 +68,6 @@
                      <div id="chart-container"></div> -->
                 <!-- </el-card> -->
                 </div>
-                </el-tab-pane>
-              </el-tabs>
       </div>
       <div class="container">
          <el-card shadow="always">

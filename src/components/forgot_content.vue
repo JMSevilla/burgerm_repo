@@ -60,7 +60,7 @@
                  class="img-fluid">
                  <h3>You're all caught up!</h3>
                  <h1>You've successfully changed your password!</h1>
-                 <p>You can now proceed to the login area.</p>
+                 <p>You can now proceed to the login area.</p> <el-link @click="onlogin" type="primary">Click here</el-link>
             </center>
         </div>
     </div>
@@ -76,5 +76,10 @@ export default {
         onpreviousverification: Function,
         onfinishresetpassword: Function
     },
+    methods : {
+        onlogin: function(){
+            this.$router.push({name : 'Index'}).catch(() => {})
+        }
+    }
 }   
 </script>

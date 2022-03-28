@@ -282,11 +282,11 @@
                                     style="width: 100%;"
 
                                     >
-                                    <el-table-column label="ID" prop="id" align="center"  >
+                                    <!-- <el-table-column label="ID" prop="id" align="center"  >
                                         <template slot-scope="{row}">
                                         <span>{{ row.id }}</span>
                                         </template>
-                                    </el-table-column>
+                                    </el-table-column> -->
 
                                     
                                     <el-table-column label="First name" align="center" >
@@ -383,7 +383,12 @@
                                        
                                                 </div>
                                                 <div class="col-md-6">
- <el-button @click="onChangePassword(row.id)" type="warning" size="small">Change Password</el-button>
+                                                    <div v-if="row.istype == 1">
+
+                                                    </div>
+                                                    <div v-else>
+                                                        <el-button @click="onChangePassword(row.email)" type="warning" size="small">Change Password</el-button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </template>
@@ -395,7 +400,7 @@
                         </div>
                         <!-- Change password -->
     <el-dialog
-  title="UAM Change Password"
+  title="User Management Change Password"
   :visible.sync="dialogVisible"
   width="50%"
   :before-close="handleClose">
@@ -456,7 +461,7 @@ export default {
               //add admin registered data
               dialogVisible: false,
               ChangingPasswordObj : {
-                  newpassword : '', confirmpassword : '', id : ''
+                  newpassword : '', confirmpassword : '', email : ''
               },
                 add_admin_task: {
                     isadmin: true,
@@ -558,9 +563,9 @@ export default {
                 background: 'rgba(0, 0, 0, 0.7)'
                 });
                 setTimeout(() => {
-                    const request = client.put(`/api/user-management/change-password?userid=${this.ChangingPasswordObj.id}&password=${this.ChangingPasswordObj.newpassword}`)
+                    const request = client.post(`/api/forgot-password/change-password?password=${this.ChangingPasswordObj.newpassword}&email=${this.ChangingPasswordObj.email}`)
                     request.then((resp) => {
-                        if(resp.data === 'success change password') {
+                        if(resp.data === 'success change') {
                             this.$notify.success({
                             title: 'Success',
                             message: 'Successfully Changed password',
@@ -582,9 +587,9 @@ export default {
             })
             }
         },
-        onChangePassword: function(id){
+        onChangePassword: function(email){
             this.dialogVisible = true
-            this.ChangingPasswordObj.id = id
+            this.ChangingPasswordObj.email = email
         },
         onremoveuser(uid, firstname, lastname, type){
             this.$confirm('Are you sure you want to remove this user?', 'Warning', {
@@ -672,6 +677,13 @@ export default {
                                     })
                                     this.fetchAllUsersdata();
                                     //clear fields - assign to jastine or sherilyn
+                                } else if(response.data === 'email exist cashier'){
+                                    loading.close()
+                                    this.btnloading = false;
+                                    this.$message({
+                                        message: 'This email already exist',
+                                        type: 'error'
+                                    })
                                 }
                             })
                         }, 4000)
@@ -863,6 +875,13 @@ export default {
                                         }
                                     })
                                     //clear fields - assign to jastine or sherilyn
+                                } else if(response.data === 'email exist admin'){
+                                    loading.close()
+                                    this.btnloading = false;
+                                    this.$message({
+                                        message: 'This email already exist',
+                                        type: 'error'
+                                    })
                                 }
                             })
                         }, 4000)

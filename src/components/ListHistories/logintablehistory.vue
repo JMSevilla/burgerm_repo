@@ -9,7 +9,6 @@
         <table class="table table-hover table-bordered">
   <thead>
     <tr>
-      <th scope="col">#</th>
       <th scope="col">User Email</th>
       <th scope="col">Login</th>
       <th scope="col">Logout</th>
@@ -17,7 +16,6 @@
   </thead>
   <tbody>
     <tr v-for="item in pagedTableData" :key="item.id">
-      <th scope="row">{{item.id}}</th>
       <td>{{item.email}}</td>
       <td>
         <div v-if="item.loggedinstatus == 1">

@@ -31,63 +31,14 @@
         <br>
         </el-input>
 
-        <!-- <el-popover
-        placement="right"
-        width="400"
-        trigger="click">
-        <div class="container">
-          <h3>More Actions <i class="el-icon-setting"></i></h3>
-          <el-card shadow="always" style="margin-top: 20px; margin-bottom: 20px;">
-            <center>
-              <h5>Activated List</h5>
-              <p>Show all activated products</p>
-              <el-button @click="onchoosegetactivated()" type="primary">Choose</el-button>
-            </center>
-          </el-card>
-          <el-card shadow="always" style="margin-top: 20px; margin-bottom: 20px;">
-            <center>
-              <h5>Deactivated List</h5>
-              <p>Show all Deactivated products</p>
-              <el-button @click="onchoosegetdeactivated()" type="primary">Choose</el-button>
-            </center>
-          </el-card>
-          <el-card shadow="always" style="margin-top: 20px; margin-bottom: 20px;">
-            <center>
-              <h5>Get All List</h5>
-              <p>Show all products</p>
-              <el-button @click="onchoosegetall()" type="primary">Choose</el-button>
-            </center>
-          </el-card>
-        </div>
-        <el-button slot="reference" type="danger"><i class="el-icon-setting"></i> Actions</el-button>
-      </el-popover> -->
+       
         <el-table
           v-loading="listLoading"
           ref="filterTable"
           :data="pagedTableData"
           style="width: 100%"
         >
-          <el-table-column
-            label="Product ID"
-            prop="id"
-            
-            align="center"
-          >
-            <template slot-scope="{ row }">
-              <span>{{ row.id }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            width="120"
-            label="Product Code"
-            prop="id"
-            
-            align="center"
-          >
-            <template slot-scope="{ row }">
-              <span>{{ row.productCode }}</span>
-            </template>
-          </el-table-column>
+       
           <el-table-column
             label="Product Image"
             prop="id"
@@ -130,7 +81,23 @@
               <span>{{ row.prodquantity }}</span>
             </template>
           </el-table-column>
-
+          <el-table-column
+            label="Product Indicator"
+            
+            align="center"
+          >
+            <template slot-scope="{ row }">
+             <div v-if="row.issolo === '1'">
+               <el-tag type="success">SOLO</el-tag>
+             </div>
+             <div v-else-if="row.issolo === '2'">
+                 <el-tag type="warning">BUY 1 TAKE 1</el-tag>
+             </div>
+             <div v-else>
+                 <el-tag type="info">BOX OF 6</el-tag>
+             </div>
+            </template>
+          </el-table-column>
           <el-table-column
             width="270"
             fixed="right"
@@ -149,8 +116,7 @@
                       <table class="table table-hover table-bordered">
                         <thead>
                           <tr>
-                            <th scope="col">#</th>
-                            <th scope="col" align="center">Product Name</th>
+                            <th scope="col" align="center">Ingredient/s Name</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -158,7 +124,6 @@
                             v-for="item in listofingredients"
                             :key="item.productCode"
                           >
-                            <th scope="row">{{ item.productCode }}</th>
                             <td>{{ item.productName }}</td>
                           </tr>
                         </tbody>
@@ -176,35 +141,18 @@
                 </el-popover>
 
                 <div class="col-md-6" style="width: 100%; margin-left: 65px">
-                  <el-popover placement="left" width="400" trigger="click">
-                      <div style="display: inline">
-                        <h4>Enter quantity to add</h4>
-                        <el-input
-                          style="width: 100%; margin-bottom: 10px"
-                          placeholder="Please input quantity"
-                          v-model="newProductQuantity"
-                          type="number"
-                          :min="0">
-                        </el-input>
-                      </div>
-                      <div style="display: inline">
-                        <el-button
-                          @click="onUpdateProductQuantity(row.id)"
-                          type="primary"
-                          style="float: right; margin-bottom: 10px"
-                          >Add</el-button>
-                      </div>
-                   
-                    <el-button
+
+                  <el-button
+
                       slot="reference"
                       type="warning"
                       size="small"
                       style="width: 65%; margin-top: 10%"
                       plain
+                     @click="onRefill(row.id, row.prodquantity)"
                       >Refill
                     </el-button>
-                    
-                  </el-popover>
+
                 </div>
 
                 <div class="col-md-6" style="width: 100%; margin-left: 65px">
@@ -261,34 +209,15 @@
                 </el-popover>
 
                 <div class="col-md-6" style="width: 100%; margin-left: 80px">
-                  <el-popover placement="left" width="400" trigger="click">
-                      <div style="display: inline">
-                        <h4>Enter quantity to add</h4>
-                        <el-input
-                          style="width: 100%; margin-bottom: 10px"
-                          placeholder="Please input quantity"
-                          v-model="newProductQuantity"
-                          type="number"
-                          :min="0">
-                        </el-input>
-                      </div>
-                      <div style="display: inline">
-                        <el-button
-                          @click="onUpdateProductQuantity(row.id)"
-                          type="primary"
-                          style="float: right; margin-bottom: 10px"
-                          >Add</el-button
-                        >
-                      </div>
-                    <el-button
+                  <el-button
                       slot="reference"
                       type="warning"
                       size="small"
                       style="width: 65%; margin-top: 10%"
                       plain
+                      @click="onRefill(row.id, row.prodquantity)"
                       >Refill
                     </el-button>
-                  </el-popover>
                 </div>
 
                 <div class="col-md-6" style="width: 100%; margin-left: 80px">
@@ -304,26 +233,6 @@
               </div>
             </template>
           </el-table-column>
-          <!-- <el-table-column
-prop="prodstatus"
-            label="Status"
-            width="100"
-            :filters="[{text: 'Active', value: '1'},{text: 'Inactive', value: '0'}]"
-            :filter-method="filterTag"
-            filter-placement="bottom-end">
-          <template slot-scope="scope">
-            <el-tag
-                :type="scope.row.prodstatus === 1 ? 'primary' : 'success'"
-                disable-transitions>
-              <div v-if="scope.row.prodstatus == 1">
-                Active
-              </div>
-              <div v-else>
-                Inactive
-              </div>
-            </el-tag>
-          </template>
-        </el-table-column> -->
         </el-table>
 
         <el-pagination
@@ -333,6 +242,91 @@ prop="prodstatus"
           @current-change="setPage"
         >
         </el-pagination>
+
+      <el-dialog
+        title="Refill Product Validation Area"
+        :visible.sync="RefillVisible"
+        width="60%"
+        :before-close="handleClose">
+        <div style="margin-top: 20px;" class="container">
+           <el-alert
+            title="Pull out quantity exceeds inventory"
+            type="error"
+            :description="showErrorDescription"
+            v-show="showErrorIndicator"
+            style="margin-bottom: 30px;"
+            :closable="false"
+            show-icon>
+          </el-alert>
+          <div style="display: inline;">
+            <el-input
+            style="margin-bottom: 5px; width: 30%; margin-right: 30px"
+            placeholder="Search"
+            v-model="refillsearchable"
+            clearable
+          >
+          </el-input>
+          <span style="margin-right: 10px">Enter Quantity :</span>
+          <el-input
+            style="margin-bottom: 5px; width: 30%; margin-right: 10px"
+            placeholder="Quantity"
+            v-model="taskRefill.Quantity"
+            clearable
+            @input.native="pulloutqty"
+            type="text"
+          >
+          </el-input>
+          </div>
+          <el-table
+                ref="multipleTable"
+                :data="refillPagedTable"
+                style="width: 100%"
+                @selection-change="handleSelectionChange"
+                :row-key="getRowKey"
+                
+              >
+                <el-table-column
+                  :selectable="selectable"
+                  :reserve-selection="true"
+                  type="selection"
+                >
+                </el-table-column>
+                <el-table-column label="Product Image">
+                  <template slot-scope="scope">
+                    <img
+                      :src="scope.row.productimgurl"
+                      alt="No image"
+                      style="width: 50%; height: auto"
+                      class="img-fluid"
+                    />
+                  </template>
+                </el-table-column>
+                <el-table-column label="Product Name">
+                  <template slot-scope="scope">
+                    {{ scope.row.productName }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="Product Quantity" style="width: 100%">
+                  <template slot-scope="{row}">
+                    {{ row.product_quantity }}
+                  </template>
+                </el-table-column>
+                
+              </el-table>
+              <el-pagination
+                layout="prev, pager, next"
+                :page-size="fillpageSize"
+                :total="this.allstockslist.length"
+                @current-change="setPageRefill"
+              >
+              </el-pagination>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="RefillVisible = false">Cancel</el-button>
+          <el-button v-loading.fullscreen.lock="fullscreenLoading" :disabled="disableBtnConfirm" type="primary" @click="onConfirmRefill()">Confirm</el-button>
+        </span>
+      </el-dialog>
+
       </el-card>
     </div>
   </div>
@@ -352,11 +346,13 @@ import {
   ascendquantity,
   deleteFinalizedProduct,
   updateProductQuantity,
+  getallstocksfinalization
 } from "@/store/request-common";
 import { Chart } from "highcharts-vue";
 import Highcharts from "highcharts";
 import exportingInit from "highcharts/modules/exporting";
 import offlineExporting from "highcharts/modules/offline-exporting";
+import client from "@/store/0AuthRequest"
 exportingInit(Highcharts);
 offlineExporting(Highcharts);
 import { mapGetters } from "vuex";
@@ -367,6 +363,15 @@ export default {
   },
   data() {
     return {
+      disableBtnConfirm : true,
+      showErrorIndicator : false,
+      showErrorDescription: '',
+      taskRefill: {
+        Quantity: undefined,
+        currentQuantity : '',
+        TotalQuantity : '',
+        btnConfirmDisabling: true, refillId: ''
+      },
       listofingredients: [],
       searchablerawmats: "",
       listLoadingraw: false,
@@ -407,6 +412,14 @@ export default {
           text: "Activated and Deactivated Products graph",
         },
       },
+      confirmdisabling : false,
+      RefillVisible : false,
+      allstockslist: [],
+      refillsearchable: '',
+      multipleSelection: [],
+      fillpageSize: 5,
+      fillpage: 1,
+      fullscreenLoading: false
     };
   },
   computed: {
@@ -429,24 +442,129 @@ export default {
         );
       }
     },
+    refillPagedTable(){
+      
+       if(this.refillsearchable){
+            return this.allstockslist.filter((item)=>{
+                return this.refillsearchable.toLowerCase().split(' ').every(v => item.productName.toString().includes(v))
+            })
+            }else{
+                return this.allstockslist.slice(this.fillpageSize * this.fillpage - this.fillpageSize, this.fillpageSize * this.fillpage)
+            }
+    },
     ...mapGetters({
       remove_raws: "get_response_product_finalization_raw",
     }),
-    // pagedtabledataforraw(){
-    //   if(this.searchablerawmats){
-    //     return this.listofingredients.filter((item) => {
-    //       return this.searchablerawmats.toLowerCase().split(' ').every(v => item.productName.toLowerCase().includes(v))
-    //     })
-    //   }else{
-    //     return this.listofingredients.slice(this.pageSizeRaw * this.pageraw - this.pageSizeRaw, this.pageSizeRaw * this.pageraw)
-    //   }
-    // }
   },
   created() {
+     this.takeallstocks()
     this.getallproductfromfinalize();
     this.trialanderrorgraph();
+   this.taskRefill.btnConfirmDisabling = true
   },
   methods: {
+    onConfirmRefill: function() {
+      this.$confirm('Are you sure you want to refill this product?', 'Warning', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+          this.fullscreenLoading = true
+          setTimeout(() => {
+            const request = client.put(`/api/product-finalization/refill-product?id=${this.taskRefill.refillId}&qty=${this.taskRefill.Quantity}`)
+            return request.then(( {data} )=> {
+              if(data === 'success refill'){
+                this.fullscreenLoading = false
+                this.$notify.success({
+                  title: 'Success',
+                  message: 'Successfully Update',
+                  offset: 100
+                });
+                this.taskRefill.Quantity = null
+                this.RefillVisible = false
+                this.takeallstocks()
+                this.getallproductfromfinalize();
+              }
+            })
+          }, 3000)
+        })
+    },
+    pulloutqty(event){
+      const total = parseInt(event.target.value) + parseInt(this.taskRefill.currentQuantity)
+      this.taskRefill.TotalQuantity = total
+      const number = parseInt(event.target.value)
+      event.target.value = number ? number : 0
+      if(isNaN(number)){
+        this.taskRefill.btnConfirmDisabling = true
+        return
+      }else{
+        if(!number){
+   
+                this.taskRefill.btnConfirmDisabling = true
+            } else if(number < 0){
+                this.taskRefill.btnConfirmDisabling = true
+            } 
+             else{
+                this.taskRefill.btnConfirmDisabling = false
+            }
+      }
+    },
+    onRefill: function(id, qty) {
+      this.RefillVisible = true
+      this.taskRefill.currentQuantity = qty;
+      this.taskRefill.refillId = id
+      //list-integrated-ingredients
+      client.get(`/api/product-finalization/list-integrated-ingredients?id=${id}`)
+      .then(res => {
+        for(var x = 0; x < res.data.length; x++) {
+          this.allstockslist  = JSON.parse(res.data[x].integratedRaws)
+        }
+        
+      })
+    },
+    setPageRefill(val){
+      this.fillpage = val
+    },
+    selectable(row, index) {
+      switch(true){
+        case this.taskRefill.TotalQuantity > row.product_quantity:
+        this.showErrorIndicator = true
+        this.disableBtnConfirm = true
+        this.showErrorDescription = "You have the current quantity of " + this.taskRefill.currentQuantity + " " + "and based on your desired pull out quantity you will have the total of " + this.taskRefill.TotalQuantity + " " + "that exceeds the quantity below."
+        return false;
+        default : 
+         this.taskRefill.showErrorIndicator = false
+         this.disableBtnConfirm = false
+        this.taskRefill.showErrorDescription = ""
+        return true;
+      }
+      
+    },
+    getRowKey(row) {
+      return row.productID;
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    takeallstocks() {
+      getallstocksfinalization().then((resp) => {
+        this.allstockslist = resp.data;
+        console.log("all inventory", this.allstockslist);
+      });
+    },
+    qtyvalidation(event) {
+           
+           event.target.value =parseInt(event.target.value, 10)
+ if(!event.target.value){
+   
+                this.confirmdisabling = true
+            } else if(event.target.value < 0){
+                this.confirmdisabling = true
+            } 
+             else{
+                this.confirmdisabling = false
+            }
+        },
     ongetrawmats(pcode) {
       getrawpercreatedproducts(pcode).then((res) => {
         getallproductfinalize(pcode).then((respo) => {
@@ -581,15 +699,6 @@ export default {
         }, 3000);
       });
     },
-    toggleSelection(rows) {
-      if (rows) {
-        rows.forEach((row) => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
-      } else {
-        this.$refs.multipleTable.clearSelection();
-      }
-    },
     handleSelectionChange1(val) {
       this.multipleSelection = val;
     },
@@ -715,6 +824,13 @@ export default {
           offset: 0,
         });
         return false;
+      } else if(this.newProductQuantity < 0) {
+        this.$notify.error({
+          title: "Error",
+          message: "Empty, please choose enter valid quantity.",
+          offset: 0,
+        });
+        return false;
       }
       else {
         this.$confirm(
@@ -788,5 +904,15 @@ export default {
 <style scoped>
 .el-table el-table-column:nth-child(odd) {
     background-color: #845353;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 </style>

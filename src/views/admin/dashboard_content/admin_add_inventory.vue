@@ -45,11 +45,11 @@
                                     style="width: 100%;"
                                     
                                     >
-                                    <el-table-column label="Stock number" prop="id" sortable="custom" align="center"  >
+                                    <!-- <el-table-column label="Stock number" prop="id" sortable="custom" align="center"  >
                                         <template slot-scope="{row}">
                                         <span>{{ row.stockNumber }}</span>
                                         </template>
-                                    </el-table-column>
+                                    </el-table-column> -->
                                     
                                     <el-table-column label="Product Image" align="center" >
                                         <template slot-scope="{row}">
@@ -107,9 +107,10 @@
                                                         placeholder="Please input quantity"
                                                         v-model="task.pquantity"
                                                         style="margin-bottom: 20px;"
+                                                        @input.native="validateqty"
                                                         clearable>
                                                         </el-input>
-                                                        <el-button type="primary" style="float: right; margin-bottom: 10px;" @click="onconfirmpullproduct(
+                                                        <el-button :disabled="pullDisabling" type="primary" style="float: right; margin-bottom: 10px;" @click="onconfirmpullproduct(
                                                             row.stockID,
                                                             row.stockNumber,
                                                             row.productname,
@@ -215,7 +216,8 @@ export default {
                   prodsupplier: '',
                   expirationprod: ''
               },
-              stocksornotchecked: false
+              stocksornotchecked: false,
+              pullDisabling: false
         }
     },
    computed: {
@@ -239,6 +241,24 @@ export default {
         this.getallstocks();
     },
     methods: {
+        validateqty(event){
+            const number = parseInt(event.target.value)
+                event.target.value = number ? number : 0
+                if(isNaN(number)){
+                     this.pullDisabling = true
+                    return
+                }else{
+                    if(!number){
+            
+                            this.pullDisabling = true
+                        } else if(number < 0){
+                            this.pullDisabling = true
+                        } 
+                        else{
+                            this.pullDisabling = false
+                        }
+                }
+        },
         onnavigatefinal(){
             this.$router.push({name : 'Product Final'}).catch(() => {})
         },

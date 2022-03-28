@@ -68,11 +68,11 @@
                                     style="width: 100%;"
                                     
                                     >
-                                    <el-table-column label="ID" prop="id" sortable="custom" align="center"  >
+                                    <!-- <el-table-column label="ID" prop="id" sortable="custom" align="center"  >
                                         <template slot-scope="{row}">
                                         <span>{{ row.id }}</span>
                                         </template>
-                                    </el-table-column>
+                                    </el-table-column> -->
                                     
                                     <el-table-column label="Category Name" align="center">
                                         <template slot-scope="{row}">
@@ -184,11 +184,11 @@
                                     style="width: 100%;"
                                     
                                     >
-                                    <el-table-column label="ID" prop="id" sortable="custom" align="center"  >
+                                    <!-- <el-table-column label="ID" prop="id" sortable="custom" align="center"  >
                                         <template slot-scope="{row}">
                                         <span>{{ row.id }}</span>
                                         </template>
-                                    </el-table-column>
+                                    </el-table-column> -->
                                     
                                     <el-table-column label="Category Name" align="center">
                                         <template slot-scope="{row}">
